@@ -24,7 +24,7 @@ public class AprilTag {
     //private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
             //0, -90, 0, 0);
 
-    private VisionPortal visionPortal;
+    public VisionPortal visionPortal;
     private AprilTagProcessor processor;
 // vars to store data from april tag
     public double range ;

@@ -4,17 +4,22 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.Teleop.Subsystems.AprilTag;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Shooter;
+import org.firstinspires.ftc.vision.VisionPortal;
 
 public class Bot {
     public Intake intake;
     public static Bot instance;
     public Shooter shooter;
+    public AprilTag aprilTag;
+    public VisionPortal visionPortal;
     public OpMode opMode;
     public boolean fieldCentricRunMode = false;
     public MotorEx fl,fr,bl,br;
     public Bot(OpMode opMode){
+        this.aprilTag = new AprilTag(opMode);
         this.opMode = opMode;
         this.shooter = new Shooter(opMode);
         this.intake = new Intake(opMode);
