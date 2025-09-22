@@ -3,29 +3,27 @@ package org.firstinspires.ftc.teamcode.Teleop.Subsystems;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 public class Intake {
-    public MotorEx intake;
-    public static double speed = 0.0;
-    public boolean intaking=false; // controls direction of intake
-
-    // constructor
+    public DcMotorEx intakeMotor;
+    public static double power = 0.0;
     public Intake (OpMode opMode){
-        intake = new MotorEx(opMode.hardwareMap, "intake", Motor.GoBILDA.RPM_1150);
+        intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        intakeMotor= opMode.hardwareMap.get(DcMotorEx.class, "intake motor");    }
+
+    public void intake(){
+        intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        intakeMotor.setPower(power);
     }
 
-    // I don't think we need any more here lowkey
-    public void run(){
-        if (intaking) {
-            intake.stopMotor();
-            intaking = false;
-        }
-        else{
-            intake.setVelocity(speed);
-            intaking = true;
-        }
-
+    public void reverseIntake(){
+        intakeMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        intakeMotor.setPower(power);
     }
 
+    public void stopIntake(){
+        intakeMotor.setPower(0);
+    }
 
 }

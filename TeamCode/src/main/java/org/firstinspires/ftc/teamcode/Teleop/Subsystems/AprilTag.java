@@ -44,7 +44,6 @@ public class AprilTag {
 
         List<AprilTagDetection> currentDetections = processor.getDetections();
 
-
         for (AprilTagDetection detection : currentDetections){
             if (detection.metadata!=null){
                 id = detection.id;
