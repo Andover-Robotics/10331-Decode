@@ -1,34 +1,47 @@
 package org.firstinspires.ftc.teamcode.Teleop.Subsystems;
 
-import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Shooter {
     public Servo hoodServo;
-    public MotorEx shooter;
-    public static double shooterSpeed = 0.0;
-    private boolean shoot=false;
+    public DcMotorEx shooter;
+    public static double shooterPower = 0.0;
+    double currentPos;
+    public static double outtakePos;
 
     //constructor
     public Shooter(OpMode opMode){
         hoodServo = opMode.hardwareMap.get(Servo.class, "hood");
-        shooter = new MotorEx(opMode.hardwareMap, "shooter", Motor.GoBILDA.RPM_1620); // idk why no 6000 but ok
-
+        shooter = opMode.hardwareMap.get(DcMotorEx.class, "shooter motor");
+        currentPos= hoodServo.getPosition();
     }
 
     //may need to change this class based on final outtake
     // subsystem specific methods
     public void shoot(){
-        if (shoot){
-            shooter.stopMotor();
-            shoot=false;
+        shooter.setPower(shooterPower);
+    }
+    public void stop_shoot(){
+        shooter.setPower(0);
+    }
+    public void incrementHood(){
+        currentPos+=0.05;
+        if(currentPos>=1){
+            currentPos=1;
         }
-        else {
-            shooter.setVelocity(shooterSpeed);
-            shoot=true;
+        hoodServo.setPosition(currentPos);
+    }
 
+    public void decrementHood(){
+        currentPos-=0.05;
+        if(currentPos<=0){
+            currentPos=0;
         }
+        hoodServo.setPosition(currentPos);
+    }
+    public void goToHood(){
+        hoodServo.setPosition(outtakePos);
     }
 }
