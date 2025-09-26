@@ -7,12 +7,15 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.vision.VisionPortal;
 
 import java.util.ArrayList;
 import java.util.List;
+@TeleOp
 
 public class MainTeleOp extends LinearOpMode {
     Bot bot;
@@ -20,7 +23,6 @@ public class MainTeleOp extends LinearOpMode {
     private List<Action> runningActions = new ArrayList<>();
     private FtcDashboard dash = FtcDashboard.getInstance();
     public VisionPortal visionPortal;
-
 
     @Override
     public void runOpMode(){
@@ -36,6 +38,10 @@ public class MainTeleOp extends LinearOpMode {
         waitForStart();
         while(opModeIsActive() && !isStopRequested()){
             TelemetryPacket packet = new TelemetryPacket();
+            bot.aprilTag.visionPortal.resumeStreaming();
+            if (gp1.wasJustPressed(GamepadKeys.Button.A)){
+                bot.shooter.periodic();
+            }
             //teleop code here
 
 

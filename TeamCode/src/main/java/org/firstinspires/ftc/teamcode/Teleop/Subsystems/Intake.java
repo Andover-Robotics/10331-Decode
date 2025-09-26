@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.Teleop.Subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-
+@Config
 public class Intake {
     public DcMotorEx intakeMotor;
     public static double power = 0.0;

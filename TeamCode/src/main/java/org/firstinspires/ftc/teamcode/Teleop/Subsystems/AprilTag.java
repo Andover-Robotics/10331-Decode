@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Teleop.Subsystems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -15,7 +16,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-
+@Config
 public class AprilTag {
     // default camera offset stuff prob don't need?
     //may need opencv stuff for camera streaming
