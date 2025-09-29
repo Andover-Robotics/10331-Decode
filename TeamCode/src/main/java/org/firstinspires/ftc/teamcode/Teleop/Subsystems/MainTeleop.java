@@ -17,13 +17,13 @@ public class MainTeleop {
  -- chained with mid toilet roll
 
  3. hood dynamically adjustable (1 servo)
- -- april tag adjusts to +/- 5 degrees
+ -- april tag adjusts to +/- 5 degrees (avery)
  -- has one preset position (manual)
 
  4. shooting mechanism is flywheel (1 motor)
  --- not adjusting speed
 
- finite state position
+ finite state position (ari)
  --- manual and automatic
  --- automatic: april tag goes to +/- 5 degrees => driver adjusts
  --- manual: preset position on field and hood

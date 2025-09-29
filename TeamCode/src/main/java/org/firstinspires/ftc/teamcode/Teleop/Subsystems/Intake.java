@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -33,6 +34,20 @@ public class Intake {
         intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
         intakeMotor.setPower(power);
         toilet3.set(betterPower);
+    }
+
+    public void intakeWithSensor() {
+        while (getSensorState()) {
+            intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
+            intakeMotor.setPower(power);
+            toilet3.set(betterPower);
+        }
+        if (!(getSensorState())) {
+            toilet3.set(0.0);
+            intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
+            intakeMotor.setPower(power);
+        }
+
     }
 
     public void reverseIntake(){

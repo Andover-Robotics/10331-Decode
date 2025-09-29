@@ -56,6 +56,7 @@ public class AprilTag {
             }
         }
     }
+
     public double getRange(){
         return range;
     }
