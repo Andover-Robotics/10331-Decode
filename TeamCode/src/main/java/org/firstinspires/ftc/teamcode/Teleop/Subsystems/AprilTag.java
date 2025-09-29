@@ -65,6 +65,7 @@ Tag ID 24: red shooting location
             }
         }
     }
+
     public double getRange(){
         return range;
     }

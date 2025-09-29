@@ -20,6 +20,12 @@ public class Bot {
     public OpMode opMode;
     public boolean fieldCentricRunMode = false;
     public MotorEx fl,fr,bl,br;
+
+    public enum BotState{
+        AUTO,
+        MANUAL
+    }
+
     public Bot(OpMode opMode){
         this.aprilTag = new AprilTag(opMode);
         this.opMode = opMode;

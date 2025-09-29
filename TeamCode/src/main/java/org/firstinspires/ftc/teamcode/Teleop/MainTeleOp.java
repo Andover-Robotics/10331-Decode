@@ -23,6 +23,7 @@ public class MainTeleOp extends LinearOpMode {
     private List<Action> runningActions = new ArrayList<>();
     private FtcDashboard dash = FtcDashboard.getInstance();
     public VisionPortal visionPortal;
+    public Bot.BotState state = Bot.BotState.AUTO;
 
     @Override
     public void runOpMode(){
@@ -39,9 +40,17 @@ public class MainTeleOp extends LinearOpMode {
         while(opModeIsActive() && !isStopRequested()){
             TelemetryPacket packet = new TelemetryPacket();
             bot.aprilTag.visionPortal.resumeStreaming();
-            if (gp1.wasJustPressed(GamepadKeys.Button.A)){
-                bot.shooter.periodic();
+
+            if (state == Bot.BotState.AUTO) {
+                if (gp1.wasJustPressed(GamepadKeys.Button.A)) {
+                    bot.shooter.periodic();
+                }
             }
+
+            else {
+                // idk
+            }
+
             //teleop code here
 
 
@@ -63,8 +72,10 @@ public class MainTeleOp extends LinearOpMode {
 
             // send telemetry to dashboard
             telemetry.addData("Apriltag ID: ", bot.aprilTag.getId());
-            telemetry.addData("Distance from Apriltag",bot.aprilTag.range);
+            telemetry.addData("Distance from Apriltag",bot.aprilTag.getRange());
             telemetry.addData("Angle offset from Apriltag",bot.aprilTag.getBearing());
+            telemetry.addData("At Speed?",bot.shooter.atSpeed());
+            telemetry.addData("Break Beam state", bot.intake.getSensorState());
             dash.sendTelemetryPacket(packet);
             //visionPortal.stopStreaming();
 
