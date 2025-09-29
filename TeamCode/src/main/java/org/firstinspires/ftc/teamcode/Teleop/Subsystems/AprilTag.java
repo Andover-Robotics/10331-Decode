@@ -31,7 +31,18 @@ public class AprilTag {
     public double range ;
     public double bearing;
     public double yaw;
-    public int id;
+    public int target_id;
+    private int id;
+
+    /*
+
+AprilTags with the ID 21, 22, 23 are located on each rectangular face of the OBELISK, which is placed outside
+of the FIELD and can be used to identify the MOTIF for the MATCH.
+
+Tag ID 20: blue shooting location
+
+Tag ID 24: red shooting location
+     */
 
 
     public AprilTag(OpMode opMode) {
@@ -44,15 +55,13 @@ public class AprilTag {
     public void findAprilTag(){
 
         List<AprilTagDetection> currentDetections = processor.getDetections();
-
-
         for (AprilTagDetection detection : currentDetections){
-            if (detection.metadata!=null){
-                id = detection.id;
+            if (detection.id == target_id){
+                id= target_id;
                 range = detection.ftcPose.range;
                 bearing = detection.ftcPose.bearing;
                 yaw = detection.ftcPose.yaw;
-
+                break;
             }
         }
     }
