@@ -10,7 +10,7 @@ public class Sahithya {
 
     private static double openPos = .2;
 
-    private static double closedPos = 0.00
+    private static double closedPos = 0.00;
 
     public Sahithya (OpMode opMode){
         clawServo = opMode.hardwareMap.get(Servo.class, "claw");

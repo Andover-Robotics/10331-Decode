@@ -31,9 +31,9 @@ public class MainTeleOp extends LinearOpMode {
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         Bot.instance = null;
-        Bot.getInstance(this);
-        gp1.readButtons();
-        gp2.readButtons();
+        bot = Bot.getInstance(this);
+//        gp1.readButtons();
+//        gp2.readButtons();
         //starts finding apriltags
         bot.aprilTag.findAprilTag();
         waitForStart();
@@ -41,15 +41,13 @@ public class MainTeleOp extends LinearOpMode {
             TelemetryPacket packet = new TelemetryPacket();
             bot.aprilTag.visionPortal.resumeStreaming();
 
-            if (state == Bot.BotState.AUTO) {
-                if (gp1.wasJustPressed(GamepadKeys.Button.A)) {
-                    bot.shooter.periodic();
-                }
-            }
+//            if (state == Bot.BotState.AUTO) {
+//                if (gp1.wasJustPressed(GamepadKeys.Button.A)) {
+//                    bot.shooter.periodic();
+//                }
+//            }
 
-            else {
-                // idk
-            }
+
 
             //teleop code here
 
@@ -74,8 +72,8 @@ public class MainTeleOp extends LinearOpMode {
             telemetry.addData("Apriltag ID: ", bot.aprilTag.getId());
             telemetry.addData("Distance from Apriltag",bot.aprilTag.getRange());
             telemetry.addData("Angle offset from Apriltag",bot.aprilTag.getBearing());
-            telemetry.addData("At Speed?",bot.shooter.atSpeed());
-            telemetry.addData("Break Beam state", bot.intake.getSensorState());
+//            telemetry.addData("At Speed?",bot.shooter.atSpeed());
+//            telemetry.addData("Break Beam state", bot.intake.getSensorState());
             dash.sendTelemetryPacket(packet);
             //visionPortal.stopStreaming();
 
