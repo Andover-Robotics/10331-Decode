@@ -16,7 +16,11 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 @Config
 public class Intake {
     public DcMotorEx intakeMotor;
+    // bottom w/ noodles or pasta
+    public CRServo toilet2;
+    // middle toilet roll--does not stop
     public CRServo toilet3;
+    // top toilet roll--stops
     public static double power = 0.0;
     public static double betterPower = 0.0;
 
@@ -27,6 +31,7 @@ public class Intake {
         intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
         intakeMotor = opMode.hardwareMap.get(DcMotorEx.class, "intake motor");
         toilet3 = opMode.hardwareMap.get(CRServo.class,"toilet roll 3");
+        toilet2 = opMode.hardwareMap.get(CRServo.class, "toilet 2");
         breakBeam = opMode.hardwareMap.get(DigitalChannel.class, "BreakBeam");
     }
 
@@ -34,6 +39,7 @@ public class Intake {
         intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
         intakeMotor.setPower(power);
         toilet3.set(betterPower);
+        toilet2.set(betterPower);
     }
 
     public void intakeWithSensor() {
@@ -41,11 +47,13 @@ public class Intake {
             intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
             intakeMotor.setPower(power);
             toilet3.set(betterPower);
+            toilet2.set(betterPower);
         }
         if (!(getSensorState())) {
             toilet3.set(0.0);
             intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
             intakeMotor.setPower(power);
+            toilet2.set(betterPower);
         }
 
     }
@@ -54,11 +62,13 @@ public class Intake {
         intakeMotor.setDirection(DcMotorEx.Direction.REVERSE);
         intakeMotor.setPower(power);
         toilet3.set(-betterPower);
+        toilet2.set(-betterPower);
     }
 
     public void stopIntake(){
         intakeMotor.setPower(0);
         toilet3.set(0);
+        toilet2.set(0);
     }
 
 
