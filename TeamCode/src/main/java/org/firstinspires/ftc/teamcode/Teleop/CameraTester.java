@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -17,15 +19,22 @@ public class CameraTester extends LinearOpMode {
 
     public void runOpMode(){
         Bot.instance = null;
-        Bot.getInstance(this);
+        bot =Bot.getInstance(this);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        bot.aprilTag.findAprilTag();
 
         waitForStart();
 
-        bot.aprilTag.findAprilTag();
+        while (opModeIsActive()&& !isStopRequested()) {
+            TelemetryPacket packet = new TelemetryPacket();
 
-        telemetry.addData("Apriltag ID: ", bot.aprilTag.getId());
-        telemetry.addData("Distance from Apriltag",bot.aprilTag.getRange());
-        telemetry.addData("Angle offset from Apriltag",bot.aprilTag.getBearing());
+
+            telemetry.addData("Apriltag ID: ", bot.aprilTag.getId());
+            telemetry.addData("Distance from Apriltag", bot.aprilTag.getRange());
+            telemetry.addData("Angle offset from Apriltag", bot.aprilTag.getBearing());
+            dash.sendTelemetryPacket(packet);
+
+        }
 
     }
 }
