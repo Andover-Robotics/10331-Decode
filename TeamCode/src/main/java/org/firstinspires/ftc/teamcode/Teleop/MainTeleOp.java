@@ -35,11 +35,11 @@ public class MainTeleOp extends LinearOpMode {
 //        gp1.readButtons();
 //        gp2.readButtons();
         //starts finding apriltags
-        bot.aprilTag.findAprilTag();
         waitForStart();
         while(opModeIsActive() && !isStopRequested()){
             TelemetryPacket packet = new TelemetryPacket();
-            bot.aprilTag.visionPortal.resumeStreaming();
+            bot.aprilTag.findAprilTag();
+
 
 //            if (state == Bot.BotState.AUTO) {
 //                if (gp1.wasJustPressed(GamepadKeys.Button.A)) {

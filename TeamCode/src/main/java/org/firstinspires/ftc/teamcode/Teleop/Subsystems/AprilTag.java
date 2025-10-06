@@ -56,12 +56,11 @@ Tag ID 24: red shooting location
 
         List<AprilTagDetection> currentDetections = processor.getDetections();
         for (AprilTagDetection detection : currentDetections){
-            if (detection.id == target_id){
-                id= target_id;
+            if (detection.metadata!=null){
+                id = detection.id;
                 range = detection.ftcPose.range;
                 bearing = detection.ftcPose.bearing;
                 yaw = detection.ftcPose.yaw;
-                break;
             }
         }
     }
