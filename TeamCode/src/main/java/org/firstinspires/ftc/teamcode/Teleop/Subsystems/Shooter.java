@@ -22,11 +22,7 @@ public class Shooter {
     private static double targetRPM = 0.0;
     public double RPM = 0.0;
     public double shooterPower = 0.0;
-    public double derivative =0;
-    public double integral =0;
-    double lastError;
-    double lastTime;
-    ElapsedTime time = new ElapsedTime();
+
 
     public static double toleranceRPM = 40.0;   // speed window
 
@@ -36,37 +32,36 @@ public class Shooter {
         shooter.setRunMode(Motor.RunMode.RawPower);
         shooter.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
         controller = new PIDController(p,i,d);
-        time.reset();
-        lastTime = time.seconds();
-        lastError = controller.calculate(RPM,targetRPM);
+
 
     }
-    public void periodic(){
-        controller.setPID(p,i,d);
-        double now =  time.seconds();
-        double dt = now-lastTime;
-        RPM = shooter.getVelocity() /28 *60;// follows formula for rps (tps/tpr) * 60 for mins
-        double ff = f*targetRPM; // feedforward
+    public void periodic() {
+        controller.setPID(p, i, d);
+
+        RPM = shooter.getVelocity() / 28 * 60;// follows formula for rps (tps/tpr) * 60 for mins
+        double ff = f * targetRPM; // feedforward
         double pid = controller.calculate(RPM, targetRPM);//error
-        double pRPM = p * pid;// gets product of p constant and error
-        double de = pid - lastError;
-        derivative = (de/now)*d;
-        integral +=  (pid* now)*i;
-        shooterPower = pRPM +derivative+integral+ ff; // makes sure that the rpm has the feedforward floor
+       // gets product of p constant and error
 
-        if (Math.abs(targetRPM) < 1e-3) {
-            shooterPower = 0.0;
-        } else {
-            double s = Math.signum(targetRPM);
-            shooterPower = s * Math.max(Math.abs(shooterPower), 0);
-        }
-        shooterPower = checkPower(shooterPower,1.0,0);
+        shooterPower = pid + ff; // makes sure that the rpm has the feedforward floor
+
+//        if (Math.abs(targetRPM) < 1e-3) {
+//            shooterPower = 0.0;
+//        } else {
+//            double s = Math.signum(targetRPM);
+//            shooterPower = s * Math.max(Math.abs(shooterPower), 0);
+//        }
+        shooterPower = checkPower(shooterPower, 1.0, 0);
         shooter.set(shooterPower);
-
-        lastError = controller.calculate(RPM,targetRPM);
-        lastTime = time.seconds();
-        time.reset();
     }
+        public void reset(){
+            targetRPM = 0;
+            shooterPower =0;
+            controller.reset();
+        }
+
+
+
 
 public double getTargetRPM(){
         return targetRPM;

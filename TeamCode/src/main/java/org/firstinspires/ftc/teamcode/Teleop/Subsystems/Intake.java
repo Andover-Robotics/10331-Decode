@@ -1,14 +1,12 @@
 package org.firstinspires.ftc.teamcode.Teleop.Subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.hardware.ServoEx;
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
@@ -29,7 +27,7 @@ public class Intake {
 
     public Intake (OpMode opMode){
         intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
-        intakeMotor = opMode.hardwareMap.get(DcMotorEx.class, "intake motor");
+        intakeMotor = opMode.hardwareMap.get(DcMotorEx.class, "actionIntake motor");
         toilet3 = opMode.hardwareMap.get(CRServo.class,"toilet roll 3");
         toilet2 = opMode.hardwareMap.get(CRServo.class, "toilet 2");
         breakBeam = opMode.hardwareMap.get(DigitalChannel.class, "BreakBeam");
@@ -44,23 +42,28 @@ public class Intake {
 
     public void intakeWithSensor() {
         while (getSensorState()) {
-            intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
             intakeMotor.setPower(power);
             toilet3.set(betterPower);
             toilet2.set(betterPower);
         }
         if (!(getSensorState())) {
             toilet3.set(0.0);
-            intakeMotor.setDirection(DcMotorEx.Direction.FORWARD);
             intakeMotor.setPower(power);
             toilet2.set(betterPower);
         }
 
     }
 
+    public Action actionIntake(){
+        return new ParallelAction(
+                new InstantAction(() -> intakeMotor.setPower(power)),
+                new InstantAction(() -> toilet2.set(betterPower)),
+                new InstantAction(() -> toilet3.set(betterPower))
+        );
+    }
+
     public void reverseIntake(){
-        intakeMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        intakeMotor.setPower(power);
+        intakeMotor.setPower(-power);
         toilet3.set(-betterPower);
         toilet2.set(-betterPower);
     }
