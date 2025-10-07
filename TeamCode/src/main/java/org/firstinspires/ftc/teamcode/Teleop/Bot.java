@@ -4,7 +4,8 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.InstantAction;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -24,14 +25,15 @@ public class Bot {
     public VisionPortal visionPortal;
     public OpMode opMode;
     public boolean fieldCentricRunMode = false;
-    public MotorEx fl,fr,bl,br;
+    public MotorEx fl, fr, bl, br;
+    public double hoodAngle = 0;
 
-    public enum BotState{
+    public enum BotState {
         AUTO,
         MANUAL
     }
 
-    public Bot(OpMode opMode){
+    public Bot(OpMode opMode) {
         this.aprilTag = new AprilTag(opMode);
         this.opMode = opMode;
         this.shooter = new Shooter(opMode);
@@ -47,6 +49,7 @@ public class Bot {
         bl = new MotorEx(opMode.hardwareMap, "bl", Motor.GoBILDA.RPM_435);
         br = new MotorEx(opMode.hardwareMap, "br", Motor.GoBILDA.RPM_435);
     }
+
     public static Bot getInstance(OpMode opMode) {
         if (instance == null) {
             return instance = new Bot(opMode);
@@ -55,10 +58,32 @@ public class Bot {
         return instance;
     }
 
+    public Action shoot(){
+        return new ParallelAction(
+             new InstantAction(()->hood.hoodServo.setPosition(hoodServoPos())),
+             new InstantAction(()->shooter.setTargetRPM(5000)),
+             new InstantAction(()->intake.toilet3.set(1))
+        );
+    }
+
+    public double hoodServoPos() { // assuming function for hood angle: distance is linear for now
+        hoodAngle = 1 * (aprilTag.getBearing()) + 50; //PLACEHOLDER returns angle in degrees
+        return Math.sin(hoodAngle); // should map angle to servo pos, will need to change based on restrants
+    }
+
+    public class actionPeriodic implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            shooter.periodic();
+            return true;
+        }
+    }
+    public Action actionPeriodic() { // for auto to work
+        return new actionPeriodic();
+    }
 
 
-
-    //drive code
+        //drive code
 //    public void driveRobotCentric(double strafeSpeed, double forwardBackSpeed, double turnSpeed) {
 //        double[] speeds = {
 //                (forwardBackSpeed - strafeSpeed + turnSpeed),
@@ -81,6 +106,7 @@ public class Bot {
 //        br.set(-speeds[3]);
 //    }
 
-    //multi-subsystem methods here
+        //multi-subsystem methods here
+
 
 }

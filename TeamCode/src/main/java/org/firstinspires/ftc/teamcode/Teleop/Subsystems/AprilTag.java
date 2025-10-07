@@ -55,12 +55,17 @@ Tag ID 24: red shooting location
     public void findAprilTag(){
 
         List<AprilTagDetection> currentDetections = processor.getDetections();
-        for (AprilTagDetection detection : currentDetections){
-            if (detection.metadata!=null){
-                id = detection.id;
-                range = detection.ftcPose.range;
-                bearing = detection.ftcPose.bearing;
-                yaw = detection.ftcPose.yaw;
+        for (AprilTagDetection detection : currentDetections){ //TODO: test if this works
+            if (detection.metadata!=null) {
+                if (detection.id == 20 || detection.id == 24) {
+                    id = detection.id;
+                    range = detection.ftcPose.range;
+                    bearing = detection.ftcPose.bearing;
+                    yaw = detection.ftcPose.yaw;
+                }
+                else {
+                    id = detection.id;
+                }
             }
         }
     }

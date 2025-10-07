@@ -32,7 +32,7 @@ public class MainTeleOp extends LinearOpMode {
         bot = Bot.getInstance(this);
         gp1.readButtons();
         gp2.readButtons();
-        //starts finding apriltags
+        //starts finding apriltag
         waitForStart();
         while(opModeIsActive() && !isStopRequested()){
             TelemetryPacket packet = new TelemetryPacket();
@@ -41,10 +41,14 @@ public class MainTeleOp extends LinearOpMode {
 
             if (state == Bot.BotState.AUTO) {
                 if (gp2.wasJustPressed(GamepadKeys.Button.A)) { // shoot
-                    bot.shooter.periodic();
+                    bot.shooter.periodic(); // here for testing purposes, set targetRPM with ftc dash
+                    //bot.shoot(); will need when PID tuned and acctually using robot
                 }
                 if (gp2.wasJustPressed(GamepadKeys.Button.X)){
-                    bot.intake.actionIntake();
+                    runningActions.add(bot.intake.actionIntake());
+                }
+                if (gp2.wasJustPressed(GamepadKeys.Button.Y)){
+                    runningActions.add(bot.intake.actionStopIntake());
                 }
             }
 

@@ -5,7 +5,6 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 public class Shooter {
@@ -58,6 +57,10 @@ public class Shooter {
             targetRPM = 0;
             shooterPower =0;
             controller.reset();
+        }
+        public void setTargetRPM(double t){// probably temp but I cant remember how to do ts
+        targetRPM = t;
+
         }
 
 
