@@ -26,7 +26,6 @@ public class Bot {
     public OpMode opMode;
     public boolean fieldCentricRunMode = false;
     public MotorEx fl, fr, bl, br;
-    public double hoodAngle = 0;
 
     public enum BotState {
         AUTO,
@@ -67,8 +66,7 @@ public class Bot {
     }
 
     public double hoodServoPos() { // assuming function for hood angle: distance is linear for now
-        hoodAngle = 1 * (aprilTag.getBearing()) + 50; //PLACEHOLDER returns angle in degrees
-        return Math.sin(hoodAngle); // should map angle to servo pos, will need to change based on restrants
+        return 1 * (aprilTag.getBearing()) + 50; //PLACEHOLDER returns angle in a servo pos
     }
 
     public class actionPeriodic implements Action {
