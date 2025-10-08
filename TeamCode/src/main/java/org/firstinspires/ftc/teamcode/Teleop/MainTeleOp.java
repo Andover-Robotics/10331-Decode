@@ -77,6 +77,7 @@ public class MainTeleOp extends LinearOpMode {
             telemetry.addData("Apriltag ID: ", bot.aprilTag.getId());
             telemetry.addData("Distance from Apriltag",bot.aprilTag.getRange());
             telemetry.addData("Angle offset from Apriltag",bot.aprilTag.getBearing());
+            telemetry.addData("Bot yaw from Apriltag",bot.aprilTag.getYaw());
 //            telemetry.addData("At Speed?",bot.shooter.atSpeed());
 //            telemetry.addData("Break Beam state", bot.actionIntake.getSensorState());
             dash.sendTelemetryPacket(packet);
