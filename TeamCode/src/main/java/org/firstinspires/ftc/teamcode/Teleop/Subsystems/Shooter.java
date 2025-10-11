@@ -18,7 +18,7 @@ public class Shooter {
     public final MotorEx shooter;
     public static double p=0.0,i=0.0,d=0.0,f=0.0;
     private final PIDController controller;
-    private static double targetRPM = 0.0;
+    public static double targetRPM = 0.0;
     public double RPM = 0.0;
     public double shooterPower = 0.0;
 
@@ -33,6 +33,10 @@ public class Shooter {
         controller = new PIDController(p,i,d);
 
 
+    }
+
+    public void runShooter(double s){
+        shooter.set(s);
     }
     public void periodic() {
         controller.setPID(p, i, d);

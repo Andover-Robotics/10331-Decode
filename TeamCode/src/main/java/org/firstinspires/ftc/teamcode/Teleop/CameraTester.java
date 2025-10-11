@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @Config
 @TeleOp
 public class CameraTester extends LinearOpMode {
-    public Bot bot;
+    public BotTest bot;
     private FtcDashboard dash = FtcDashboard.getInstance();
 
 
@@ -18,20 +18,22 @@ public class CameraTester extends LinearOpMode {
     @Override
 
     public void runOpMode(){
-        Bot.instance = null;
-        bot =Bot.getInstance(this);
+        BotTest.instance = null;
+        bot = BotTest.getInstance(this);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        bot.aprilTag.findAprilTag();
+
 
         waitForStart();
 
         while (opModeIsActive()&& !isStopRequested()) {
             TelemetryPacket packet = new TelemetryPacket();
+            bot.shooter.periodic();
 
-
-            telemetry.addData("Apriltag ID: ", bot.aprilTag.getId());
-            telemetry.addData("Distance from Apriltag", bot.aprilTag.getRange());
-            telemetry.addData("Angle offset from Apriltag", bot.aprilTag.getBearing());
+            telemetry.addData("target RPM",bot.shooter.getTargetRPM());
+            telemetry.addData("Measrued RPM",bot.shooter.getRPM());
+            telemetry.addData("motor speed",bot.shooter.getShooterPower());
+            telemetry.addData("at speed?",bot.shooter.atSpeed());
+            telemetry.update();
             dash.sendTelemetryPacket(packet);
 
         }
