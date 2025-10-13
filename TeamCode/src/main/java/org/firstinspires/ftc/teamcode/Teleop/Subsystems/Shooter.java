@@ -16,9 +16,10 @@ public class Shooter {
     // ff = kF * targetV
     // ff + err(pid) = shooterPower
     public final MotorEx shooter;
-    public static double p=0.0,i=0.0,d=0.0,f=0.0;
+    public final MotorEx shooter2;
+    public static double p=0.00023,i=0.0,d=0.0,f= 0.00023;
     private final PIDController controller;
-    public static double targetRPM = 0.0;
+    public static int targetRPM = 0;
     public double RPM = 0.0;
     public double shooterPower = 0.0;
 
@@ -29,12 +30,19 @@ public class Shooter {
     public Shooter(OpMode opMode){
         shooter = new MotorEx(opMode.hardwareMap,"shooter", Motor.GoBILDA.BARE);
         shooter.setRunMode(Motor.RunMode.RawPower);
+        shooter.setInverted(true);
         shooter.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+        shooter2 = new MotorEx(opMode.hardwareMap,"shooter2",Motor.GoBILDA.BARE);
+        shooter2.setRunMode(Motor.RunMode.RawPower);
+        shooter2.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
         controller = new PIDController(p,i,d);
 
 
     }
-
+    public void setPower(double power){
+        shooter.set(power);
+        shooter2.set(power);
+    }
     public void runShooter(double s){
         shooter.set(s);
     }
@@ -55,14 +63,14 @@ public class Shooter {
 //            shooterPower = s * Math.max(Math.abs(shooterPower), 0);
 //        }
         shooterPower = checkPower(shooterPower, 1.0, 0);
-        shooter.set(shooterPower);
+        setPower(shooterPower);
     }
         public void reset(){
             targetRPM = 0;
             shooterPower =0;
             controller.reset();
         }
-        public void setTargetRPM(double t){// probably temp but I cant remember how to do ts
+        public void setTargetRPM(int t){// probably temp but I cant remember how to do ts
         targetRPM = t;
 
         }

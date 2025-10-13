@@ -30,9 +30,9 @@ public class BotTest {
 
 
     public BotTest(OpMode opMode) {
-        //this.aprilTag = new AprilTag(opMode);
+        this.aprilTag = new AprilTag(opMode);
         this.opMode = opMode;
-        this.shooter = new Shooter(opMode);
+       this.shooter = new Shooter(opMode);
 //        this.hood = new Hood(opMode);
         try {
             fieldCentricRunMode = false;
@@ -50,13 +50,13 @@ public class BotTest {
         return instance;
     }
 
-    public Action shoot(){
-        return new ParallelAction(
-                new InstantAction(()->hood.hoodServo.setPosition(hoodServoPos())),
-                new InstantAction(()->shooter.setTargetRPM(5000)),
-                new InstantAction(()->intake.toilet3.set(1))
-        );
-    }
+//    public Action shoot(){
+//        return new ParallelAction(
+//                new InstantAction(()->hood.hoodServo.setPosition(hoodServoPos())),
+//                new InstantAction(()->shooter.setTargetRPM(5000)),
+//                new InstantAction(()->intake.toilet3.set(1))
+//        );
+//    }
 
     public double hoodServoPos() { // assuming function for hood angle: distance is linear for now
         return 1 * (aprilTag.getBearing()) + 50; //PLACEHOLDER returns angle in a servo pos

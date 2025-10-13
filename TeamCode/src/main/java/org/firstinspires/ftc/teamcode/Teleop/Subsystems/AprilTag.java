@@ -4,10 +4,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
@@ -31,7 +27,7 @@ public class AprilTag {
     public double range ;
     public double bearing;
     public double yaw;
-    public int target_id;
+    public int targetAllianceId;
     private int id;
 
     /*
@@ -58,10 +54,11 @@ Tag ID 24: red shooting location
         for (AprilTagDetection detection : currentDetections){ //TODO: test if this works
             if (detection.metadata!=null) {
                 id = detection.id;
-                if (detection.id == 20 || detection.id == 24) {
+                if (detection.id == targetAllianceId) {
                     range = detection.ftcPose.range;
                     bearing = detection.ftcPose.bearing;
                     yaw = detection.ftcPose.yaw;
+                    break;
                 }
 
                 }
