@@ -7,9 +7,11 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Hood;
+
 @Config
 @TeleOp
-public class CameraTester extends LinearOpMode {
+public class Tester extends LinearOpMode {
     public BotTest bot;
     private FtcDashboard dash = FtcDashboard.getInstance();
 
@@ -29,6 +31,7 @@ public class CameraTester extends LinearOpMode {
             TelemetryPacket packet = new TelemetryPacket();
             bot.aprilTag.findAprilTag();
             bot.shooter.periodic();
+            bot.hood.goToHood(Hood.outtakePos);
 
             telemetry.addData("target RPM",bot.shooter.getTargetRPM());
             telemetry.addData("Measrued RPM",bot.shooter.getRPM());
@@ -38,6 +41,7 @@ public class CameraTester extends LinearOpMode {
             telemetry.addData("Distance from Apriltag",bot.aprilTag.getRange());
             telemetry.addData("Angle offset from Apriltag",bot.aprilTag.getBearing());
             telemetry.addData("Bot yaw from Apriltag",bot.aprilTag.getYaw());
+            telemetry.addData("Servo pos",bot.hood.getPos());
             telemetry.update();
             dash.sendTelemetryPacket(packet);
 

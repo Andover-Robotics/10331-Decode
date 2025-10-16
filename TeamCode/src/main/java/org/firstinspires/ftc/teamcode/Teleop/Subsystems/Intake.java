@@ -10,8 +10,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
-import org.firstinspires.inspection.InspectionState;
-
 
 @Config
 public class Intake {
@@ -63,9 +61,9 @@ public class Intake {
                 new InstantAction(() -> toilet3.set(betterPower))
         );
     }
-    public Action actionStopIntake(){
+    public Action actionReverseIntake(){
         return new ParallelAction(
-                new InstantAction(()->intakeMotor.setPower(0)),
+                new InstantAction(()->intakeMotor.setPower(-power)),
                 new InstantAction(()->toilet3.set(-betterPower)),
                 new InstantAction(()->toilet2.set(-betterPower))
         );

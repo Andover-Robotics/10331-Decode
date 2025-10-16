@@ -32,8 +32,8 @@ public class BotTest {
     public BotTest(OpMode opMode) {
         this.aprilTag = new AprilTag(opMode);
         this.opMode = opMode;
-       this.shooter = new Shooter(opMode);
-//        this.hood = new Hood(opMode);
+        this.shooter = new Shooter(opMode);
+        this.hood = new Hood(opMode);
         try {
             fieldCentricRunMode = false;
         } catch (Exception e) {

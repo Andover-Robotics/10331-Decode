@@ -17,7 +17,7 @@ public class Shooter {
     // ff + err(pid) = shooterPower
     public final MotorEx shooter;
     public final MotorEx shooter2;
-    public static double p=0.00023,i=0.0,d=0.0,f= 0.00023;
+    public static double p=0.00024,i=0.0,d=0.0,f= 0.00019;
     private final PIDController controller;
     public static int targetRPM = 0;
     public double RPM = 0.0;

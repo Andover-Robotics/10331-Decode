@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.arcrobotics.ftclib.geometry.Vector2d;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -17,14 +18,15 @@ import java.util.List;
 
 public class MainTeleOp extends LinearOpMode {
     Bot bot;
-    GamepadEx gp1,gp2;
+    GamepadEx gp1, gp2;
     private List<Action> runningActions = new ArrayList<>();
     private FtcDashboard dash = FtcDashboard.getInstance();
     public VisionPortal visionPortal;
+    private double driveSpeed = 1, driveMultiplier = 1;
     public Bot.BotState state = Bot.BotState.AUTO;
 
     @Override
-    public void runOpMode(){
+    public void runOpMode() {
 
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -34,57 +36,68 @@ public class MainTeleOp extends LinearOpMode {
         gp2.readButtons();
         //starts finding apriltag
         waitForStart();
-        while(opModeIsActive() && !isStopRequested()){
+        while (opModeIsActive() && !isStopRequested()) {
             TelemetryPacket packet = new TelemetryPacket();
             bot.aprilTag.findAprilTag();
 
 
             if (state == Bot.BotState.AUTO) {
                 if (gp2.wasJustPressed(GamepadKeys.Button.A)) { // shoot
-                    bot.shooter.periodic(); // here for testing purposes, set targetRPM with ftc dash
+                    runningActions.add(bot.shoot()); // here for testing purposes, set targetRPM with ftc dash
                     //bot.shoot(); will need when PID tuned and acctually using robot
                 }
-                if (gp2.wasJustPressed(GamepadKeys.Button.X)){
+                if (gp2.isDown(GamepadKeys.Button.RIGHT_BUMPER)) {
                     runningActions.add(bot.intake.actionIntake());
                 }
-                if (gp2.wasJustPressed(GamepadKeys.Button.Y)){
-                    runningActions.add(bot.intake.actionStopIntake());
+                if (gp2.isDown(GamepadKeys.Button.LEFT_BUMPER)) {
+                    runningActions.add(bot.intake.actionReverseIntake());
                 }
-            }
+                drive();
 
 
-
-            //teleop code here
-
+                //teleop code here
 
 
-
-
-            //updates the readings sent in telemetry packet
-            telemetry.update();
-            // update runningActions arraylist
-            List<Action> newActions = new ArrayList<>();
-            for (Action action : runningActions) {
-                action.preview(packet.fieldOverlay());
-                if (action.run(packet)) {
-                    newActions.add(action);
+                //updates the readings sent in telemetry packet
+                telemetry.update();
+                // update runningActions arraylist
+                List<Action> newActions = new ArrayList<>();
+                for (Action action : runningActions) {
+                    action.preview(packet.fieldOverlay());
+                    if (action.run(packet)) {
+                        newActions.add(action);
+                    }
                 }
-            }
-            runningActions = newActions;
+                runningActions = newActions;
 
 
-            // send telemetry to dashboard
-            telemetry.addData("Apriltag ID: ", bot.aprilTag.getId());
-            telemetry.addData("Distance from Apriltag",bot.aprilTag.getRange());
-            telemetry.addData("Angle offset from Apriltag",bot.aprilTag.getBearing());
-            telemetry.addData("Bot yaw from Apriltag",bot.aprilTag.getYaw());
+                // send telemetry to dashboard
+                telemetry.addData("Apriltag ID: ", bot.aprilTag.getId());
+                telemetry.addData("Distance from Apriltag", bot.aprilTag.getRange());
+                telemetry.addData("Angle offset from Apriltag", bot.aprilTag.getBearing());
+                telemetry.addData("Bot yaw from Apriltag", bot.aprilTag.getYaw());
 //            telemetry.addData("At Speed?",bot.shooter.atSpeed());
 //            telemetry.addData("Break Beam state", bot.actionIntake.getSensorState());
-            dash.sendTelemetryPacket(packet);
-            //visionPortal.stopStreaming();
+                dash.sendTelemetryPacket(packet);
+                //visionPortal.stopStreaming();
 
+
+            }
 
         }
+    }
 
+    private void drive() {
+        driveSpeed = driveMultiplier - 0.7 * gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER);
+        driveSpeed = Math.max(0, driveSpeed);
+
+
+        Vector2d driveVector = new Vector2d(gp1.getLeftX(), -gp1.getLeftY()),
+                turnVector = new Vector2d(gp1.getRightX(), 0);
+        bot.driveRobotCentric(driveVector.getX() * driveSpeed,
+                driveVector.getY() * driveSpeed,
+                turnVector.getX() * driveSpeed
+        );
     }
 }
+

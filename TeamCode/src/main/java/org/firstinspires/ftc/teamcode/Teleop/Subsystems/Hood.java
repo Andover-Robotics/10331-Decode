@@ -7,6 +7,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Config
 
 public class Hood {
+
+
+    // 0.45 is the lowest angle position 1 is the highest.
     public Servo hoodServo;
 
     double currentPos;
@@ -15,6 +18,7 @@ public class Hood {
     //constructor
     public Hood(OpMode opMode){
         hoodServo = opMode.hardwareMap.get(Servo.class, "hood");
+        hoodServo.setDirection(Servo.Direction.REVERSE);
         currentPos= hoodServo.getPosition();
     }
     // subsystem specific methods
@@ -34,7 +38,11 @@ public class Hood {
         }
         hoodServo.setPosition(currentPos);
     }
-    public void goToHood(){
-        hoodServo.setPosition(outtakePos);
+    public void goToHood(double pos){
+        hoodServo.setPosition(pos);
+    }
+
+    public double getPos(){
+        return outtakePos;
     }
 }

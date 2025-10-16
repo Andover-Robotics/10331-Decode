@@ -81,28 +81,28 @@ public class Bot {
     }
 
 
-        //drive code
-//    public void driveRobotCentric(double strafeSpeed, double forwardBackSpeed, double turnSpeed) {
-//        double[] speeds = {
-//                (forwardBackSpeed - strafeSpeed + turnSpeed),
-//                (forwardBackSpeed + strafeSpeed - turnSpeed),
-//                (-forwardBackSpeed - strafeSpeed - turnSpeed),
-//                (-forwardBackSpeed + strafeSpeed + turnSpeed)
-//        };
-//        double maxSpeed = 0;
-//        for (int i = 0; i < 4; i++) {
-//            maxSpeed = Math.max(maxSpeed, speeds[i]);
-//        }
-//        if (maxSpeed > 1) {
-//            for (int i = 0; i < 4; i++) {
-//                speeds[i] /= maxSpeed;
-//            }
-//        }
-//        fl.set(speeds[0]);
-//        fr.set(speeds[1]);
-//        bl.set(-speeds[2]);
-//        br.set(-speeds[3]);
-//    }
+//        drive code
+    public void driveRobotCentric(double strafeSpeed, double forwardBackSpeed, double turnSpeed) {
+        double[] speeds = {
+                (forwardBackSpeed - strafeSpeed + turnSpeed),
+                (forwardBackSpeed + strafeSpeed - turnSpeed),
+                (-forwardBackSpeed - strafeSpeed - turnSpeed),
+                (-forwardBackSpeed + strafeSpeed + turnSpeed)
+        };
+        double maxSpeed = 0;
+        for (int i = 0; i < 4; i++) {
+            maxSpeed = Math.max(maxSpeed, speeds[i]);
+        }
+        if (maxSpeed > 1) {
+            for (int i = 0; i < 4; i++) {
+                speeds[i] /= maxSpeed;
+            }
+        }
+        fl.set(speeds[0]);
+        fr.set(speeds[1]);
+        bl.set(-speeds[2]);
+        br.set(-speeds[3]);
+    }
 
         //multi-subsystem methods here
 
