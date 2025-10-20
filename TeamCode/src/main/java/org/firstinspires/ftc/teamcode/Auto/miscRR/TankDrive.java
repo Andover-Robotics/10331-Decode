@@ -88,11 +88,11 @@ public final class TankDrive {
         public double maxAngVel = Math.PI; // shared with path
         public double maxAngAccel = Math.PI;
 
-        // path controller gains
+        // path headingController gains
         public double ramseteZeta = 0.7; // in the range (0, 1)
         public double ramseteBBar = 2.0; // positive
 
-        // turn controller gains
+        // turn headingController gains
         public double turnGain = 0.0;
         public double turnVelGain = 0.0;
     }

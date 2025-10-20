@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Hood {
 
 
-    // 0.45 is the lowest angle position 1 is the highest.
+    // range is 0 -> 0.73
     public Servo hoodServo;
 
     double currentPos;
