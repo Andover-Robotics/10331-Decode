@@ -47,6 +47,12 @@ public class Bot {
         fr = new MotorEx(opMode.hardwareMap, "fr", Motor.GoBILDA.RPM_435);
         bl = new MotorEx(opMode.hardwareMap, "bl", Motor.GoBILDA.RPM_435);
         br = new MotorEx(opMode.hardwareMap, "br", Motor.GoBILDA.RPM_435);
+        fl.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        fr.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        bl.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        br.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+
     }
 
     public static Bot getInstance(OpMode opMode) {
@@ -59,10 +65,12 @@ public class Bot {
 
     public Action shoot(){
         return new ParallelAction(
-             new InstantAction(()->hood.hoodServo.setPosition(hoodServoPos())),
-             new InstantAction(()->shooter.setTargetRPM(5000)),
-             new InstantAction(()->intake.toilet3.set(1))
+                new InstantAction(() ->hood.goToHood(Hood.outtakePos)),
+                new InstantAction(()->shooter.setTargetRPM(5000))
         );
+
+             //new InstantAction(()->intake.toilet3.set(1))
+
     }
 
     public double hoodServoPos() { // assuming function for hood angle: distance is linear for now
@@ -84,10 +92,10 @@ public class Bot {
 //        drive code
     public void driveRobotCentric(double strafeSpeed, double forwardBackSpeed, double turnSpeed) {
         double[] speeds = {
-                (forwardBackSpeed - strafeSpeed + turnSpeed),
-                (forwardBackSpeed + strafeSpeed - turnSpeed),
+                (forwardBackSpeed - strafeSpeed - turnSpeed),
                 (-forwardBackSpeed - strafeSpeed - turnSpeed),
-                (-forwardBackSpeed + strafeSpeed + turnSpeed)
+                (-forwardBackSpeed - strafeSpeed + turnSpeed),
+                (forwardBackSpeed - strafeSpeed + turnSpeed)
         };
         double maxSpeed = 0;
         for (int i = 0; i < 4; i++) {
