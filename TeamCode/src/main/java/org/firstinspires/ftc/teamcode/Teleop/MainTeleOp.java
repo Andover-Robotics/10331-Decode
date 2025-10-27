@@ -36,12 +36,13 @@ public class MainTeleOp extends LinearOpMode {
         Bot.instance = null;
         bot = Bot.getInstance(this);
         gp1 = new GamepadEx(gamepad1);
-        gp1.readButtons();
+
         //gp2.readButtons();
         //starts finding apriltag
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
             TelemetryPacket packet = new TelemetryPacket();
+            gp1.readButtons();
             bot.aprilTag.findAprilTag();
             bot.shooter.periodic();
 
