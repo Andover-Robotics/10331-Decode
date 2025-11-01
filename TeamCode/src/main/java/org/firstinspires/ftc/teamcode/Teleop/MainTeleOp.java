@@ -25,7 +25,7 @@ public class MainTeleOp extends LinearOpMode {
     public VisionPortal visionPortal;
     private double driveSpeed = 1, driveMultiplier = 1;
     public Bot.BotState state = Bot.BotState.AUTO;
-    private boolean shooting = false;
+    private boolean isIntaking, isShooting;
 
     @Override
     public void runOpMode() {
@@ -36,27 +36,34 @@ public class MainTeleOp extends LinearOpMode {
         bot = Bot.getInstance(this);
         gp1 = new GamepadEx(gamepad1);
 
-        //gp2.readButtons();
         //starts finding apriltag
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
             TelemetryPacket packet = new TelemetryPacket();
             gp1.readButtons();
             bot.aprilTag.findAprilTag();
-            bot.shooter.periodic();
 
 
-                if (gp1.wasJustPressed(GamepadKeys.Button.A)) {
-                     // shoot
-                    runningActions.add(bot.shoot()); // here for testing purposes, set targetRPM with ftc dash
-                    //bot.shoot(); will need when PID tuned and acctually using robot
 
+                if (gp1.wasJustPressed(GamepadKeys.Button.A)&&!isShooting) {
+                    bot.intake.roller2.setPower(1);
+                    bot.shooter.periodic();
+                    runningActions.add(bot.shoot());
+                    isShooting=true;
                 }
-                if(gp1.wasJustPressed(GamepadKeys.Button.X)){
-                   Shooter.targetRPM=0;
+                 if (gp1.wasJustPressed(GamepadKeys.Button.A)&& isShooting){
+                    bot.shooter.periodic();
+                    bot.shooter.setTargetRPM(0);
+                    isShooting=false;
                 }
-                if (gp1.isDown(GamepadKeys.Button.RIGHT_BUMPER)) {
+
+                if (gp1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)&& !isIntaking) {
                     bot.intake.intake_without_sense();
+                    isIntaking=true;
+                }
+                if (gp1.wasJustPressed(GamepadKeys.Button.A)&&isIntaking){
+                    bot.intake.stopIntake();
+                    isIntaking=false;
                 }
 
 

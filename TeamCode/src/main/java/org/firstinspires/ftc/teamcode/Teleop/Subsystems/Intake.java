@@ -19,10 +19,8 @@ import java.io.Serializable;
 public class Intake {
     public DcMotorEx intakeMotor;
     // bottom w/ noodles or pasta
-    public CRServo toilet2;
-    // middle toilet roll--does not stop
-    public CRServo toilet3;
-    // top toilet roll--stops
+    public CRServo roller1,roller2;
+    // roller1 middle, roller 2 top
     public static double power = .7;
     public static double betterPower = 1;
 
@@ -31,23 +29,22 @@ public class Intake {
 
     public Intake (OpMode opMode){
         intakeMotor = opMode.hardwareMap.get(DcMotorEx.class, "intake");
-        toilet3 = opMode.hardwareMap.get(CRServo.class,"roller1");
-        toilet2 = opMode.hardwareMap.get(CRServo.class, "roller2");
+        roller1 = opMode.hardwareMap.get(CRServo.class,"roller1");
+        roller2 = opMode.hardwareMap.get(CRServo.class, "roller2");
         intakeMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
     }
 
     public void intake_without_sense(){
         intakeMotor.setPower(power);
-        toilet3.setPower(betterPower);
-        toilet2.setPower(betterPower);
+        roller1.setPower(betterPower);
     }
 
     public void intakeWithSensor() {
         while (getSensorState()) {
             intakeMotor.setPower(power);
-            toilet3.setPower(betterPower);
-            toilet2.setPower(betterPower);
+            roller1.setPower(betterPower);
+            roller2.setPower(betterPower);
         }
         if (!(getSensorState())) {
 //            toilet3.set(0.0);
@@ -80,8 +77,8 @@ public class Intake {
 
     public void stopIntake(){
         intakeMotor.setPower(0);
-//        toilet3.set(0);
-//        toilet2.set(0);
+        roller2.setPower(0);
+        roller1.setPower(0);
     }
 
 
