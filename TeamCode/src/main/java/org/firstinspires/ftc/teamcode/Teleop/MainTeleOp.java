@@ -9,7 +9,6 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Shooter;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -26,7 +25,7 @@ public class MainTeleOp extends LinearOpMode {
     public VisionPortal visionPortal;
     private double driveSpeed = 1, driveMultiplier = 1;
     public Bot.BotState state = Bot.BotState.AUTO;
-    private boolean killMe = false;
+    private boolean shooting = false;
 
     @Override
     public void runOpMode() {
@@ -47,21 +46,19 @@ public class MainTeleOp extends LinearOpMode {
             bot.shooter.periodic();
 
 
-                if (gp1.isDown(GamepadKeys.Button.A)) { //TODO: why the hell wont wasJustPressed work
+                if (gp1.wasJustPressed(GamepadKeys.Button.A)) {
                      // shoot
                     runningActions.add(bot.shoot()); // here for testing purposes, set targetRPM with ftc dash
                     //bot.shoot(); will need when PID tuned and acctually using robot
 
                 }
-                if(gp1.isDown(GamepadKeys.Button.X)){
+                if(gp1.wasJustPressed(GamepadKeys.Button.X)){
                    Shooter.targetRPM=0;
                 }
                 if (gp1.isDown(GamepadKeys.Button.RIGHT_BUMPER)) {
                     bot.intake.intake_without_sense();
                 }
-                if (gp1.isDown(GamepadKeys.Button.B)){
-                    bot.intake.stopIntake();
-                }
+
 
 
                 drive();
@@ -89,7 +86,7 @@ public class MainTeleOp extends LinearOpMode {
                 telemetry.addData("Angle offset from Apriltag", bot.aprilTag.getBearing());
                 telemetry.addData("Bot yaw from Apriltag", bot.aprilTag.getYaw());
                 telemetry.addData("target RPM",bot.shooter.getTargetRPM());
-                telemetry.addData("kms?",killMe);
+
 //            telemetry.addData("At Speed?",bot.shooter.atSpeed());
 //            telemetry.addData("Break Beam state", bot.actionIntake.getSensorState());
                 dash.sendTelemetryPacket(packet);

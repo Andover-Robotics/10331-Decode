@@ -45,4 +45,8 @@ public class Hood {
     public double getPos(){
         return outtakePos;
     }
+
+    public double clamp(double val,double maxPos,double minPos){
+        return Math.min(maxPos,Math.max(val,minPos));
+    }
 }

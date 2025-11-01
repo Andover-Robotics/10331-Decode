@@ -32,6 +32,7 @@ public class Bot {
         MANUAL
     }
 
+
     public Bot(OpMode opMode) {
         this.aprilTag = new AprilTag(opMode);
         this.opMode = opMode;
@@ -73,8 +74,9 @@ public class Bot {
 
     }
 
-    public double hoodServoPos() { // assuming function for hood angle: distance is linear for now
-        return 1 * (aprilTag.getBearing()) + 50; //PLACEHOLDER returns angle in a servo pos
+    public double hoodPeriodic() {// assuming function for hood angle: distance is linear for now
+        double hoodFunc  = 1* aprilTag.getBearing() + 50; //TODO regression for this
+        return hood.clamp(hoodFunc,0.75,0); //PLACEHOLDER returns angle in a servo pos
     }
 
     public class actionPeriodic implements Action {
