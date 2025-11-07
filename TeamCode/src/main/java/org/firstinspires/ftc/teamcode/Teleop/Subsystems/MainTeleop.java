@@ -5,7 +5,7 @@ public class MainTeleop {
     /*
 
  Game Strat
- --- intaking 3 at once => shoot
+ --- intaking 3 at once => shootOne
  -- focus on consistency > speed
 
  1_ breakbeam sensor for intake

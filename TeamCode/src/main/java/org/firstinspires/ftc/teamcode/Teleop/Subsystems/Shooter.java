@@ -16,15 +16,17 @@ public class Shooter {
     // ff = kF * targetV
     // ff + err(pid) = shooterPower
     public final MotorEx shooter;
+    //-0.00173166x^{3}+0.450842x^{2}-22.54125x+4257.07664 regression values
+    public double shooterA= -0.00173166,shooterB= 0.450842,shooterC= -22.54125,shooterD=4257.07664;
     public final MotorEx shooter2;
-    public static double p=0.00024,i=0.0,d=0.0,f= 0.00021;
+    public static double p=0.00025,i=0.0,d=0.0,f= 0.000195;
     private final PIDController controller;
     public static int targetRPM = 0;
     public double RPM = 0.0;
     public double shooterPower = 0.0;
 
 
-    public static double toleranceRPM = 40.0;   // speed window
+    public static double toleranceRPM = 60.0;   // speed window
 
 
     public Shooter(OpMode opMode){
@@ -74,8 +76,6 @@ public class Shooter {
         targetRPM = t;
 
         }
-
-
 
 
 public double getTargetRPM(){

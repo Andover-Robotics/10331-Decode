@@ -50,7 +50,7 @@ public class BotTest {
         return instance;
     }
 
-//    public Action shoot(){
+//    public Action shootOne(){
 //        return new ParallelAction(
 //                new InstantAction(()->hood.hoodServo.setPosition(hoodServoPos())),
 //                new InstantAction(()->shooter.setTargetRPM(5000)),

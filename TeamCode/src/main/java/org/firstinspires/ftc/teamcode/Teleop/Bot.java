@@ -44,9 +44,9 @@ public class Bot {
         } catch (Exception e) {
             fieldCentricRunMode = false;
         }
-        fl = new MotorEx(opMode.hardwareMap, "fl", Motor.GoBILDA.RPM_435);
+        fl = new MotorEx(opMode.hardwareMap, "perp", Motor.GoBILDA.RPM_435);
         fr = new MotorEx(opMode.hardwareMap, "fr", Motor.GoBILDA.RPM_435);
-        bl = new MotorEx(opMode.hardwareMap, "bl", Motor.GoBILDA.RPM_435);
+        bl = new MotorEx(opMode.hardwareMap, "par", Motor.GoBILDA.RPM_435);
         br = new MotorEx(opMode.hardwareMap, "br", Motor.GoBILDA.RPM_435);
         fl.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         fr.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
@@ -64,19 +64,26 @@ public class Bot {
         return instance;
     }
 
-    public Action shoot(){
+    public Action shootOne(){
         return new ParallelAction(
-                new InstantAction(() ->hood.goToHood(Hood.outtakePos)),
-                new InstantAction(()->shooter.setTargetRPM(5000))
+                //new InstantAction(() ->hood.goToHood(Hood.outtakePos)),
+                new InstantAction(()->shooter.setTargetRPM(5000)),
+                intake.openGate(.25),
+                intake.actionIntake()
         );
 
-             //new InstantAction(()->intake.toilet3.set(1))
-
+    }
+    public Action shootThree(){
+         return new ParallelAction(
+                 new InstantAction(()->shooter.setTargetRPM(5000)),
+                 intake.openGate(1.8),
+                 intake.actionIntake()
+         );
     }
 
-    public double hoodPeriodic() {// assuming function for hood angle: distance is linear for now
-        double hoodFunc  = 1* aprilTag.getBearing() + 50; //TODO regression for this
-        return hood.clamp(hoodFunc,0.75,0); //PLACEHOLDER returns angle in a servo pos
+    public double CalculateRPM(){
+        double dist = aprilTag.accurateDis;
+        return (shooter.shooterA * Math.pow(dist,3)) + (shooter.shooterB*Math.pow(dist,2))+ (shooter.shooterC*dist)+shooter.shooterD;
     }
 
     public class actionPeriodic implements Action {

@@ -10,8 +10,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Shooter;
-import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Hood;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,19 +21,31 @@ public class MainTeleOp extends LinearOpMode {
     GamepadEx gp1 , gp2;
     private List<Action> runningActions = new ArrayList<>();
     private FtcDashboard dash = FtcDashboard.getInstance();
-    public VisionPortal visionPortal;
     private double driveSpeed = 1, driveMultiplier = 1;
     public Bot.BotState state = Bot.BotState.AUTO;
     private boolean isIntaking, isShooting;
+    public final int BLUE=20,RED=24, GPP = 21, PPG = 23, PGP = 22;
 
     @Override
     public void runOpMode() {
 
-
+        while (opModeInInit()){
+            gp1.readButtons();
+            if(gp1.wasJustPressed(GamepadKeys.Button.A)){
+                bot.aprilTag.targetAllianceId = RED;
+            }
+            if (gp1.wasJustPressed(GamepadKeys.Button.B)){
+                bot.aprilTag.targetAllianceId = BLUE;
+            }
+        }
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         Bot.instance = null;
         bot = Bot.getInstance(this);
         gp1 = new GamepadEx(gamepad1);
+        bot.hood.goToHood(0.3);
+
+
+         //TODO: allow alliance selection in init
 
         //starts finding apriltag
         waitForStart();
@@ -42,33 +53,46 @@ public class MainTeleOp extends LinearOpMode {
             TelemetryPacket packet = new TelemetryPacket();
             gp1.readButtons();
             bot.aprilTag.findAprilTag();
+            bot.shooter.periodic();
 
 
 
-                if (gp1.wasJustPressed(GamepadKeys.Button.A)&&!isShooting) {
-                    bot.intake.roller2.setPower(1);
-                    bot.shooter.periodic();
-                    runningActions.add(bot.shoot());
-                    isShooting=true;
+
+                if (gp1.wasJustPressed(GamepadKeys.Button.A)) {
+                    runningActions.add(bot.intake.actionIntake());
+                    runningActions.add(bot.shootOne());
+
                 }
-                 if (gp1.wasJustPressed(GamepadKeys.Button.A)&& isShooting){
-                    bot.shooter.periodic();
+                 if (gp1.wasJustPressed(GamepadKeys.Button.B)){
                     bot.shooter.setTargetRPM(0);
-                    isShooting=false;
                 }
 
-                if (gp1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)&& !isIntaking) {
+                if (gp1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
                     bot.intake.intake_without_sense();
-                    isIntaking=true;
                 }
-                if (gp1.wasJustPressed(GamepadKeys.Button.A)&&isIntaking){
+                if (gp1.wasJustPressed(GamepadKeys.Button.Y)){
                     bot.intake.stopIntake();
-                    isIntaking=false;
+
+                }
+                if (gp1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
+                    runningActions.add(bot.intake.openGate(1.7));
                 }
 
+                if (gp1.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
+                    if (bot.hood.hoodServo.getPosition()<=0.73) {
+                        Hood.outtakePos += 0.05;
+                    }
+                    bot.hood.goToHood(Hood.outtakePos);
+                }
+                if (gp1.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)){
+                    Hood.outtakePos-=0.05;
+                bot.hood.goToHood(Hood.outtakePos);
+
+            }
 
 
-                drive();
+
+               //drive();
 
 
                 //teleop code here
@@ -93,8 +117,9 @@ public class MainTeleOp extends LinearOpMode {
                 telemetry.addData("Angle offset from Apriltag", bot.aprilTag.getBearing());
                 telemetry.addData("Bot yaw from Apriltag", bot.aprilTag.getYaw());
                 telemetry.addData("target RPM",bot.shooter.getTargetRPM());
-
-//            telemetry.addData("At Speed?",bot.shooter.atSpeed());
+                telemetry.addData("Hood position",bot.hood.hoodServo.getPosition());
+                telemetry.addData("distance:",bot.aprilTag.accurateDis);
+                telemetry.addData("At Speed?",bot.shooter.atSpeed());
 //            telemetry.addData("Break Beam state", bot.actionIntake.getSensorState());
                 dash.sendTelemetryPacket(packet);
                 //visionPortal.stopStreaming();
