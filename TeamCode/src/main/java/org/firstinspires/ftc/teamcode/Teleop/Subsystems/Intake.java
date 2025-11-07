@@ -12,17 +12,12 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 
-
 @Config
 public class Intake {
     public DcMotorEx intakeMotor;
-    // bottom w/ noodles or pasta
-    // roller1 middle, roller 2 top
     public static double power = .7;
-    public Servo gate;
 
-
-
+    //public Servo gate;
     DigitalChannel breakBeam;
 
 
@@ -31,7 +26,7 @@ public class Intake {
         intakeMotor.setDirection(DcMotorEx.Direction.REVERSE);
 
     }
-    public Action openGate(double dt){
+    /*public Action openGate(double dt){
         return new SequentialAction(
                new InstantAction(()->gate.setPosition(1)),
                 new SleepAction(dt),
@@ -39,6 +34,8 @@ public class Intake {
 
         );
     }
+
+     */
 
     public void intake_without_sense(){
         intakeMotor.setPower(power);
@@ -51,7 +48,6 @@ public class Intake {
         if (!(getSensorState())) {
             intakeMotor.setPower(power);
         }
-
     }
 
     public Action actionIntake(){
@@ -67,7 +63,6 @@ public class Intake {
 
     public void reverseIntake(){
         intakeMotor.setPower(-power);
-
     }
 
     public void stopIntake(){

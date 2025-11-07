@@ -15,6 +15,7 @@ public class Shooter {
     // err*kP for proportionality
     // ff = kF * targetV
     // ff + err(pid) = shooterPower
+
     public final MotorEx shooter;
     //-0.00173166x^{3}+0.450842x^{2}-22.54125x+4257.07664 regression values
     public double shooterA= -0.00173166,shooterB= 0.450842,shooterC= -22.54125,shooterD=4257.07664;
