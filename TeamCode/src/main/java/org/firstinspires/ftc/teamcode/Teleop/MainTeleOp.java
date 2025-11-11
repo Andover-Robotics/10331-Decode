@@ -59,9 +59,7 @@ public class MainTeleOp extends LinearOpMode {
 
 
                 if (gp1.wasJustPressed(GamepadKeys.Button.A)) {
-                    runningActions.add(bot.intake.actionIntake());
-                    runningActions.add(bot.shootOne());
-
+                    runningActions.add(bot.actionShoot());
                 }
                  if (gp1.wasJustPressed(GamepadKeys.Button.B)){
                     bot.shooter.setTargetRPM(0);
@@ -74,9 +72,9 @@ public class MainTeleOp extends LinearOpMode {
                     bot.intake.stopIntake();
 
                 }
-                if (gp1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
-                    runningActions.add(bot.intake.openGate(1.7));
-                }
+//                if (gp1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
+//                    runningActions.add(bot.intake.openGate(1.7));
+//                }
 
                 if (gp1.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
                     if (bot.hood.hoodServo.getPosition()<=0.73) {

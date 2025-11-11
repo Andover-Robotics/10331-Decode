@@ -34,6 +34,7 @@ public class BotTest {
         this.opMode = opMode;
         this.shooter = new Shooter(opMode);
         this.hood = new Hood(opMode);
+        this.intake = new Intake(opMode);
         try {
             fieldCentricRunMode = false;
         } catch (Exception e) {

@@ -6,6 +6,8 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -26,6 +28,7 @@ public class Bot {
     public OpMode opMode;
     public boolean fieldCentricRunMode = false;
     public MotorEx fl, fr, bl, br;
+    public static double dt;
 
     public enum BotState {
         AUTO,
@@ -64,22 +67,22 @@ public class Bot {
         return instance;
     }
 
-    public Action shootOne(){
-        return new ParallelAction(
-                //new InstantAction(() ->hood.goToHood(Hood.outtakePos)),
-                new InstantAction(()->shooter.setTargetRPM(5000)),
-                intake.openGate(.25),
-                intake.actionIntake()
-        );
 
-    }
-    public Action shootThree(){
+
+    public Action shootSetup(){
          return new ParallelAction(
-                 new InstantAction(()->shooter.setTargetRPM(5000)),
-                 intake.openGate(1.8),
-                 intake.actionIntake()
+                 new InstantAction(()-> intake.openGate()),
+                 new InstantAction(()->intake.secondIntake.setPower(1))
          );
     }
+    public Action actionShoot(){
+        return new SequentialAction(
+                new InstantAction(()->shooter.setTargetRPM(5000)),
+                new SleepAction(0.3),
+                shootSetup()
+                );
+    }
+
 
     public double CalculateRPM(){
         double dist = aprilTag.accurateDis;

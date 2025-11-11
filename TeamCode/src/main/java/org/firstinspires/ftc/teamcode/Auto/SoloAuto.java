@@ -80,7 +80,7 @@ public class SoloAuto extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, chosenAuto.startPos);
 
         Action shootPreload = drive.actionBuilder(drive.localizer.getPose())
-                .afterTime(0.1, bot.shootThree())
+                .afterTime(0.1, bot.shootSetup())
                 .build();
 
         Action intakeFirst = drive.actionBuilder(chosenAuto.startPos)
@@ -99,7 +99,7 @@ public class SoloAuto extends LinearOpMode {
 
         Action shoot = drive.actionBuilder(new Pose2d(chosenAuto.shootPos.component1().x, chosenAuto.shootPos.component1().y, Math.toRadians(-150)))
                 .splineToLinearHeading(chosenAuto.shootPos, Math.toRadians(-150), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .stopAndAdd(bot.shootThree())
+                .stopAndAdd(bot.shootSetup())
                 .build();
 
         while (opModeInInit()) {
