@@ -38,7 +38,7 @@ public class Intake {
 
     public void closeGate(){
         gate1.setPosition(0.2);
-        gate2.setPosition(0.3);
+        gate2.setPosition(0.27);
     }
     public void openGate(){
         gate1.setPosition(0);

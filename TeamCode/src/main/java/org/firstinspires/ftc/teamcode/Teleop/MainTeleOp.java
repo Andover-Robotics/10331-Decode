@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Hood;
 import java.util.ArrayList;
 import java.util.List;
 @TeleOp
+@Config
 
 public class MainTeleOp extends LinearOpMode {
     Bot bot;
@@ -116,7 +118,7 @@ public class MainTeleOp extends LinearOpMode {
                 telemetry.addData("Bot yaw from Apriltag", bot.aprilTag.getYaw());
                 telemetry.addData("target RPM",bot.shooter.getTargetRPM());
                 telemetry.addData("Hood position",bot.hood.hoodServo.getPosition());
-                telemetry.addData("distance:",bot.aprilTag.accurateDis);
+                telemetry.addData("distance:",bot.aprilTag.calcAccurateDis());
                 telemetry.addData("At Speed?",bot.shooter.atSpeed());
 //            telemetry.addData("Break Beam state", bot.actionIntake.getSensorState());
                 dash.sendTelemetryPacket(packet);

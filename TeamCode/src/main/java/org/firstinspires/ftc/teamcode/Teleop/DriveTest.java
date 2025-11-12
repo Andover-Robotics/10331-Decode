@@ -1,10 +1,17 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @TeleOp
@@ -14,20 +21,33 @@ public class DriveTest extends LinearOpMode {
     private double driveSpeed = 1, driveMultiplier = 1;
     boolean isIntake=false;
     boolean isShooting=false;
+    private List<Action> runningActions = new ArrayList<>();
+    private FtcDashboard dash = FtcDashboard.getInstance();
+    public final int BLUE=20,RED=24, GPP = 21, PPG = 23, PGP = 22;
+
+
     boolean isFast=false;
 
     @Override
     public void runOpMode() {
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
 
         Bot.instance = null;
-        bot.shooter.periodic();
         bot = Bot.getInstance(this);
         gp1 = new GamepadEx(gamepad1);
         gp2 = new GamepadEx(gamepad2);
         bot.intake.closeGate();
+        bot.aprilTag.targetAllianceId=BLUE;
+        bot.hood.hoodServo.setPosition(0.35);
 
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
+            TelemetryPacket packet = new TelemetryPacket();
+            bot.aprilTag.findAprilTag();
+            bot.shooter.periodic();
+
+
             gp1.readButtons();
             gp2.readButtons();
             drive();
@@ -62,18 +82,37 @@ public class DriveTest extends LinearOpMode {
             }
             if(gp2.wasJustPressed(GamepadKeys.Button.B)){
                 if(!isShooting) {
-                    bot.shooter.setTargetRPM(5000);
-                    bot.intake.openGate();
-                    bot.intake.secondIntake.setPower(1);
+                    runningActions.add(bot.actionShoot());
 
                     isShooting=true;
                 }
                 else{
                     bot.shooter.setTargetRPM(0);
                     bot.intake.secondIntake.setPower(0);
+                    bot.intake.closeGate();
                     isShooting=false;
                 }
             }
+            telemetry.addData("Apriltag ID: ", bot.aprilTag.getId());
+            telemetry.addData("Distance from Apriltag", bot.aprilTag.getRange());
+            telemetry.addData("Angle offset from Apriltag", bot.aprilTag.getBearing());
+            telemetry.addData("Bot yaw from Apriltag", bot.aprilTag.getYaw());
+            telemetry.addData("target RPM",bot.shooter.getTargetRPM());
+            telemetry.addData("measured RPM",bot.shooter.getRPM());
+
+            telemetry.addData("Hood position",bot.hood.hoodServo.getPosition());
+            telemetry.addData("distance:",bot.aprilTag.calcAccurateDis());
+            telemetry.addData("At Speed?",bot.shooter.atSpeed());
+            telemetry.update();
+
+            List<Action> newActions = new ArrayList<>();
+            for (Action action : runningActions) {
+                action.preview(packet.fieldOverlay());
+                if (action.run(packet)) {
+                    newActions.add(action);
+                }
+            }
+            runningActions = newActions;
 
         }
     }

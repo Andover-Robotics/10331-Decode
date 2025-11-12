@@ -17,12 +17,14 @@ public class Shooter {
     // ff + err(pid) = shooterPower
 
     public final MotorEx shooter;
-    //-0.00173166x^{3}+0.450842x^{2}-22.54125x+4257.07664 regression values
-    public double shooterA= -0.00173166,shooterB= 0.450842,shooterC= -22.54125,shooterD=4257.07664;
+    //y=-0.000860551x^{3}+0.278353x^{2}-11.54167x+3650.11204 regression values
+    public double shooterA= -0.000860551,shooterB= 0.278353,shooterC= -11.54167,shooterD=3650.11204;
     public final MotorEx shooter2;
     public static double p=0.00025,i=0.0,d=0.0,f= 0.000195;
     private final PIDController controller;
     public static int targetRPM = 0;
+    public static int target;
+
     public double RPM = 0.0;
     public double shooterPower = 0.0;
 

@@ -29,7 +29,7 @@ public class AprilTag {
     public double yaw;
     public int targetAllianceId;
     private int id;
-    private double offsetConstant = 297.6; // difference of height to apriltag from ground and height to camera from ground squared
+    private double offsetConstant = 276.390625; // difference of height to apriltag from ground and height to camera from ground squared
 
     /*
 
@@ -67,7 +67,8 @@ Tag ID 24: red shooting location
         }
     }
 
-    public double accurateDis = Math.sqrt((range*range)-offsetConstant);
+    public double calcAccurateDis() { return Math.sqrt((range*range)-offsetConstant);}
+
 
     public double getRange(){
         return range;

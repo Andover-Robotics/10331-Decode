@@ -22,6 +22,7 @@ public class Bot {
     public Intake intake;
     public static Bot instance;
     public Hood hood;
+
     public AprilTag aprilTag;
     public Shooter shooter;
     public VisionPortal visionPortal;
@@ -77,15 +78,15 @@ public class Bot {
     }
     public Action actionShoot(){
         return new SequentialAction(
-                new InstantAction(()->shooter.setTargetRPM(5000)),
+                new InstantAction(()->shooter.setTargetRPM((int)calculateRPM()+75)),//may need to not round here in the future
                 new SleepAction(0.3),
                 shootSetup()
                 );
     }
 
 
-    public double CalculateRPM(){
-        double dist = aprilTag.accurateDis;
+    public double calculateRPM(){
+        double dist = aprilTag.calcAccurateDis();
         return (shooter.shooterA * Math.pow(dist,3)) + (shooter.shooterB*Math.pow(dist,2))+ (shooter.shooterC*dist)+shooter.shooterD;
     }
 
