@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -28,6 +29,10 @@ public class Intake {
         secondIntake = opMode.hardwareMap.get(DcMotorEx.class, "intake2");
         gate1 = opMode.hardwareMap.servo.get("gate1");
         gate2 = opMode.hardwareMap.servo.get("gate2");
+
+        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        secondIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
 
         intakeMotor.setDirection(DcMotorEx.Direction.REVERSE);
         gate2.setDirection(Servo.Direction.REVERSE);

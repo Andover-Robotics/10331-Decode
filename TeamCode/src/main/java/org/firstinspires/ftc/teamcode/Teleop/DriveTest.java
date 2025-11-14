@@ -38,8 +38,27 @@ public class DriveTest extends LinearOpMode {
         gp1 = new GamepadEx(gamepad1);
         gp2 = new GamepadEx(gamepad2);
         bot.intake.closeGate();
-        bot.aprilTag.targetAllianceId=BLUE;
-        bot.hood.hoodServo.setPosition(0.35);
+        bot.aprilTag.targetAllianceId=RED;
+        bot.hood.hoodServo.setPosition(0.3);
+
+        while (!isStarted()) {
+            TelemetryPacket packet = new TelemetryPacket();
+            gp1.readButtons();
+            if (gp1.wasJustPressed(GamepadKeys.Button.A)) {
+                bot.aprilTag.targetAllianceId = RED;
+            }
+            if (gp1.wasJustPressed(GamepadKeys.Button.B)) {
+                bot.aprilTag.targetAllianceId = BLUE;
+            }
+            if (bot.aprilTag.targetAllianceId == 20) {
+                telemetry.addData("alliance", "Blue");
+            } else {
+                telemetry.addData("alliance", "Red");
+            }
+            telemetry.update();
+        }
+
+
 
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {

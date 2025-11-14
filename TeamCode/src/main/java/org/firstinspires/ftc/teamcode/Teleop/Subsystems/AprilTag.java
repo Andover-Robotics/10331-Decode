@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.Teleop.Subsystems;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.cos;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
@@ -67,7 +70,16 @@ Tag ID 24: red shooting location
         }
     }
 
-    public double calcAccurateDis() { return Math.sqrt((range*range)-offsetConstant);}
+    public double calcAccurateDis() {
+        double dist = Math.sqrt((range*range)-offsetConstant);
+        if(Math.abs(bearing)<=7){
+            return dist;
+        }
+        else{
+            return dist *Math.cos(Math.toRadians(bearing));
+        }
+
+    }
 
 
     public double getRange(){
