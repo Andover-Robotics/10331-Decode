@@ -10,6 +10,8 @@ import com.arcrobotics.ftclib.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Hood;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,14 +34,15 @@ public class DriveTest extends LinearOpMode {
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-
         Bot.instance = null;
+
         bot = Bot.getInstance(this);
         gp1 = new GamepadEx(gamepad1);
         gp2 = new GamepadEx(gamepad2);
         bot.intake.closeGate();
         bot.aprilTag.targetAllianceId=RED;
         bot.hood.hoodServo.setPosition(0.3);
+        Hood.outtakePos=0.3;
 
         while (!isStarted()) {
             TelemetryPacket packet = new TelemetryPacket();
@@ -78,7 +81,6 @@ public class DriveTest extends LinearOpMode {
                 if(!isIntake) {
                     isFast = false;
                     bot.intake.intake_without_sense(0.7);
-                    bot.intake.closeGate();
                     isIntake = true;
                 }
                 else{
@@ -93,11 +95,16 @@ public class DriveTest extends LinearOpMode {
             if (gp2.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
                 bot.intake.reverseIntake();
             }
-            if(gp2.wasJustPressed(GamepadKeys.Button.X)){
-                bot.hood.decrementHood();
+            if (gp2.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
+                if (bot.hood.hoodServo.getPosition()<=0.73) {
+                    Hood.outtakePos += 0.05;
+                }
+                bot.hood.goToHood(Hood.outtakePos);
             }
-            if(gp2.wasJustPressed(GamepadKeys.Button.Y)){
-                bot.hood.incrementHood();
+            if (gp2.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)){
+                Hood.outtakePos-=0.05;
+                bot.hood.goToHood(Hood.outtakePos);
+
             }
             if(gp2.wasJustPressed(GamepadKeys.Button.B)){
                 if(!isShooting) {
