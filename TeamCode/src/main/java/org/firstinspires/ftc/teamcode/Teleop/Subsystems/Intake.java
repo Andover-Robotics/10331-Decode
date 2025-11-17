@@ -51,11 +51,9 @@ public class Intake {
     }
 
     public void intake_without_sense(double power){
-        closeGate();
         intakeMotor.setPower(power);
     }
     public void intake_without_sense(){
-        closeGate();
         intakeMotor.setPower(power);
     }
 

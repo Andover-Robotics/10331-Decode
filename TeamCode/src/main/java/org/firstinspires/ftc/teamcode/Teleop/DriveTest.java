@@ -108,7 +108,7 @@ public class DriveTest extends LinearOpMode {
             }
             if(gp2.wasJustPressed(GamepadKeys.Button.B)){
                 if(!isShooting) {
-                    runningActions.add(bot.actionShoot());
+                    runningActions.add(bot.actionTestShoot());
 
                     isShooting=true;
                 }

@@ -16,15 +16,15 @@ public class MeepMeepTesting {
                 .build();
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(60, -8, Math.toRadians(-180)))
-                .strafeToLinearHeading(new Vector2d(36,-8), Math.toRadians(-90))
+                .splineTo(new Vector2d(36,-36), Math.toRadians(-90))
                 .strafeToLinearHeading(new Vector2d(36,-52), Math.toRadians(-90))
                 .setReversed(true)
-                .splineToLinearHeading(new Pose2d(60,-8,Math.toRadians(-150)),Math.toRadians(-140))
+                .splineToLinearHeading(new Pose2d(60,-8,Math.toRadians(-150)),Math.toRadians(40))
                         .waitSeconds(3)
-                .strafeToLinearHeading(new Vector2d(12,-8), Math.toRadians(-90))
+                .splineTo(new Vector2d(12,-36), Math.toRadians(-90))
                 .strafeToLinearHeading(new Vector2d(12,-52), Math.toRadians(-90))
                 .setReversed(true)
-                .splineToLinearHeading(new Pose2d(60,-8,Math.toRadians(-150)),Math.toRadians(-140))
+                .splineToLinearHeading(new Pose2d(60,-8,Math.toRadians(-150)),Math.toRadians(40))
                         .waitSeconds(3)
                 .build());
 
@@ -83,9 +83,9 @@ public class MeepMeepTesting {
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBot)
-                .addEntity(myBot2)
-                .addEntity(myBot3)
-                .addEntity(myBot4)
+//                .addEntity(myBot2)
+//                .addEntity(myBot3)
+//                .addEntity(myBot4)
                 .start();
     }
 }

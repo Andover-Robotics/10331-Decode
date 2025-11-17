@@ -68,6 +68,15 @@ public class Bot {
         return instance;
     }
 
+    public void switchAlliance(){
+        if (aprilTag.targetAllianceId==20){
+            aprilTag.targetAllianceId = 24;
+        }
+        else {
+            aprilTag.targetAllianceId = 20;
+        }
+    }
+
 
 
     public Action shootSetup(){
@@ -82,6 +91,14 @@ public class Bot {
                 new SleepAction(0.3),
                 shootSetup()
                 );
+    }
+
+    public Action actionTestShoot(){
+        return new SequentialAction(
+                new InstantAction(()->shooter.setTargetRPM(4000)),//may need to not round here in the future
+                new SleepAction(0.3),
+                shootSetup()
+        );
     }
 
 
