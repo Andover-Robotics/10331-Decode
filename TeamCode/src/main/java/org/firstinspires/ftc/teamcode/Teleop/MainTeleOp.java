@@ -29,9 +29,6 @@ public class MainTeleOp extends LinearOpMode {
     public final int BLUE=20,RED=24, GPP = 21, PPG = 23, PGP = 22;
 
 
-
-
-
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());

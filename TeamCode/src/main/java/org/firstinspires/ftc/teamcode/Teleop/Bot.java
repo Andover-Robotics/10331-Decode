@@ -10,13 +10,21 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.AprilTag;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Hood;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Shooter;
 import org.firstinspires.ftc.vision.VisionPortal;
+
+import java.util.ArrayList;
+import java.util.List;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 
 public class Bot {
     public Intake intake;
@@ -36,6 +44,7 @@ public class Bot {
         MANUAL
     }
 
+    private IMU imu;
 
     public Bot(OpMode opMode) {
         this.aprilTag = new AprilTag(opMode);
@@ -52,6 +61,11 @@ public class Bot {
         fr = new MotorEx(opMode.hardwareMap, "fr", Motor.GoBILDA.RPM_435);
         bl = new MotorEx(opMode.hardwareMap, "par", Motor.GoBILDA.RPM_435);
         br = new MotorEx(opMode.hardwareMap, "br", Motor.GoBILDA.RPM_435);
+        imu = opMode.hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP));
+        imu.initialize(parameters);
         fl.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         fr.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         bl.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
@@ -142,7 +156,26 @@ public class Bot {
         br.set(-speeds[3]);
     }
 
-        //multi-subsystem methods here
+    public List<MotorEx> returnMotors(){
+        List<MotorEx> motorList = new ArrayList<>();
+        motorList.add(fl);
+        motorList.add(bl);
+        motorList.add(br);
+        motorList.add(fr);
+        return motorList;
+
+    }
+
+    public BNO055IMU returnIMU(){
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.mode                = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled      = false;
+        BNO055IMU imu = opMode.hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+        return imu;
+    }
 
 
 }
