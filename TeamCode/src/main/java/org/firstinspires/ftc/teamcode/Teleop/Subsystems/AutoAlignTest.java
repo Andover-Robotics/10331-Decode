@@ -91,12 +91,11 @@ public class AutoAlignTest extends LinearOpMode {
             TelemetryPacket packet = new TelemetryPacket();
             bot.aprilTag.findAprilTag();
             telemetry.addData("bearing:", bot.aprilTag.getBearing());
+            telemetry.update();
             bearing = bot.aprilTag.getBearing();
             rotate(bearing, 0.3);
             telemetry.addData("target:", pidRotate.performPID(getAngle()));
             telemetry.update();
-
-
         }
     }
 
