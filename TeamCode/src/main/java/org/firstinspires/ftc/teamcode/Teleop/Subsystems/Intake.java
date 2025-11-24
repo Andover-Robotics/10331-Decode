@@ -19,23 +19,17 @@ public class Intake {
     public static double power = .7;
 
     public Servo gate1;
-    public Servo gate2;
-    public DcMotorEx secondIntake;
+
     DigitalChannel breakBeam;
 
 
     public Intake (OpMode opMode){
         intakeMotor = opMode.hardwareMap.get(DcMotorEx.class, "intake");
-        secondIntake = opMode.hardwareMap.get(DcMotorEx.class, "intake2");
         gate1 = opMode.hardwareMap.servo.get("gate1");
-        gate2 = opMode.hardwareMap.servo.get("gate2");
 
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        secondIntake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
 
         intakeMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        gate2.setDirection(Servo.Direction.REVERSE);
 
 
     }
@@ -43,11 +37,9 @@ public class Intake {
 
     public void closeGate(){
         gate1.setPosition(0.2);
-        gate2.setPosition(0.27);
     }
     public void openGate(){
         gate1.setPosition(0);
-        gate2.setPosition(0);
     }
 
     public void intake_without_sense(double power){
@@ -83,7 +75,6 @@ public class Intake {
 
     public void stopIntake(){
         intakeMotor.setPower(0);
-        secondIntake.setPower(0);
     }
 
 

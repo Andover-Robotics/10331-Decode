@@ -10,11 +10,8 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.AprilTag;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Hood;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Intake;
@@ -37,7 +34,7 @@ public class Bot {
     public OpMode opMode;
     public boolean fieldCentricRunMode = false;
     public MotorEx fl, fr, bl, br;
-    public static double dt;
+    public static double shootSleep;
 
     public enum BotState {
         AUTO,
@@ -111,8 +108,7 @@ public class Bot {
 
     public Action shootSetup(){
          return new ParallelAction(
-                 new InstantAction(()-> intake.openGate()),
-                 new InstantAction(()->intake.secondIntake.setPower(1))
+                 new InstantAction(()-> intake.openGate())
          );
     }
     public Action actionShoot(){
@@ -120,6 +116,24 @@ public class Bot {
                 new InstantAction(()->shooter.setTargetRPM((int)calculateRPM()+75)),//may need to not round here in the future
                 new SleepAction(0.3),
                 shootSetup()
+                );
+    }
+
+    public Action actionShootGate(){
+        return new SequentialAction(
+                new InstantAction(()->shooter.setTargetRPM((int)calculateRPM()+75)),
+                new SleepAction(0.3),
+                new InstantAction(()-> intake.openGate()), // first
+                new SleepAction(shootSleep),
+                new InstantAction(()-> intake.closeGate()),
+                new SleepAction(shootSleep),
+                new InstantAction(()-> intake.openGate()),//second
+                new SleepAction(shootSleep),
+                new InstantAction(()-> intake.closeGate()),
+                new SleepAction(shootSleep),
+                new InstantAction(()-> intake.openGate()),//third
+                new SleepAction(shootSleep),
+                new InstantAction(()-> intake.closeGate())
                 );
     }
 

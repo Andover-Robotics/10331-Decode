@@ -82,23 +82,9 @@ public class MainTeleOp extends LinearOpMode {
                     isIntake=false;
                 }
             }
-            if(gp2.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
-                bot.intake.secondIntake.setPower(0);
-            }
 
             if (gp2.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
                 bot.intake.reverseIntake();
-            }
-
-            if(gp2.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)) {
-                if(!isSecondIntaking) {
-                    bot.intake.secondIntake.setPower(1);
-                    isSecondIntaking=true;
-                }
-                else{
-                    bot.intake.secondIntake.setPower(0);
-                    isSecondIntaking =false;
-                }
             }
 
             if (gp2.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
@@ -120,7 +106,6 @@ public class MainTeleOp extends LinearOpMode {
                 }
                 else{
                     bot.shooter.setTargetRPM(0);
-                    bot.intake.secondIntake.setPower(0);
                     bot.intake.closeGate();
                     isShooting=false;
                 }

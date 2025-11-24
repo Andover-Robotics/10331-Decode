@@ -88,9 +88,6 @@ public class DriveTest extends LinearOpMode {
                     isIntake=false;
                 }
             }
-            if(gp2.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
-                bot.intake.secondIntake.setPower(0);
-            }
 
             if (gp2.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
                 bot.intake.reverseIntake();
@@ -114,10 +111,18 @@ public class DriveTest extends LinearOpMode {
                 }
                 else{
                     bot.shooter.setTargetRPM(0);
-                    bot.intake.secondIntake.setPower(0);
                     bot.intake.closeGate();
                     isShooting=false;
                 }
+            }
+
+
+            if(gp2.wasJustPressed(GamepadKeys.Button.Y)){
+                runningActions.add(bot.actionShootGate());
+            }
+            if (gp2.wasJustPressed(GamepadKeys.Button.X)){
+                bot.shooter.setTargetRPM(0);
+
             }
             telemetry.addData("Apriltag ID: ", bot.aprilTag.getId());
             telemetry.addData("Distance from Apriltag", bot.aprilTag.getRange());
