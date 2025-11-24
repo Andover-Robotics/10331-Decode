@@ -44,7 +44,7 @@ public class Bot {
         MANUAL
     }
 
-    private IMU imu;
+    public IMU imu;
 
     public Bot(OpMode opMode) {
         this.aprilTag = new AprilTag(opMode);
@@ -61,11 +61,27 @@ public class Bot {
         fr = new MotorEx(opMode.hardwareMap, "fr", Motor.GoBILDA.RPM_435);
         bl = new MotorEx(opMode.hardwareMap, "par", Motor.GoBILDA.RPM_435);
         br = new MotorEx(opMode.hardwareMap, "br", Motor.GoBILDA.RPM_435);
+
         imu = opMode.hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP));
+        IMU.Parameters parameters = new IMU.Parameters(
+                new RevHubOrientationOnRobot(
+                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+                )
+        );
+
         imu.initialize(parameters);
+
+//        IMU.Parameters parameters = new IMU.Parameters(
+//                new RevHubOrientationOnRobot()
+//        );
+//        parameters.mode                = BNO055IMU.SensorMode.IMU;
+//        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+//        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+//        parameters.loggingEnabled      = false;
+//        imu = opMode.hardwareMap.get(IMU.class, "imu");
+//        imu.initialize(parameters);
+
         fl.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         fr.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         bl.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
@@ -165,17 +181,19 @@ public class Bot {
         return motorList;
 
     }
+//
+//    public BNO055IMU returnIMU(){
+//        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+//        parameters.mode                = BNO055IMU.SensorMode.IMU;
+//        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+//        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+//        parameters.loggingEnabled      = false;
+//        BNO055IMU imu = opMode.hardwareMap.get(BNO055IMU.class, "imu");
+//        imu.initialize(parameters);
+//        return imu;
+ //   }
 
-    public BNO055IMU returnIMU(){
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.mode                = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled      = false;
-        BNO055IMU imu = opMode.hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
-        return imu;
-    }
+
 
 
 }

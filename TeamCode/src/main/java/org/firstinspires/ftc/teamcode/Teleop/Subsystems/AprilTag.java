@@ -72,12 +72,7 @@ Tag ID 24: red shooting location
 
     public double calcAccurateDis() {
         double dist = Math.sqrt((range*range)-offsetConstant);
-        if(Math.abs(bearing)<=7){
-            return dist;
-        }
-        else{
-            return dist *Math.cos(Math.toRadians(bearing));
-        }
+        return Math.cos(bearing)*dist;
 
     }
 

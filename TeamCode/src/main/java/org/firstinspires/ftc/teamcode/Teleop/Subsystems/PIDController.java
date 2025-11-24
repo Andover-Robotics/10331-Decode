@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Teleop.Subsystems;
 
 // PID controller courtesy of Peter Tischler, with modifications.
 //https://stemrobotics.cs.pdx.edu/node/7268.html
-public class PIDController
+public class        PIDController
 {
     private double m_P;                     // factor for "proportional" control
     private double m_I;                     // factor for "integral" control

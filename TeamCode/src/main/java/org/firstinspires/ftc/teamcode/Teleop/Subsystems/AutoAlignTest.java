@@ -1,55 +1,107 @@
 package org.firstinspires.ftc.teamcode.Teleop.Subsystems;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.IMU;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Teleop.Bot;
+
+import java.util.ArrayList;
 import java.util.List;
 
-@Autonomous(name="April Tag Auto Align", group="Exercises")
+@TeleOp(name="April Tag Auto Align", group="Test")
 
 public class AutoAlignTest extends LinearOpMode {
     Orientation             lastAngles = new Orientation();
     double                  globalAngle, rotation;
     PIDController           pidRotate;
     Bot bot;
-    BNO055IMU imu;
+    public IMU imu;
     MotorEx fl, bl, br, fr;
 
     double bearing;
 
 
-    @Override
-    public void runOpMode() throws InterruptedException {
-        Bot.instance = null;
-        bot = Bot.getInstance(this);
-        imu = bot.returnIMU();
+//    @Override
+//    public void runOpMode() throws InterruptedException {
+//        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+//        Bot.instance = null;
+//        bot = Bot.getInstance(this);
+//        List<MotorEx> motorList = bot.returnMotors();
+//        fl = motorList.get(0);
+//        bl = motorList.get(1);
+//        br = motorList.get(2);
+//        fr = motorList.get(3);
+//        imu = bot.imu;
+//
+//        pidRotate = new PIDController(.003, .0, 0);
+//        bot.aprilTag.targetAllianceId=21;
+//        waitForStart();
+//
+//        while (opModeIsActive() && !isStopRequested()) {
+//            TelemetryPacket packet = new TelemetryPacket();
+//            bot.aprilTag.findAprilTag();
+//            bearing = bot.aprilTag.getBearing();
+//            rotate(bearing, 0.3);
+//            telemetry.addData("bearing:",bot.aprilTag.getBearing());
+//            telemetry.addData("target:",pidRotate.performPID(getAngle()));
+//            telemetry.update();
+//
+//        }
+//    }
+@Override
+public void runOpMode() {
+    telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        List<MotorEx> motorList = bot.returnMotors();
-        fl = motorList.get(0);
-        bl = motorList.get(1);
-        br = motorList.get(2);
-        fr = motorList.get(3);
-        pidRotate = new PIDController(.003, .0, 0);
+    Bot.instance = null;
+
+    bot = Bot.getInstance(this);
+
+    bot.aprilTag.targetAllianceId = 21;
+    telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+    List<MotorEx> motorList = bot.returnMotors();
+    fl = motorList.get(0);
+    bl = motorList.get(1);
+    br = motorList.get(2);
+    fr = motorList.get(3);
+    imu = bot.imu;
+
+    pidRotate = new PIDController(.003, .0, 0);
 
 
-        waitForStart();
-        while (opModeIsActive()) {
+    waitForStart();
+    while (opModeIsActive() && !isStopRequested()) {
+        TelemetryPacket packet = new TelemetryPacket();
+        bot.aprilTag.findAprilTag();
 
-            bot.aprilTag.findAprilTag();
-            bearing = bot.aprilTag.getBearing();
-            rotate(bearing, 0.1);
 
-        }
+        bot.aprilTag.findAprilTag();
+        bearing = bot.aprilTag.getBearing();
+        rotate(bearing, 0.3);
+        telemetry.addData("bearing:", bot.aprilTag.getBearing());
+        telemetry.addData("target:", pidRotate.performPID(getAngle()));
+        telemetry.update();
+
+
     }
+}
+
 
     /** Resets the cumulative angle tracking to zero.*/
     private void resetAngle(){
-        lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        lastAngles = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         globalAngle = 0;
     }
 
@@ -61,7 +113,7 @@ public class AutoAlignTest extends LinearOpMode {
         // returned as 0 to +180 or 0 to -180 rolling back to -179 or +179 when rotation passes
         // 180 degrees. We detect this transition and track the total cumulative angle of rotation.
 
-        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        Orientation angles = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
 
