@@ -39,7 +39,7 @@ public class MainTeleOp extends LinearOpMode {
         gp1 = new GamepadEx(gamepad1);
         gp2 = new GamepadEx(gamepad2);
         bot.intake.closeGate();
-        bot.hood.hoodServo.setPosition(0.3);
+        bot.hood.hoodServo.setPosition(0.6);
         Hood.outtakePos=0.3;
 
         while (!isStarted()) {
@@ -68,9 +68,7 @@ public class MainTeleOp extends LinearOpMode {
             gp1.readButtons();
             gp2.readButtons();
             drive();
-            if (gp2.wasJustPressed(GamepadKeys.Button.A)){
-                bot.intake.intake_without_sense(0.3);
-            }
+
 
             if(gp2.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
                 if(!isIntake) {
@@ -101,7 +99,6 @@ public class MainTeleOp extends LinearOpMode {
             if(gp2.wasJustPressed(GamepadKeys.Button.B)){
                 if(!isShooting) {
                     runningActions.add(bot.actionShoot());
-
                     isShooting=true;
                 }
                 else{
@@ -110,8 +107,12 @@ public class MainTeleOp extends LinearOpMode {
                     isShooting=false;
                 }
             }
+            if (gp2.wasJustPressed(GamepadKeys.Button.Y)){
+                runningActions.add((bot.actionShootGate()));
+                isShooting=true;
+            }
 
-            if(gp1.wasJustPressed(GamepadKeys.Button.BACK)){
+            if(gp1.wasJustPressed(GamepadKeys.Button.BACK)||gp2.wasJustPressed(GamepadKeys.Button.BACK)){
                 bot.switchAlliance();
             }
             telemetry.addData("Apriltag ID: ", bot.aprilTag.getId());
