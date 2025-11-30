@@ -61,42 +61,43 @@ public class AutoAlignTest extends LinearOpMode {
 //
 //        }
 //    }
-@Override
-public void runOpMode() {
-    telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+    @Override
+    public void runOpMode() {
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-    Bot.instance = null;
+        Bot.instance = null;
 
-    bot = Bot.getInstance(this);
+        bot = Bot.getInstance(this);
 
-    bot.aprilTag.targetAllianceId = 21;
-    telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-    List<MotorEx> motorList = bot.returnMotors();
-    fl = motorList.get(0);
-    bl = motorList.get(1);
-    br = motorList.get(2);
-    fr = motorList.get(3);
-    imu = bot.imu;
-
-    pidRotate = new PIDController(.003, .0, 0);
+        bot.aprilTag.targetAllianceId = 21;
+        List<MotorEx> motorList = bot.returnMotors();
+        fl = motorList.get(0);
+        bl = motorList.get(1);
+        br = motorList.get(2);
+        fr = motorList.get(3);
+        imu = bot.imu;
 
 
-    waitForStart();
-    while (opModeIsActive() && !isStopRequested()) {
-        TelemetryPacket packet = new TelemetryPacket();
-        bot.aprilTag.findAprilTag();
+        while (!isStarted()) {
+            TelemetryPacket packet = new TelemetryPacket();
+            pidRotate = new PIDController(.003, .0, 0);
+            telemetry.addData("PID kp:", 0.003);
+            telemetry.update();
+        }
 
 
-        bot.aprilTag.findAprilTag();
-        bearing = bot.aprilTag.getBearing();
-        rotate(bearing, 0.3);
-        telemetry.addData("bearing:", bot.aprilTag.getBearing());
-        telemetry.addData("target:", pidRotate.performPID(getAngle()));
-        telemetry.update();
-
-
+        waitForStart();
+        while (opModeIsActive() && !isStopRequested()) {
+            TelemetryPacket packet = new TelemetryPacket();
+            bot.aprilTag.findAprilTag();
+            telemetry.addData("bearing:", bot.aprilTag.getBearing());
+            telemetry.update();
+            bearing = bot.aprilTag.getBearing();
+            rotate(bearing, 0.3);
+            telemetry.addData("target:", pidRotate.performPID(getAngle()));
+            telemetry.update();
+        }
     }
-}
 
 
     /** Resets the cumulative angle tracking to zero.*/
@@ -132,6 +133,7 @@ public void runOpMode() {
     /*** Rotate left or right the number of degrees. Does not support turning more than 359 degrees.
      * @param degrees Degrees to turn, + is left - is right*/
     private void rotate(double degrees, double power){
+
         // restart imu angle tracking.
         resetAngle();
 
