@@ -15,7 +15,6 @@ public class Tester extends LinearOpMode {
     public BotTest bot;
     private FtcDashboard dash = FtcDashboard.getInstance();
     public static double pos;
-    public static double pos2;
 
 
 
@@ -34,8 +33,8 @@ public class Tester extends LinearOpMode {
             bot.aprilTag.findAprilTag();
             bot.shooter.periodic();
             bot.hood.goToHood(Hood.outtakePos);
-            bot.intake.gate2.setPosition(pos);
-            bot.intake.gate1.setPosition(pos2);
+            bot.intake.gate1.setPosition(pos);
+
 
             telemetry.addData("target RPM",bot.shooter.getTargetRPM());
             telemetry.addData("Measrued RPM",bot.shooter.getRPM());

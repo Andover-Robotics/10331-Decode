@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Teleop;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-
+@Config
 public class Bot {
     public Intake intake;
     public static Bot instance;
@@ -34,7 +35,7 @@ public class Bot {
     public OpMode opMode;
     public boolean fieldCentricRunMode = false;
     public MotorEx fl, fr, bl, br;
-    public static double shootSleep;
+    public static double shootSleep=0.2, shootDelay=0.7;
 
     public enum BotState {
         AUTO,
@@ -54,16 +55,18 @@ public class Bot {
         } catch (Exception e) {
             fieldCentricRunMode = false;
         }
-        fl = new MotorEx(opMode.hardwareMap, "perp", Motor.GoBILDA.RPM_435);
-        fr = new MotorEx(opMode.hardwareMap, "fr", Motor.GoBILDA.RPM_435);
+        fl = new MotorEx(opMode.hardwareMap, "fl", Motor.GoBILDA.RPM_435);
+        fr = new MotorEx(opMode.hardwareMap, "perp", Motor.GoBILDA.RPM_435);
         bl = new MotorEx(opMode.hardwareMap, "par", Motor.GoBILDA.RPM_435);
         br = new MotorEx(opMode.hardwareMap, "br", Motor.GoBILDA.RPM_435);
+        bl.setInverted(true);
+        fr.setInverted(true);
 
         imu = opMode.hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(
                 new RevHubOrientationOnRobot(
-                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+                        RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                        RevHubOrientationOnRobot.UsbFacingDirection.UP
                 )
         );
 
@@ -122,19 +125,36 @@ public class Bot {
     public Action actionShootGate(){
         return new SequentialAction(
                 new InstantAction(()->shooter.setTargetRPM((int)calculateRPM()+75)),
-                new SleepAction(0.3),
-                new InstantAction(()-> intake.openGate()), // first
+                new SleepAction(0.35),
+                new InstantAction(() -> intake.openGate()),
                 new SleepAction(shootSleep),
-                new InstantAction(()-> intake.closeGate()),
+                new InstantAction(() -> intake.closeGate()),
+                new SleepAction(shootDelay),
+                new InstantAction(() -> intake.openGate()),
                 new SleepAction(shootSleep),
-                new InstantAction(()-> intake.openGate()),//second
+                new InstantAction(() -> intake.closeGate()),
+                new SleepAction(shootDelay),
+                new InstantAction(() -> intake.openGate()),
                 new SleepAction(shootSleep),
-                new InstantAction(()-> intake.closeGate()),
+                new InstantAction(() -> intake.closeGate())
+        );
+    }
+    public Action actionShootGateTest(){
+        return new SequentialAction(
+                new InstantAction(()->shooter.setTargetRPM(4500)),
+                new SleepAction(0.35),
+                new InstantAction(() -> intake.openGate()),
                 new SleepAction(shootSleep),
-                new InstantAction(()-> intake.openGate()),//third
+                new InstantAction(() -> intake.closeGate()),
+                new SleepAction(shootDelay),
+                new InstantAction(() -> intake.openGate()),
                 new SleepAction(shootSleep),
-                new InstantAction(()-> intake.closeGate())
-                );
+                new InstantAction(() -> intake.closeGate()),
+                new SleepAction(shootDelay),
+                new InstantAction(() -> intake.openGate()),
+                new SleepAction(shootSleep),
+                new InstantAction(() -> intake.closeGate())
+        );
     }
 
     public Action actionTestShoot(){
@@ -167,8 +187,8 @@ public class Bot {
     public void driveRobotCentric(double strafeSpeed, double forwardBackSpeed, double turnSpeed) {
         double[] speeds = {
                 (forwardBackSpeed - strafeSpeed - turnSpeed),
-                (-forwardBackSpeed - strafeSpeed - turnSpeed),
-                (-forwardBackSpeed - strafeSpeed + turnSpeed),
+                (forwardBackSpeed + strafeSpeed + turnSpeed),
+                (forwardBackSpeed + strafeSpeed - turnSpeed),
                 (forwardBackSpeed - strafeSpeed + turnSpeed)
         };
         double maxSpeed = 0;

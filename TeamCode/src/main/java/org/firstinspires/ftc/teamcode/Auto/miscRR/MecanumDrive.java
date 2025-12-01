@@ -63,14 +63,14 @@ public final class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP;
 
         // drive model parameters
-        public double inPerTick = 0.021845283988691852994088923156;
-        public double lateralInPerTick = inPerTick;
-        public double trackWidthTicks = 0;
+        public double inPerTick = 0.00199206861569676288849949276031;
+        public double lateralInPerTick = 0.0015456417746990807;
+        public double trackWidthTicks = 5823.274886924437;
 
         // feedforward parameters (in tick units)
-        public double kS = 0;
-        public double kV = 0;
-        public double kA = 0;
+        public double kS = 2.07;
+        public double kV = 0.00024;
+        public double kA = 0.000003;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
@@ -82,9 +82,9 @@ public final class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path headingController gains
-        public double axialGain = 0.0;
-        public double lateralGain = 0.0;
-        public double headingGain = 0.0; // shared with turn
+        public double axialGain = 2.5;
+        public double lateralGain = 1.8;
+        public double headingGain = 5.5; // shared with turn
 
         public double axialVelGain = 0.0;
         public double lateralVelGain = 0.0;
@@ -138,7 +138,7 @@ public final class MecanumDrive {
             imu = lazyImu.get();
 
             // TODO: reverse encoders if needed
-              leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+            rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
             leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
@@ -230,7 +230,7 @@ public final class MecanumDrive {
         leftFront = hardwareMap.get(DcMotorEx.class, "fl");
         leftBack = hardwareMap.get(DcMotorEx.class, "par");
         rightBack = hardwareMap.get(DcMotorEx.class, "br");
-        rightFront = hardwareMap.get(DcMotorEx.class, "fr");
+        rightFront = hardwareMap.get(DcMotorEx.class, "perp");
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

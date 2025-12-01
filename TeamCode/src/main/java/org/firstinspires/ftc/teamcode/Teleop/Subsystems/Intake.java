@@ -30,16 +30,19 @@ public class Intake {
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         intakeMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        gate1.setDirection(Servo.Direction.REVERSE);
+
+
 
 
     }
 
 
     public void closeGate(){
-        gate1.setPosition(0.2);
+        gate1.setPosition(0.67);
     }
     public void openGate(){
-        gate1.setPosition(0);
+        gate1.setPosition(0.3);
     }
 
     public void intake_without_sense(double power){

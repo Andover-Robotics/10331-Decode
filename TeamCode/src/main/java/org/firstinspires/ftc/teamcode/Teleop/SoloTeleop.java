@@ -10,6 +10,7 @@ import com.arcrobotics.ftclib.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Teleop.Subsystems.AprilTag;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Hood;
 
 import java.util.ArrayList;
@@ -17,18 +18,17 @@ import java.util.List;
 
 
 @TeleOp
-public class DriveTest extends LinearOpMode {
+public class SoloTeleop extends LinearOpMode {
     Bot bot;
     GamepadEx gp1 , gp2;
     private double driveSpeed = 1, driveMultiplier = 1;
     boolean isIntake=false;
     boolean isShooting=false;
+    boolean isSecondIntaking=false, isReverseSec=false;
     private List<Action> runningActions = new ArrayList<>();
     private FtcDashboard dash = FtcDashboard.getInstance();
     public final int BLUE=20,RED=24, GPP = 21, PPG = 23, PGP = 22;
 
-
-    boolean isFast=false;
 
     @Override
     public void runOpMode() {
@@ -40,8 +40,8 @@ public class DriveTest extends LinearOpMode {
         gp1 = new GamepadEx(gamepad1);
         gp2 = new GamepadEx(gamepad2);
         bot.intake.closeGate();
-        bot.aprilTag.targetAllianceId=RED;
-        bot.hood.hoodServo.setPosition(0.3);
+        bot.hood.hoodServo.setPosition(0.6);
+        bot.aprilTag.targetAllianceId=24;
         Hood.outtakePos=0.3;
 
         while (!isStarted()) {
@@ -70,13 +70,9 @@ public class DriveTest extends LinearOpMode {
             gp1.readButtons();
             gp2.readButtons();
             drive();
-          if (gp2.wasJustPressed(GamepadKeys.Button.A)){
-              bot.intake.intake_without_sense(0.3);
-          }
 
-            if(gp2.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
+            if(gp1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
                 if(!isIntake) {
-                    isFast = false;
                     bot.intake.intake_without_sense(0.7);
                     isIntake = true;
                 }
@@ -86,24 +82,24 @@ public class DriveTest extends LinearOpMode {
                 }
             }
 
-            if (gp2.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
+            if (gp1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
                 bot.intake.reverseIntake();
             }
-            if (gp2.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
+
+            if (gp1.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
                 if (bot.hood.hoodServo.getPosition()<=0.73) {
                     Hood.outtakePos += 0.05;
                 }
                 bot.hood.goToHood(Hood.outtakePos);
             }
-            if (gp2.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)){
+            if (gp1.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)){
                 Hood.outtakePos-=0.05;
                 bot.hood.goToHood(Hood.outtakePos);
 
             }
-            if(gp2.wasJustPressed(GamepadKeys.Button.B)){
+            if(gp1.wasJustPressed(GamepadKeys.Button.B)){
                 if(!isShooting) {
-                    runningActions.add(bot.actionTestShoot());
-
+                    runningActions.add(bot.actionShoot());
                     isShooting=true;
                 }
                 else{
@@ -112,14 +108,13 @@ public class DriveTest extends LinearOpMode {
                     isShooting=false;
                 }
             }
-
-
-            if(gp2.wasJustPressed(GamepadKeys.Button.Y)){
-                runningActions.add(bot.actionShootGateTest());
+            if (gp1.wasJustPressed(GamepadKeys.Button.Y)){
+                runningActions.add((bot.actionShootGate()));
+                isShooting=true;
             }
-            if (gp2.wasJustPressed(GamepadKeys.Button.X)){
-                bot.shooter.setTargetRPM(0);
 
+            if(gp1.wasJustPressed(GamepadKeys.Button.BACK)||gp2.wasJustPressed(GamepadKeys.Button.BACK)){
+                bot.switchAlliance();
             }
             telemetry.addData("Apriltag ID: ", bot.aprilTag.getId());
             telemetry.addData("Distance from Apriltag", bot.aprilTag.getRange());
@@ -131,12 +126,11 @@ public class DriveTest extends LinearOpMode {
             telemetry.addData("Hood position",bot.hood.hoodServo.getPosition());
             telemetry.addData("distance:",bot.aprilTag.calcAccurateDis());
             telemetry.addData("At Speed?",bot.shooter.atSpeed());
-            telemetry.addData("fr tps",bot.fr.getVelocity());
-            telemetry.addData("fl tps",bot.fl.getVelocity());
-            telemetry.addData("br tps",bot.br.getVelocity());
-            telemetry.addData("bl tps",bot.bl.getVelocity());
-
-
+            if (bot.aprilTag.targetAllianceId == 20) {
+                telemetry.addData("alliance", "Blue");
+            } else {
+                telemetry.addData("alliance", "Red");
+            }
             telemetry.update();
 
             List<Action> newActions = new ArrayList<>();
