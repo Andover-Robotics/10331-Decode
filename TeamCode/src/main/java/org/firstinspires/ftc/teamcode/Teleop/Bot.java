@@ -125,7 +125,7 @@ public class Bot {
     public Action actionShootGate(){
         return new SequentialAction(
                 new InstantAction(()->shooter.setTargetRPM((int)calculateRPM()+75)),
-                new SleepAction(0.3),
+                new SleepAction(0.35),
                 new InstantAction(() -> intake.openGate()),
                 new SleepAction(shootSleep),
                 new InstantAction(() -> intake.closeGate()),
@@ -142,7 +142,7 @@ public class Bot {
     public Action actionShootGateTest(){
         return new SequentialAction(
                 new InstantAction(()->shooter.setTargetRPM(4500)),
-                new SleepAction(0.3),
+                new SleepAction(0.35),
                 new InstantAction(() -> intake.openGate()),
                 new SleepAction(shootSleep),
                 new InstantAction(() -> intake.closeGate()),

@@ -76,7 +76,7 @@ Tag ID 24: red shooting location
             return dist;
         }
         else {
-            return Math.cos(Math.abs(bearing)) * dist;
+            return Math.cos(Math.toRadians(Math.abs(bearing)))* dist;
         }
     }
 

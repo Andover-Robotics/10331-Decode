@@ -41,8 +41,9 @@ public class MainTeleOp extends LinearOpMode {
         bot.intake.closeGate();
         bot.hood.hoodServo.setPosition(0.6);
         Hood.outtakePos=0.3;
+        bot.aprilTag.targetAllianceId=24;
 
-        while (!isStarted()) {
+        while (opModeInInit() && !isStarted() && !isStopRequested()) {
             TelemetryPacket packet = new TelemetryPacket();
             gp1.readButtons();
             if (gp1.wasJustPressed(GamepadKeys.Button.A)) {
@@ -72,13 +73,16 @@ public class MainTeleOp extends LinearOpMode {
 
             if(gp2.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
                 if(!isIntake) {
-                    bot.intake.intake_without_sense(0.7);
+                    bot.intake.intake_without_sense(0.9);
                     isIntake = true;
                 }
                 else{
-                    bot.intake.stopIntake();
+                    bot.intake.intake_without_sense(0.4);
                     isIntake=false;
                 }
+            }
+            if (gp2.wasJustPressed(GamepadKeys.Button.A)) {
+                bot.intake.stopIntake();
             }
 
             if (gp2.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
