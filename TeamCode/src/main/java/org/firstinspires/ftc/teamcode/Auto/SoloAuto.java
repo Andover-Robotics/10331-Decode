@@ -14,94 +14,111 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Auto.miscRR.ActionHelper;
 import org.firstinspires.ftc.teamcode.Auto.miscRR.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Teleop.Bot;
+
+import java.util.ArrayList;
+
 @Config
 @Autonomous(name = "Solo Auto", group = "Autonomous")
 public class SoloAuto extends LinearOpMode {
     Bot bot;
     private GamepadEx gp1;
+
+    // boolean values for selective auto
+        public boolean shootPreloadChosen = true;
+        public boolean intakeAndShootFirstCloseChosen = true;
+        public boolean intakeAndShootSecondCloseChosen = true;
+        public boolean intakeAndShootThirdCloseChosen = true;
+        public boolean intakeAndShootFirstFarChosen = true;
+        public boolean intakeAndShootSecondFarChosen = true;
+        public boolean intakeAndShootThirdFarChosen = true;
     private final int BLUE = 20, RED = 24, GPP = 21, PPG = 23, PGP = 22;
     private AutoPos chosenAuto;
-    public enum AutoPos{
+
+    // Positions for different auto paths
+    public enum AutoPos {
         CLOSE_BLUE(
-                new Pose2d(60, -8, Math.toRadians(-180)), //starting pos
-                new Pose2d(36, 8, Math.toRadians(90)), //firstPreIntake pos
-                new Pose2d(36, -52, Math.toRadians(-90)), //firstIntakePos
-                new Pose2d(12, -8, Math.toRadians(-90)), //secondPreIntake pos
-                new Pose2d(12, -52, Math.toRadians(-90)), //secondIntake pos
-                new Pose2d(60, -8, Math.toRadians(0)) //shooting pos
+                new Pose2d(-55, -43, Math.toRadians(-130)), //starting pos
+                new Pose2d(-12, -22, Math.toRadians(-90)), //firstPreIntakePos
+                new Pose2d(-12, -53, Math.toRadians(-90)), //firstIntakePos
+                new Pose2d(12, -18, Math.toRadians(-90)), // secondPreIntakePos
+                new Pose2d(12, -52, Math.toRadians(-90)), //secondIntakePos
+                new Pose2d(36, -30, Math.toRadians(-90)), //thirdPreIntakePos
+                new Pose2d(36, -52, Math.toRadians(-90)), //thirdIntakePos
+                new Pose2d(-23, -16, Math.toRadians(-130)), //shootPos
+                -90, //preIntakeTangentHeading
+                140 // shootingTangentEnd
+
         ),
         CLOSE_RED(
-                new Pose2d(60, 8, Math.toRadians(-180)), //starting pos
-                new Pose2d(36, 8, Math.toRadians(90)), //firstPreIntake pos
-                new Pose2d(36, 52, Math.toRadians(90)), //firstIntakePos
-                new Pose2d(12, 8, Math.toRadians(-90)), //secondPreIntake pos
-                new Pose2d(12, 52, Math.toRadians(90)), //secondIntake pos
-                new Pose2d(60, 8, Math.toRadians(0)) //shooting pos
-        ),
-        FAR_RED(
-                new Pose2d(-55, 43, Math.toRadians(-50)),
-                new Pose2d(-12, 4, Math.toRadians(90)),
-                new Pose2d(-12, 52, Math.toRadians(90)),
-                new Pose2d(12, 8, Math.toRadians(-90)),
-                new Pose2d(12, 52, Math.toRadians(90)),
-                new Pose2d(-16, 8, Math.toRadians(0))
+                new Pose2d(-55, 43, Math.toRadians(130)), //starting pos
+                new Pose2d(-12, 22, Math.toRadians(90)), //firstPreIntakePos
+                new Pose2d(-12, 53, Math.toRadians(90)), //firstIntakePos
+                new Pose2d(12, 18, Math.toRadians(90)), // secondPreIntakePos
+                new Pose2d(12, 52, Math.toRadians(90)), //secondIntakePos
+                new Pose2d(36, 30, Math.toRadians(90)), //thirdPreIntakePos
+                new Pose2d(36, 52, Math.toRadians(90)), //thirdIntakePos
+                new Pose2d(-23, 16, Math.toRadians(130)), //shootPos
+                90, //preIntakeTangentHeading
+                -140 // shootingTangentEnd
         ),
         FAR_BLUE(
-                new Pose2d(-55, -43, Math.toRadians(50)),
-                new Pose2d(-12, -4, Math.toRadians(-90)),
-                new Pose2d(-12, -52, Math.toRadians(-90)),
-                new Pose2d(12, -8, Math.toRadians(-90)),
-                new Pose2d(12, -52, Math.toRadians(-90)),
-                new Pose2d(-16, -8, Math.toRadians(0))
+                new Pose2d(60, -12, Math.toRadians(-180)), //starting pos
+                new Pose2d(36, -36, Math.toRadians(-90)), //firstPreIntake pos change
+                new Pose2d(36, -52, Math.toRadians(-90)), //firstIntakePos
+                new Pose2d(12, -36, Math.toRadians(-90)), //secondPreIntake pos change
+                new Pose2d(12, -52, Math.toRadians(-90)), //secondIntake pos
+                new Pose2d(-12, -27, Math.toRadians(-90)), //thirdPreIntake pos
+                new Pose2d(-12, -52, Math.toRadians(-90)), //thirdIntake pos
+                new Pose2d(60, -14, Math.toRadians(-170)), //shooting pos
+                -90, //preIntakeTangentHeading
+                40 //shootingTangentEnd
+        ),
+        FAR_RED(
+                new Pose2d(60, 12, Math.toRadians(-180)), //starting pos
+                new Pose2d(36, 36, Math.toRadians(90)), //firstPreIntake pos change
+                new Pose2d(36, 52, Math.toRadians(90)), //firstIntakePos
+                new Pose2d(12, 36, Math.toRadians(90)), //secondPreIntake pos change
+                new Pose2d(12, 52, Math.toRadians(90)), //secondIntake pos
+                new Pose2d(-12, 27, Math.toRadians(90)), //thirdPreIntake pos
+                new Pose2d(-12, 52, Math.toRadians(90)), //thirdIntake pos
+                new Pose2d(60, 14, Math.toRadians(170)), //shooting pos
+                90, //preIntakeTangentHeading
+                -40 //shootingTangentEnd
         );
-        AutoPos(Pose2d startPos, Pose2d firstPreIntake, Pose2d firstIntake, Pose2d secondPreIntake, Pose2d secondIntake, Pose2d shootPos){
+        //constructor
+        AutoPos(Pose2d startPos, Pose2d firstPreIntake, Pose2d firstIntake, Pose2d secondPreIntake, Pose2d secondIntake, Pose2d thirdPreIntake, Pose2d thirdIntake, Pose2d shootPos, int preIntakeTangentHeading, int shootingTangentEnd) {
             this.startPos = startPos;
             this.firstPreIntake = firstPreIntake;
             this.firstIntake = firstIntake;
             this.secondPreIntake = secondPreIntake;
             this.secondIntake = secondIntake;
+            this.thirdPreIntake = thirdPreIntake;
+            this.thirdIntake = thirdIntake;
             this.shootPos = shootPos;
+            this.preIntakeTangentHeading = preIntakeTangentHeading;
+            this.shootingTangentEnd = shootingTangentEnd;
+
         }
+        //final variables
         public final Pose2d startPos;
         public final Pose2d firstPreIntake;
         public final Pose2d firstIntake;
         public final Pose2d secondPreIntake;
         public final Pose2d secondIntake;
+        public final Pose2d thirdPreIntake;
+        public final Pose2d thirdIntake;
         public final Pose2d shootPos;
+        public final int preIntakeTangentHeading;
+        public final int shootingTangentEnd;
 
     }
-    //Initial Position of Bot during auto
-    //CB = closeBlue FB = farBlue CR = closeRed FR = farRed
     public void runOpMode() throws InterruptedException {
         Bot.instance = null;
         bot = Bot.getInstance(this);
 
         gp1 = new GamepadEx(gamepad1);
-        MecanumDrive drive = new MecanumDrive(hardwareMap, chosenAuto.startPos);
 
-        Action shootPreload = drive.actionBuilder(drive.localizer.getPose())
-                .afterTime(0.1, bot.shootSetup())
-                .build();
-
-        Action intakeFirst = drive.actionBuilder(chosenAuto.startPos)
-                .strafeToLinearHeading(new Vector2d(chosenAuto.firstPreIntake.component1().x, chosenAuto.firstPreIntake.component1().y), Math.toRadians(0), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .stopAndAdd(new InstantAction(() -> bot.intake.intake_without_sense()))
-                .strafeToConstantHeading(new Vector2d(chosenAuto.firstIntake.component1().x, chosenAuto.firstIntake.component1().y), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .stopAndAdd(new InstantAction(() -> bot.intake.stopIntake()))
-                .build();
-
-        Action intakeSecond = drive.actionBuilder(chosenAuto.startPos)
-                .strafeToLinearHeading(new Vector2d(chosenAuto.secondPreIntake.component1().x, chosenAuto.secondPreIntake.component1().y), Math.toRadians(0), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .stopAndAdd(new InstantAction(() -> bot.intake.intake_without_sense()))
-                .strafeToConstantHeading(new Vector2d(chosenAuto.secondIntake.component1().x, chosenAuto.secondIntake.component1().y), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .stopAndAdd(new InstantAction(() -> bot.intake.stopIntake()))
-                .build();
-
-        Action shoot = drive.actionBuilder(new Pose2d(chosenAuto.shootPos.component1().x, chosenAuto.shootPos.component1().y, Math.toRadians(-150)))
-                .splineToLinearHeading(chosenAuto.shootPos, Math.toRadians(-150), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .stopAndAdd(bot.shootSetup())
-                .build();
-
+        // selects the chosenAuto
         while (opModeInInit()) {
             gp1.readButtons();
             if (gp1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
@@ -110,34 +127,124 @@ public class SoloAuto extends LinearOpMode {
             if (gp1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
                 bot.aprilTag.targetAllianceId = BLUE;
             }
-            if (gp1.wasJustPressed(GamepadKeys.Button.A)){
+            if (gp1.wasJustPressed(GamepadKeys.Button.A)) {
                 chosenAuto = AutoPos.CLOSE_BLUE;
             }
-            if (gp1.wasJustPressed(GamepadKeys.Button.B)){
+            if (gp1.wasJustPressed(GamepadKeys.Button.B)) {
                 chosenAuto = AutoPos.CLOSE_RED;
             }
-            if (gp1.wasJustPressed(GamepadKeys.Button.Y)){
+            if (gp1.wasJustPressed(GamepadKeys.Button.Y)) {
                 chosenAuto = AutoPos.FAR_RED;
             }
-            if (gp1.wasJustPressed(GamepadKeys.Button.X)){
+            if (gp1.wasJustPressed(GamepadKeys.Button.X)) {
                 chosenAuto = AutoPos.FAR_BLUE;
             }
         }
+
+        MecanumDrive drive = new MecanumDrive(hardwareMap, chosenAuto.startPos);
+
+        // actions: shootPreload, shoot first three balls, shoot second three balls, shoot third three balls
+        Action shootPreload = drive.actionBuilder(chosenAuto.startPos)
+                .strafeToLinearHeading(new Vector2d(chosenAuto.shootPos.position.x, chosenAuto.shootPos.position.y),
+                       chosenAuto.shootPos.heading)
+                .afterTime(0.1, bot.shootSetup())
+                .build();
+
+        Action intakeAndShootFirstClose = drive.actionBuilder(chosenAuto.shootPos)
+                .splineToLinearHeading(new Pose2d(chosenAuto.firstPreIntake.position, chosenAuto.firstPreIntake.heading), Math.toRadians(chosenAuto.preIntakeTangentHeading), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .stopAndAdd(new InstantAction(() -> bot.intake.intake_without_sense()))
+                .strafeToLinearHeading(new Vector2d(chosenAuto.firstIntake.position.x, chosenAuto.firstIntake.position.y), chosenAuto.firstIntake.heading, drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .stopAndAdd(new InstantAction(() -> bot.intake.stopIntake()))
+                .setReversed(true)
+                .splineToLinearHeading(chosenAuto.shootPos, Math.toRadians(chosenAuto.shootingTangentEnd), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .stopAndAdd(bot.shootSetup())
+                .build();
+
+        Action intakeAndShootSecondClose = drive.actionBuilder(chosenAuto.shootPos)
+                .splineToLinearHeading(new Pose2d(chosenAuto.secondPreIntake.position, chosenAuto.secondPreIntake.heading), Math.toRadians(chosenAuto.preIntakeTangentHeading), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .stopAndAdd(new InstantAction(() -> bot.intake.intake_without_sense()))
+                .strafeToLinearHeading(new Vector2d(chosenAuto.secondIntake.position.x, chosenAuto.secondIntake.position.y), chosenAuto.secondIntake.heading, drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .stopAndAdd(new InstantAction(() -> bot.intake.stopIntake()))
+                .setReversed(true)
+                .splineToLinearHeading(chosenAuto.shootPos, Math.toRadians(chosenAuto.shootingTangentEnd), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .stopAndAdd(bot.shootSetup())
+                .build();
+
+        Action intakeAndShootThirdClose = drive.actionBuilder(chosenAuto.shootPos)
+                .splineToLinearHeading(new Pose2d(chosenAuto.thirdPreIntake.position, chosenAuto.thirdPreIntake.heading), Math.toRadians(chosenAuto.preIntakeTangentHeading), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .stopAndAdd(new InstantAction(()-> bot.intake.intake_without_sense()))
+                .strafeToLinearHeading(new Vector2d(chosenAuto.thirdIntake.position.x, chosenAuto.thirdIntake.position.y), chosenAuto.thirdIntake.heading, drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .stopAndAdd(new InstantAction(() -> bot.intake.stopIntake()))
+                .setReversed(true)
+                .splineToLinearHeading(chosenAuto.shootPos, Math.toRadians(chosenAuto.shootingTangentEnd), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .stopAndAdd(bot.shootSetup())
+                .build();
+
+        Action intakeAndShootFirstFar = drive.actionBuilder(chosenAuto.shootPos)
+                .splineTo(new Vector2d(chosenAuto.firstPreIntake.position.x,chosenAuto.firstPreIntake.position.y), chosenAuto.firstPreIntake.heading)
+                .stopAndAdd(new InstantAction(() -> bot.intake.intake_without_sense()))
+                .strafeToLinearHeading(new Vector2d(chosenAuto.firstIntake.position.x, chosenAuto.firstIntake.position.y), chosenAuto.firstIntake.heading, drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .stopAndAdd(new InstantAction(() -> bot.intake.stopIntake()))
+                .setReversed(true)
+                .splineToLinearHeading(chosenAuto.shootPos, Math.toRadians(chosenAuto.shootingTangentEnd), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .stopAndAdd(bot.shootSetup())
+                .build();
+
+        Action intakeAndShootSecondFar = drive.actionBuilder(chosenAuto.shootPos)
+                .splineTo(new Vector2d(chosenAuto.secondPreIntake.position.x,chosenAuto.secondPreIntake.position.y), chosenAuto.secondPreIntake.heading)
+                .stopAndAdd(new InstantAction(() -> bot.intake.intake_without_sense()))
+                .strafeToLinearHeading(new Vector2d(chosenAuto.secondIntake.position.x, chosenAuto.secondIntake.position.y), chosenAuto.secondIntake.heading, drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .stopAndAdd(new InstantAction(() -> bot.intake.stopIntake()))
+                .setReversed(true)
+                .splineToLinearHeading(chosenAuto.shootPos, Math.toRadians(chosenAuto.shootingTangentEnd), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .stopAndAdd(bot.shootSetup())
+                .build();
+
+        Action intakeAndShootThirdFar = drive.actionBuilder(chosenAuto.shootPos)
+                .splineToLinearHeading(new Pose2d(chosenAuto.thirdPreIntake.position, chosenAuto.thirdPreIntake.heading), Math.toRadians(chosenAuto.preIntakeTangentHeading), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .stopAndAdd(new InstantAction(()-> bot.intake.intake_without_sense()))
+                .strafeToLinearHeading(new Vector2d(chosenAuto.thirdIntake.position.x, chosenAuto.thirdIntake.position.y), chosenAuto.thirdIntake.heading, drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .stopAndAdd(new InstantAction(() -> bot.intake.stopIntake()))
+                .setReversed(true)
+                .splineToLinearHeading(chosenAuto.shootPos, Math.toRadians(chosenAuto.shootingTangentEnd), drive.defaultVelConstraint, drive.defaultAccelConstraint)
+                .stopAndAdd(bot.shootSetup())
+                .build();
+
+
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
+            //identifies chosenAuto and performs it's respective list of actions
+            if (chosenAuto == AutoPos.CLOSE_BLUE || chosenAuto == AutoPos.CLOSE_RED) {
+                ArrayList<Action> actionListClose = new ArrayList<Action>();
+                if (shootPreloadChosen) actionListClose.add(shootPreload);
+                if (intakeAndShootFirstCloseChosen) actionListClose.add(intakeAndShootFirstClose);
+                if (intakeAndShootSecondCloseChosen) actionListClose.add(intakeAndShootSecondClose);
+                if (intakeAndShootThirdCloseChosen) actionListClose.add(intakeAndShootThirdClose);
                 Actions.runBlocking(
                         new ActionHelper.RaceParallelCommand(
                                 bot.actionPeriodic(),
                                 new SequentialAction(
-                                        shootPreload,
-                                        intakeFirst,
-                                        shoot,
-                                        intakeSecond,
-                                        shoot
+                                        actionListClose
                                 )
                         )
                 );
-
+            } else {
+                ArrayList<Action> actionListFar = new ArrayList<Action>();
+                if (shootPreloadChosen) actionListFar.add(shootPreload);
+                if (intakeAndShootFirstFarChosen) actionListFar.add(intakeAndShootFirstFar);
+                if (intakeAndShootSecondFarChosen) actionListFar.add(intakeAndShootSecondFar);
+                if (intakeAndShootThirdFarChosen) actionListFar.add(intakeAndShootThirdFar);
+                Actions.runBlocking(
+                        new ActionHelper.RaceParallelCommand(
+                                bot.actionPeriodic(),
+                                new SequentialAction(
+                                        actionListFar
+                                )
+                        )
+                );
+            }
         }
     }
 }
+
+
