@@ -19,16 +19,16 @@ public class CloseRed extends LinearOpMode {
 
 
     // inital
-    public static Pose2d initialRedPos = new Pose2d(50,50,Math.toRadians(-135));
+    public static Pose2d initialRedPos = new Pose2d(50,-50,Math.toRadians(-45));
     //shooting
-    public static Pose2d shoot = new Pose2d(12,12,Math.toRadians(-135));
-    public static Vector2d shootPreload = new Vector2d(12,12);
+    public static Pose2d shoot = new Pose2d(12,-12,Math.toRadians(-45));
+    public static Vector2d shootPreload = new Vector2d(20,-20);
 
 
     //intake
-    public static Vector2d firstIntake = new Vector2d(60,12);//,Math.toRadians(-180)
-    public static Pose2d secondIntake = new Pose2d(60,-12,Math.toRadians(-180));
-    public static Pose2d thirdIntake = new Pose2d(60,-36,Math.toRadians(-180));
+    public static Vector2d firstIntake = new Vector2d(12,-60);//,Math.toRadians(-180)
+    public static Pose2d secondIntake = new Pose2d(-12,-60,Math.toRadians(-90));
+    public static Pose2d thirdIntake = new Pose2d(-36,-60,Math.toRadians(-90));
 
 
 
@@ -41,9 +41,9 @@ public class CloseRed extends LinearOpMode {
 
         Action runAuto = drive.actionBuilder(initialRedPos)
                 .strafeToConstantHeading(shootPreload)
-                .waitSeconds(3)
-                .strafeToLinearHeading(firstIntake,Math.toRadians(-180))
-                .strafeToLinearHeading(shootPreload,Math.toRadians(-135))
+//                .waitSeconds(3)
+//                .strafeToLinearHeading(firstIntake,Math.toRadians(-90))
+//                .strafeToLinearHeading(shootPreload,Math.toRadians(-45))
                         .build();
 
 
