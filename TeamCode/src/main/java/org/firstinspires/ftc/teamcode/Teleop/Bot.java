@@ -7,12 +7,14 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.Auto.miscRR.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.AprilTag;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Hood;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Intake;
@@ -36,6 +38,8 @@ public class Bot {
     public boolean fieldCentricRunMode = false;
     public MotorEx fl, fr, bl, br;
     public static double shootSleep=0.2, shootDelay=0.7;
+    public static Pose2d storedPose = new Pose2d(0,0,0);
+    public static MecanumDrive drive;
 
     public enum BotState {
         AUTO,
@@ -55,12 +59,12 @@ public class Bot {
         } catch (Exception e) {
             fieldCentricRunMode = false;
         }
+        drive = new MecanumDrive(opMode.hardwareMap, storedPose);
         fl = new MotorEx(opMode.hardwareMap, "fl", Motor.GoBILDA.RPM_435);
         fr = new MotorEx(opMode.hardwareMap, "perp", Motor.GoBILDA.RPM_435);
         bl = new MotorEx(opMode.hardwareMap, "par", Motor.GoBILDA.RPM_435);
         br = new MotorEx(opMode.hardwareMap, "br", Motor.GoBILDA.RPM_435);
-        bl.setInverted(true);
-        fr.setInverted(true);
+
 
         imu = opMode.hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(
@@ -118,8 +122,15 @@ public class Bot {
         return new SequentialAction(
                 new InstantAction(()->shooter.setTargetRPM((int)calculateRPM()+75)),//may need to not round here in the future
                 new SleepAction(0.3),
-                shootSetup()
+                new InstantAction(()-> intake.openGate())
                 );
+    }
+
+    public Action actionStopShoot(){
+        return new SequentialAction(
+                new InstantAction(()->shooter.setTargetRPM(0)),//may need to not round here in the future
+                new InstantAction(()-> intake.closeGate())
+        );
     }
 
     public Action actionShootGate(){
@@ -174,6 +185,7 @@ public class Bot {
     public class actionPeriodic implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
+            aprilTag.findAprilTag();
             shooter.periodic();
             return true;
         }
@@ -214,6 +226,20 @@ public class Bot {
         motorList.add(fr);
         return motorList;
 
+    }
+
+    public void prepTeleop(){
+        bl.setInverted(true);
+        fr.setInverted(true);
+        intake.closeGate();
+        hood.hoodServo.setPosition(0.6);
+        Hood.outtakePos=0.6;
+        aprilTag.targetAllianceId=24;
+    }public void prepAuto(){
+        intake.closeGate();
+        hood.hoodServo.setPosition(0.6);
+        Hood.outtakePos=0.6;
+        aprilTag.targetAllianceId=24;
     }
 //
 //    public BNO055IMU returnIMU(){

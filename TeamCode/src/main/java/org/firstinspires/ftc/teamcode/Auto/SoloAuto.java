@@ -119,7 +119,7 @@ public class SoloAuto extends LinearOpMode {
         gp1 = new GamepadEx(gamepad1);
 
         // selects the chosenAuto
-        while (opModeInInit()) {
+        while (opModeInInit() &&!isStarted()) {
             gp1.readButtons();
             if (gp1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
                 bot.aprilTag.targetAllianceId = RED;
@@ -212,10 +212,9 @@ public class SoloAuto extends LinearOpMode {
 
 
         waitForStart();
-        while (opModeIsActive() && !isStopRequested()) {
             //identifies chosenAuto and performs it's respective list of actions
             if (chosenAuto == AutoPos.CLOSE_BLUE || chosenAuto == AutoPos.CLOSE_RED) {
-                ArrayList<Action> actionListClose = new ArrayList<Action>();
+                ArrayList<Action> actionListClose = new ArrayList<>();
                 if (shootPreloadChosen) actionListClose.add(shootPreload);
                 if (intakeAndShootFirstCloseChosen) actionListClose.add(intakeAndShootFirstClose);
                 if (intakeAndShootSecondCloseChosen) actionListClose.add(intakeAndShootSecondClose);
@@ -229,7 +228,7 @@ public class SoloAuto extends LinearOpMode {
                         )
                 );
             } else {
-                ArrayList<Action> actionListFar = new ArrayList<Action>();
+                ArrayList<Action> actionListFar = new ArrayList<>();
                 if (shootPreloadChosen) actionListFar.add(shootPreload);
                 if (intakeAndShootFirstFarChosen) actionListFar.add(intakeAndShootFirstFar);
                 if (intakeAndShootSecondFarChosen) actionListFar.add(intakeAndShootSecondFar);
@@ -244,7 +243,7 @@ public class SoloAuto extends LinearOpMode {
                 );
             }
         }
-    }
+
 }
 
 

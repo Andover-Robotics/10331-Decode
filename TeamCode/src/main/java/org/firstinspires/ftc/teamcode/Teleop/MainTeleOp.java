@@ -30,7 +30,7 @@ public class MainTeleOp extends LinearOpMode {
 
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         Bot.instance = null;
@@ -38,10 +38,7 @@ public class MainTeleOp extends LinearOpMode {
         bot = Bot.getInstance(this);
         gp1 = new GamepadEx(gamepad1);
         gp2 = new GamepadEx(gamepad2);
-        bot.intake.closeGate();
-        bot.hood.hoodServo.setPosition(0.6);
-        Hood.outtakePos=0.3;
-        bot.aprilTag.targetAllianceId=24;
+        bot.prepTeleop();
 
         while (opModeInInit() && !isStarted() && !isStopRequested()) {
             TelemetryPacket packet = new TelemetryPacket();
