@@ -14,12 +14,14 @@ import org.firstinspires.ftc.teamcode.Auto.miscRR.ActionHelper;
 import org.firstinspires.ftc.teamcode.Auto.miscRR.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Teleop.Bot;
 
-@Autonomous(name="Close Red", group="AA_Autos")
-public class CloseRed extends LinearOpMode {
+@Autonomous(name="Close Blue", group="AA_Autos")
+public class CloseBlue extends LinearOpMode {
     Bot bot;
 
 
     // inital
+
+    private Pose2d init = new Pose2d(60,58,Math.toRadians(45));
     public static Pose2d initialRedPos = new Pose2d(60,-58,Math.toRadians(-45));
     //shooting
     public static Pose2d shoot = new Pose2d(45,-42,Math.toRadians(-55));//was 20, -30
@@ -41,11 +43,11 @@ public class CloseRed extends LinearOpMode {
     public void runOpMode() throws InterruptedException{
         Bot.instance = null;
         bot = Bot.getInstance(this);
-        bot.prepAuto(24);
-        MecanumDrive drive = new MecanumDrive(hardwareMap,initialRedPos);
+        bot.prepAuto(20);
+        MecanumDrive drive = new MecanumDrive(hardwareMap,init);
 
 
-        Action runAuto = drive.actionBuilderRed(initialRedPos)
+        Action runAuto = drive.actionBuilderBlue(initialRedPos)
                 .afterTime(0.01,bot.intake.actionIntake())
                 .strafeToLinearHeading(shootPreload,Math.toRadians(-55))//preload
                 .stopAndAdd(bot.actionShoot())
@@ -86,7 +88,7 @@ public class CloseRed extends LinearOpMode {
 //                .waitSeconds(2)
 
 
-                        .build();
+                .build();
 
 
         waitForStart();
@@ -98,4 +100,5 @@ public class CloseRed extends LinearOpMode {
 
 
     }
+
 }

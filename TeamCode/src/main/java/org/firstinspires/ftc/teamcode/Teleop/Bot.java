@@ -235,12 +235,13 @@ public class Bot {
         hood.hoodServo.setPosition(0.6);
         Hood.outtakePos=0.6;
         aprilTag.targetAllianceId=24;
-    }public void prepAuto(){
+    }public void prepAuto(int alliance){
         intake.closeGate();
         hood.hoodServo.setPosition(0.6);
         Hood.outtakePos=0.6;
-        aprilTag.targetAllianceId=24;
+        aprilTag.targetAllianceId=alliance;
     }
+
 //
 //    public BNO055IMU returnIMU(){
 //        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
