@@ -28,10 +28,10 @@ public class CloseRed extends LinearOpMode {
 
     //intake
     public static Pose2d firstIntake1 = new Pose2d(16,-46,Math.toRadians(-85));//,Math.toRadians(-180)
-    public static Vector2d firstIntake2 = new Vector2d(16,-70);//,Math.toRadians(-180)
+    public static Vector2d firstIntake2 = new Vector2d(16,-67);//,Math.toRadians(-180)
 
     public static Pose2d secondIntake1 = new Pose2d(-8,-46,Math.toRadians(-85));
-    public static Vector2d secondIntake2 = new Vector2d(-8,-70);
+    public static Vector2d secondIntake2 = new Vector2d(-8,-67);
 
     public static Pose2d thirdIntake = new Pose2d(-40,-60,Math.toRadians(-90));
 
@@ -88,13 +88,23 @@ public class CloseRed extends LinearOpMode {
 
                         .build();
 
-
         waitForStart();
-        Actions.runBlocking(
-                new ActionHelper.RaceParallelCommand(
-                        bot.actionPeriodic(),
-                        runAuto
-                ));
+
+        while(opModeIsActive()) {
+            telemetry.addData("id:", bot.aprilTag.getId());
+            telemetry.addData("angles", bot.imu.getRobotYawPitchRollAngles());
+            telemetry.update();
+
+            int i =0;
+            while(i<1) {
+                Actions.runBlocking(
+                        new ActionHelper.RaceParallelCommand(
+                                bot.actionPeriodic(),
+                                runAuto
+                        ));
+                i++;
+            }
+        }
 
 
     }

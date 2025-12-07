@@ -24,8 +24,8 @@ public class CloseBlue extends LinearOpMode {
     private Pose2d init = new Pose2d(60,58,Math.toRadians(45));
     public static Pose2d initialRedPos = new Pose2d(60,-58,Math.toRadians(-45));
     //shooting
-    public static Pose2d shoot = new Pose2d(45,-42,Math.toRadians(-55));//was 20, -30
-    public static Vector2d shootPreload = new Vector2d(45,-42);//was 20,-30
+    public static Pose2d shoot = new Pose2d(43,-39,Math.toRadians(-55));//was 20, -30
+    public static Vector2d shootPreload = new Vector2d(43,-39);//was 20,-30
 
 
     //intake
@@ -92,11 +92,20 @@ public class CloseBlue extends LinearOpMode {
 
 
         waitForStart();
-        Actions.runBlocking(
-                new ActionHelper.RaceParallelCommand(
-                        bot.actionPeriodic(),
-                        runAuto
-                ));
+        while(opModeIsActive()) {
+            telemetry.addData("id:", bot.aprilTag.getId());
+            telemetry.update();
+
+            int i =0;
+            while(i<1) {
+                Actions.runBlocking(
+                        new ActionHelper.RaceParallelCommand(
+                                bot.actionPeriodic(),
+                                runAuto
+                        ));
+                i++;
+            }
+        }
 
 
     }
