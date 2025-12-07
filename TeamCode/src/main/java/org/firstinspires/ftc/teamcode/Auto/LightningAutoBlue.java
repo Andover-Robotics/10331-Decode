@@ -28,19 +28,19 @@ public class LightningAutoBlue extends LinearOpMode {
 
     public static Pose2d initialRedPos = new Pose2d(60,-58,Math.toRadians(-45));
     //shooting
-    public static Pose2d shoot = new Pose2d(43,-39,Math.toRadians(-55));//was 20, -30
-    public static Vector2d shootPreload = new Vector2d(43,-39);//was 20,-30
+    public static Pose2d shoot = new Pose2d(45,-42,Math.toRadians(-55));//was 20, -30
+    public static Vector2d shootPreload = new Vector2d(45,-42);//was 20,-30
 
     //decrease x decrease y
 
     //intake
-    public static Pose2d firstIntake1 = new Pose2d(16,-57,Math.toRadians(-85));//,Math.toRadians(-180)
+    public static Pose2d firstIntake1 = new Pose2d(16,-53,Math.toRadians(-85));//,Math.toRadians(-180)
     public static Vector2d firstIntake2 = new Vector2d(16,-65);//,Math.toRadians(-180)
 
-    public static Pose2d secondIntake1 = new Pose2d(-8,-57,Math.toRadians(-85));
+    public static Pose2d secondIntake1 = new Pose2d(-8,-53,Math.toRadians(-85));
     public static Vector2d secondIntake2 = new Vector2d(-8,-65);
 
-    public static Vector2d gatePos = new Vector2d(5,-83);
+    public static Vector2d gatePos = new Vector2d(7,-83);
     public static Pose2d thirdIntake = new Pose2d(-40,-60,Math.toRadians(-90));
     public ExposureControl exposureControl;
     public GainControl gainControl;
@@ -96,20 +96,20 @@ public class LightningAutoBlue extends LinearOpMode {
                 .waitSeconds(2)
                 .afterTime(0.01,bot.actionStopShoot())
 
-                .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(secondIntake1, Math.toRadians(-60))//intake2
-                .afterTime(0.01,bot.intake.actionIntake())
-                .strafeToLinearHeading(secondIntake2,Math.toRadians(-85))
-                .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))
-
-
-                .setTangent(Math.toRadians(90)) //shoot 3
-                .afterTime(0.01,bot.intake.actionIntake())
-                .splineToLinearHeading(shoot,Math.toRadians(60))
-                .stopAndAdd(bot.actionShoot())
-                .waitSeconds(3)
-                .stopAndAdd(bot.actionStopShoot())
-                .waitSeconds(1)
+//                .setTangent(Math.toRadians(-50))
+//                .splineToLinearHeading(secondIntake1, Math.toRadians(-60))//intake2
+//                .afterTime(0.01,bot.intake.actionIntake())
+//                .strafeToLinearHeading(secondIntake2,Math.toRadians(-85))
+//                .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))
+//
+//
+//                .setTangent(Math.toRadians(90)) //shoot 3
+//                .afterTime(0.01,bot.intake.actionIntake())
+//                .splineToLinearHeading(shoot,Math.toRadians(60))
+//                .stopAndAdd(bot.actionShoot())
+//                .waitSeconds(3)
+//                .stopAndAdd(bot.actionStopShoot())
+//                .waitSeconds(1)
 
 
 

@@ -96,32 +96,15 @@ public class CloseRed extends LinearOpMode {
                 .stopAndAdd(bot.actionStopShoot())
                 .waitSeconds(1)
 
-
-
-//                .splineToLinearHeading(shoot,Math.toRadians(90)) //shoot 2
-//                .stopAndAdd(bot.actionShoot())
-//                .waitSeconds(2)
-
-
-                        .build();
+                .build();
 
         waitForStart();
+        Actions.runBlocking(
+                new ActionHelper.RaceParallelCommand(
+                        bot.actionPeriodic(),
+                        runAuto
+                ));
 
-        while(opModeIsActive()) {
-            telemetry.addData("id:", bot.aprilTag.getId());
-            telemetry.addData("angles", bot.imu.getRobotYawPitchRollAngles());
-            telemetry.update();
-
-            int i =0;
-            while(i<1) {
-                Actions.runBlocking(
-                        new ActionHelper.RaceParallelCommand(
-                                bot.actionPeriodic(),
-                                runAuto
-                        ));
-                i++;
-            }
-        }
 
 
     }
