@@ -8,6 +8,8 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.teamcode.Auto.miscRR.ActionHelper;
 import org.firstinspires.ftc.teamcode.Auto.miscRR.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Teleop.Bot;
@@ -37,6 +39,8 @@ public class LightningAutoRed extends LinearOpMode {
     public static Vector2d gatePos=new Vector2d(3,-74);
 
     public static Pose2d thirdIntake = new Pose2d(-40,-60,Math.toRadians(-90));
+    public ExposureControl exposureControl;
+    public GainControl gainControl;
 
 
 

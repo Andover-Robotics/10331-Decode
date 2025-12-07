@@ -10,9 +10,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.teamcode.Auto.miscRR.ActionHelper;
 import org.firstinspires.ftc.teamcode.Auto.miscRR.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Teleop.Bot;
+import org.firstinspires.ftc.vision.VisionPortal;
+
+import java.util.concurrent.TimeUnit;
 
 @Autonomous(name="Close Blue", group="AA_Autos")
 public class CloseBlue extends LinearOpMode {
@@ -36,7 +41,8 @@ public class CloseBlue extends LinearOpMode {
     public static Vector2d secondIntake2 = new Vector2d(-8,-70);
 
     public static Pose2d thirdIntake = new Pose2d(-40,-60,Math.toRadians(-90));
-
+    public ExposureControl exposureControl;
+    public GainControl gainControl;
 
 
     @Override
@@ -45,6 +51,18 @@ public class CloseBlue extends LinearOpMode {
         bot = Bot.getInstance(this);
         bot.prepAuto(20);
         MecanumDrive drive = new MecanumDrive(hardwareMap,init);
+
+        while(bot.aprilTag.visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+            sleep(1);
+        }
+
+        exposureControl = bot.aprilTag.visionPortal.getCameraControl(ExposureControl.class);
+        gainControl = bot.aprilTag.visionPortal.getCameraControl(GainControl.class);
+
+        exposureControl.setMode(ExposureControl.Mode.Manual);
+
+        exposureControl.setExposure(3, TimeUnit.MILLISECONDS);
+        gainControl.setGain((int)(gainControl.getMaxGain() * 0.6));
 
 
         Action runAuto = drive.actionBuilderBlue(initialRedPos)

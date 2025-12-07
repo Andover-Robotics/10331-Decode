@@ -54,13 +54,12 @@ Tag ID 24: red shooting location
                 .setTagLibrary(library)
                 .build();
         visionPortal = VisionPortal.easyCreateWithDefaults(opMode.hardwareMap.get(WebcamName.class, "webcam"), processor);
+//        while(visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+//
+//        }
 
-        ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
-        GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
 
-//        exposureControl.setMode(ExposureControl.Mode.Manual);
-        exposureControl.setExposure(5, TimeUnit.MILLISECONDS);
-        gainControl.setGain(200);
+
 
     }
     public void findAprilTag(){
