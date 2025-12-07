@@ -70,18 +70,14 @@ public class MainTeleOp extends LinearOpMode {
 
             if(gp2.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
                 if(!isIntake) {
-                    bot.intake.intake_without_sense(0.9);
+                    bot.intake.intake_without_sense(0.8);
                     isIntake = true;
                 }
                 else{
-                    bot.intake.intake_without_sense(0.4);
+                    bot.intake.intake_without_sense(0);
                     isIntake=false;
                 }
             }
-            if (gp2.wasJustPressed(GamepadKeys.Button.A)) {
-                bot.intake.stopIntake();
-            }
-
             if (gp2.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
                 bot.intake.reverseIntake();
             }
