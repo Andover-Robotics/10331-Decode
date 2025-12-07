@@ -31,10 +31,6 @@ public class Intake {
 
         intakeMotor.setDirection(DcMotorEx.Direction.REVERSE);
         gate1.setDirection(Servo.Direction.REVERSE);
-
-
-
-
     }
 
 
