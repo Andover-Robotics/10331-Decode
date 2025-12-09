@@ -87,7 +87,7 @@ public class CloseBlue extends LinearOpMode {
                 .afterTime(0.01,bot.actionStopShoot())
 
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(secondIntake1, Math.toRadians(-10))//intake2
+                .splineToLinearHeading(secondIntake1, Math.toRadians(-90))//intake2
 //                .afterTime(0.01,bot.intake.actionIntake())
                 .strafeToLinearHeading(secondIntake2,Math.toRadians(-85))
 

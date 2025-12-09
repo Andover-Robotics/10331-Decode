@@ -32,11 +32,11 @@ public class CloseRed extends LinearOpMode {
 
 
     //intake
-    public static Pose2d firstIntake1 = new Pose2d(16,-46,Math.toRadians(-85));//,Math.toRadians(-180)
-    public static Vector2d firstIntake2 = new Vector2d(16,-67);//,Math.toRadians(-180)
+    public static Pose2d firstIntake1 = new Pose2d(16,-40,Math.toRadians(-85));//,Math.toRadians(-180)
+    public static Vector2d firstIntake2 = new Vector2d(16,-65);//,Math.toRadians(-180)
 
-    public static Pose2d secondIntake1 = new Pose2d(-8,-46,Math.toRadians(-85));
-    public static Vector2d secondIntake2 = new Vector2d(-8,-67);
+    public static Pose2d secondIntake1 = new Pose2d(-6,-40,Math.toRadians(-85));
+    public static Vector2d secondIntake2 = new Vector2d(-6,-63);
 
     public static Pose2d thirdIntake = new Pose2d(-40,-60,Math.toRadians(-90));
     public ExposureControl exposureControl;
@@ -71,7 +71,7 @@ public class CloseRed extends LinearOpMode {
                 .stopAndAdd(new InstantAction(()->bot.intake.stopIntake()))
 
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(firstIntake1, Math.toRadians(-60))//intake1
+                .splineToLinearHeading(firstIntake1, Math.toRadians(-90))//intake1
                 .afterTime(0.01,bot.intake.actionIntake())
                 .strafeToLinearHeading(firstIntake2,Math.toRadians(-85))
                 .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))

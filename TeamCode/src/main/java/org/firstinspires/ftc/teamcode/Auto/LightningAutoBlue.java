@@ -34,7 +34,7 @@ public class LightningAutoBlue extends LinearOpMode {
     //decrease x decrease y
 
     //intake
-    public static Pose2d firstIntake1 = new Pose2d(16,-53,Math.toRadians(-85));//,Math.toRadians(-180)
+    public static Pose2d firstIntake1 = new Pose2d(16,-50,Math.toRadians(-85));//,Math.toRadians(-180)
     public static Vector2d firstIntake2 = new Vector2d(16,-65);//,Math.toRadians(-180)
 
     public static Pose2d secondIntake1 = new Pose2d(-8,-53,Math.toRadians(-85));

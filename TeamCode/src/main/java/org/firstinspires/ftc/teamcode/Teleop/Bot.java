@@ -198,7 +198,7 @@ public class Bot {
 //        drive code
     public void driveRobotCentric(double strafeSpeed, double forwardBackSpeed, double turnSpeed) {
         double[] speeds = {
-                (forwardBackSpeed - strafeSpeed - turnSpeed),
+                (-forwardBackSpeed +strafeSpeed +    turnSpeed),
                 (forwardBackSpeed + strafeSpeed + turnSpeed),
                 (forwardBackSpeed + strafeSpeed - turnSpeed),
                 (forwardBackSpeed - strafeSpeed + turnSpeed)
@@ -235,6 +235,7 @@ public class Bot {
         hood.hoodServo.setPosition(0.6);
         Hood.outtakePos=0.6;
         aprilTag.targetAllianceId=24;
+
     }public void prepAuto(int alliance){
         intake.closeGate();
         hood.hoodServo.setPosition(0.6);

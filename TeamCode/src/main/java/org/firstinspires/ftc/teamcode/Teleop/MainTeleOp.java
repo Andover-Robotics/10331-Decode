@@ -68,7 +68,7 @@ public class MainTeleOp extends LinearOpMode {
             drive();
 
 
-            if(gp2.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
+            if(gp1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
                 if(!isIntake) {
                     bot.intake.intake_without_sense(0.8);
                     isIntake = true;
