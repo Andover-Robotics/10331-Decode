@@ -78,7 +78,7 @@ public class MainTeleOp extends LinearOpMode {
                     isIntake=false;
                 }
             }
-            if (gp2.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
+            if (gp1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
                 bot.intake.reverseIntake();
             }
 
