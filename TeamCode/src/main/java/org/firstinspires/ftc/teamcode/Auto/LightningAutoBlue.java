@@ -40,7 +40,7 @@ public class LightningAutoBlue extends LinearOpMode {
     public static Pose2d secondIntake1 = new Pose2d(-8,-53,Math.toRadians(-85));
     public static Vector2d secondIntake2 = new Vector2d(-8,-65);
 
-    public static Vector2d gatePos = new Vector2d(7,-83);
+    public static Vector2d gatePos = new Vector2d(7,-60); //7,-83
     public static Pose2d thirdIntake = new Pose2d(-40,-60,Math.toRadians(-90));
     public ExposureControl exposureControl;
     public GainControl gainControl;
@@ -83,7 +83,7 @@ public class LightningAutoBlue extends LinearOpMode {
 
                 .setTangent(Math.toRadians(90))
 //                .splineTo(new Vector2d(16,-50),Math.toRadians(-90)) - added just now
-                .splineToLinearHeading(new Pose2d(gatePos, Math.toRadians(15)), Math.toRadians(90))
+                .strafeToLinearHeading(gatePos, Math.toRadians(-15))
 
 //                .strafeToLinearHeading(new Vector2d(16,-50),Math.toRadians(0))
 //                .strafeToLinearHeading(gatePos,Math.toRadians(15))//gate

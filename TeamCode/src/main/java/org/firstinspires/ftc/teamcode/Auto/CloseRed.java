@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
+import static org.firstinspires.ftc.teamcode.Auto.LightningAutoRed.gatePos;
+
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -27,18 +29,22 @@ public class CloseRed extends LinearOpMode {
     // inital
     public static Pose2d initialRedPos = new Pose2d(60,-58,Math.toRadians(-45));
     //shooting
-    public static Pose2d shoot = new Pose2d(45,-42,Math.toRadians(-55));//was 20, -30
-    public static Vector2d shootPreload = new Vector2d(45,-42);//was 20,-30
+    public static Pose2d shoot = new Pose2d(35,-35,Math.toRadians(-60));//was 20, -30
+    public static Vector2d shootPreload = new Vector2d(42,-42);//was 20,-30
 
 
     //intake
-    public static Pose2d firstIntake1 = new Pose2d(16,-40,Math.toRadians(-85));//,Math.toRadians(-180)
-    public static Vector2d firstIntake2 = new Vector2d(16,-65);//,Math.toRadians(-180)
+    public static Pose2d firstIntake1 = new Pose2d(21,-40,Math.toRadians(-85));//,Math.toRadians(-180)
+    public static Vector2d firstIntake2 = new Vector2d(21,-59);//,Math.toRadians(-180)
 
-    public static Pose2d secondIntake1 = new Pose2d(-6,-40,Math.toRadians(-85));
-    public static Vector2d secondIntake2 = new Vector2d(-6,-63);
+    public static Vector2d gatePos=new Vector2d(9,-74);
 
-    public static Pose2d thirdIntake = new Pose2d(-40,-60,Math.toRadians(-90));
+
+    public static Pose2d secondIntake1 = new Pose2d(-4,-40,Math.toRadians(-85));
+    public static Vector2d secondIntake2 = new Vector2d(-4,-59);
+
+    public static Pose2d thirdIntake1 = new Pose2d(-26,-43,Math.toRadians(-90));
+    public static Vector2d thirdIntake2 = new Vector2d(-26,-61);
     public ExposureControl exposureControl;
     public GainControl gainControl;
 
@@ -74,7 +80,12 @@ public class CloseRed extends LinearOpMode {
                 .splineToLinearHeading(firstIntake1, Math.toRadians(-90))//intake1
                 .afterTime(0.01,bot.intake.actionIntake())
                 .strafeToLinearHeading(firstIntake2,Math.toRadians(-85))
-                .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))
+//                .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))
+
+                .setTangent(Math.toRadians(90))
+                .strafeToLinearHeading(gatePos,Math.toRadians(0))
+//                .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))
+                .waitSeconds(1.5)
 
                 .setTangent(Math.toRadians(90)) //shoot 2
                 .afterTime(0.01,bot.intake.actionIntake())
@@ -83,10 +94,23 @@ public class CloseRed extends LinearOpMode {
                 .waitSeconds(2)
                 .afterTime(0.01,bot.actionStopShoot())
 
-                .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(secondIntake1, Math.toRadians(-10))//intake2
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(secondIntake1, Math.toRadians(-90))//intake2
 //                .afterTime(0.01,bot.intake.actionIntake())
                 .strafeToLinearHeading(secondIntake2,Math.toRadians(-85))
+
+                .setTangent(Math.toRadians(90)) //shoot 3
+                .afterTime(0.01,bot.intake.actionIntake())
+                .splineToLinearHeading(shoot,Math.toRadians(60))
+                .stopAndAdd(bot.actionShoot())
+                .waitSeconds(3)
+                .stopAndAdd(bot.actionStopShoot())
+
+
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(thirdIntake1, Math.toRadians(-90))//intake2
+//                .afterTime(0.01,bot.intake.actionIntake())
+                .strafeToLinearHeading(thirdIntake2,Math.toRadians(-85))
 
                 .setTangent(Math.toRadians(90)) //shoot 3
                 .afterTime(0.01,bot.intake.actionIntake())
