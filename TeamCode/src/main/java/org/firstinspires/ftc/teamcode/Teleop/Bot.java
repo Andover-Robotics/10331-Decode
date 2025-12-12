@@ -232,14 +232,14 @@ public class Bot {
         bl.setInverted(true);
         fr.setInverted(true);
         intake.closeGate();
-        hood.hoodServo.setPosition(0.6);
-        Hood.outtakePos=0.6;
+        hood.hoodServo.setPosition(0.3);
+        Hood.outtakePos=0.3;
         aprilTag.targetAllianceId=24;
 
     }public void prepAuto(int alliance){
         intake.closeGate();
-        hood.hoodServo.setPosition(0.6);
-        Hood.outtakePos=0.6;
+        hood.hoodServo.setPosition(0.3);
+        Hood.outtakePos=0.3;
         aprilTag.targetAllianceId=alliance;
     }
 
