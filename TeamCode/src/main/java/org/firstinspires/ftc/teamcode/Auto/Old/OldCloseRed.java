@@ -32,11 +32,11 @@ public class OldCloseRed extends LinearOpMode {
 
 
     //intake
-    public static Pose2d firstIntake1 = new Pose2d(16,-40,Math.toRadians(-85));//,Math.toRadians(-180)
-    public static Vector2d firstIntake2 = new Vector2d(16,-65);//,Math.toRadians(-180)
+    public static Pose2d firstIntake1 = new Pose2d(18,-40,Math.toRadians(-85));//,Math.toRadians(-180)
+    public static Vector2d firstIntake2 = new Vector2d(18,-61);//,Math.toRadians(-180)
 
-    public static Pose2d secondIntake1 = new Pose2d(-8,-40,Math.toRadians(-85));
-    public static Vector2d secondIntake2 = new Vector2d(-8,-63);
+    public static Pose2d secondIntake1 = new Pose2d(-10,-40,Math.toRadians(-85));
+    public static Vector2d secondIntake2 = new Vector2d(-10,-61);
 
     public static Pose2d thirdIntake = new Pose2d(-40,-60,Math.toRadians(-90));
     public ExposureControl exposureControl;
