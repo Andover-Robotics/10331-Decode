@@ -19,7 +19,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 
 import java.util.concurrent.TimeUnit;
 
-@Autonomous(name="Close Blue 9", group="AA_Autos")
+@Autonomous(name="Close Blue 9", group="Old Autos")
 public class OldCloseBlue extends LinearOpMode {
     Bot bot;
 
