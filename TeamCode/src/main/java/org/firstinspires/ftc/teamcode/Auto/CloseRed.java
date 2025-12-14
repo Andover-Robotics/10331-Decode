@@ -43,8 +43,8 @@ public class CloseRed extends LinearOpMode {
     public static Pose2d secondIntake1 = new Pose2d(-7,-40,Math.toRadians(-85));
     public static Vector2d secondIntake2 = new Vector2d(-7,-61);
 
-    public static Pose2d thirdIntake1 = new Pose2d(-29,-43,Math.toRadians(-90));
-    public static Vector2d thirdIntake2 = new Vector2d(-29,-63);
+    public static Pose2d thirdIntake1 = new Pose2d(-31,-43,Math.toRadians(-90));
+    public static Vector2d thirdIntake2 = new Vector2d(-31,-65);
     public ExposureControl exposureControl;
     public GainControl gainControl;
 
@@ -89,7 +89,7 @@ public class CloseRed extends LinearOpMode {
 
                 .setTangent(Math.toRadians(90)) //shoot 2
                 .afterTime(0.01,bot.intake.actionIntake())
-                .splineToLinearHeading(shoot,Math.toRadians(60))
+                .splineToLinearHeading(new Pose2d(shoot.component1().x,shoot.component1().y,Math.toRadians(-55)),Math.toRadians(60))
                 .stopAndAdd(bot.actionShoot())
                 .waitSeconds(1.9)
                 .afterTime(0.01,bot.actionStopShoot())
