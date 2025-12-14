@@ -43,7 +43,7 @@ public class CloseRed extends LinearOpMode {
     public static Pose2d secondIntake1 = new Pose2d(-10,-40,Math.toRadians(-85));
     public static Vector2d secondIntake2 = new Vector2d(-10,-61);
 
-    public static Pose2d thirdIntake1 = new Pose2d(-31,-47,Math.toRadians(-90));
+    public static Pose2d thirdIntake1 = new Pose2d(-31,-44,Math.toRadians(-90));
     public static Vector2d thirdIntake2 = new Vector2d(-31,-68);
     public ExposureControl exposureControl;
     public GainControl gainControl;

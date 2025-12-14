@@ -39,8 +39,8 @@ public class CloseBlue extends LinearOpMode {
     public static Pose2d firstIntake1 = new Pose2d(18,-40,Math.toRadians(-85));//,Math.toRadians(-180)
     public static Vector2d firstIntake2 = new Vector2d(18,-63);//,Math.toRadians(-180)
 
-    public static Pose2d secondIntake1 = new Pose2d(-12,-40,Math.toRadians(-85));
-    public static Vector2d secondIntake2 = new Vector2d(-12,-61);
+    public static Pose2d secondIntake1 = new Pose2d(-14,-40,Math.toRadians(-85));
+    public static Vector2d secondIntake2 = new Vector2d(-14,-61);
 
     public static Pose2d thirdIntake1 = new Pose2d(-33,-47,Math.toRadians(-90));
     public static Vector2d thirdIntake2 = new Vector2d(-33,-68);
