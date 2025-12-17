@@ -51,7 +51,7 @@ public class LightningAutoRed extends LinearOpMode {
     public void runOpMode() throws InterruptedException{
         Bot.instance = null;
         bot = Bot.getInstance(this);
-        bot.prepAuto(24);
+        bot.prepAuto(24,true);
         MecanumDrive drive = new MecanumDrive(hardwareMap,initialRedPos);
 
         while(bot.aprilTag.visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {

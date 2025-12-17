@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -38,7 +39,17 @@ public class Bot {
     public boolean fieldCentricRunMode = false;
     public MotorEx fl, fr, bl, br;
     public static double shootSleep=0.2, shootDelay=0.7;
+    public boolean isRed;
+
+
+    //Stored poses
+    //---------------------------------------------------------
     public static Pose2d storedPose = new Pose2d(0,0,0);
+    public static Vector2d goalPose = new Vector2d(65,-60);// init with red
+    public static Pose2d resetPose = new Pose2d(-63,-63,Math.toRadians(-90));
+
+
+
     public static MecanumDrive drive;
 
     public enum BotState {
@@ -100,6 +111,18 @@ public class Bot {
         }
         instance.opMode = opMode;
         return instance;
+    }
+
+
+    public void updatePoses(){
+        if (isRed){
+            goalPose = new Vector2d(goalPose.x,Math.abs(goalPose.y));
+            resetPose = new Pose2d(resetPose.component1().x, Math.abs(resetPose.component1().y), Math.abs(resetPose.heading.log()));
+        }
+        else {
+            goalPose = new Vector2d(goalPose.x,-1*(goalPose.y));
+            resetPose = new Pose2d(resetPose.component1().x, -1*(resetPose.component1().y), -1*(resetPose.heading.log()));
+        }
     }
 
 
@@ -243,11 +266,14 @@ public class Bot {
         Hood.outtakePos=0.3;
         aprilTag.targetAllianceId=24;
 
-    }public void prepAuto(int alliance){
+    }public void prepAuto(int alliance, boolean isRed){
         intake.closeGate();
         hood.hoodServo.setPosition(0.3);
         Hood.outtakePos=0.3;
         aprilTag.targetAllianceId=alliance;
+        this.isRed = isRed;
+        updatePoses();
+
     }
 
 //

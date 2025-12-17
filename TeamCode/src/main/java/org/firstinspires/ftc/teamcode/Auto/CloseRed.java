@@ -52,9 +52,9 @@ public class CloseRed extends LinearOpMode {
     public void runOpMode() throws InterruptedException{
         Bot.instance = null;
         bot = Bot.getInstance(this);
-        bot.prepAuto(24);
-        MecanumDrive drive = new MecanumDrive(hardwareMap,initialRedPos);
-
+        bot.prepAuto(24,true);
+        MecanumDrive drive = Bot.drive;
+        drive.localizer.setPose(initialRedPos);
         while(bot.aprilTag.visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
             sleep(1);
         }
@@ -128,6 +128,7 @@ public class CloseRed extends LinearOpMode {
                         bot.actionPeriodic(),
                         runAuto
                 ));
+        Bot.storedPose = drive.localizer.getPose();
 
 
 
