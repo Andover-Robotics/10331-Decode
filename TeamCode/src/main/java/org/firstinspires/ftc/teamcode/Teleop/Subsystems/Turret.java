@@ -10,26 +10,33 @@ import com.arcrobotics.ftclib.controller.PIDController;
 
 @Config
 
-
 public class Turret {
-    public MotorEx turret;
     public static double p=0,i=0,d=0;
+    public static double basePower = 0.1;
     public double setPoint =0;
     private final PIDController controller;
 
     public boolean isManual = false;
 
     public static double manualPower;
-
-
+    private final MotorEx turretMotor;
+    private double hardwareLimit;
 
 
     public Turret (OpMode opMode){
-        turret = opMode.hardwareMap.get(MotorEx.class,"turret");
-        turret.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        turret.setRunMode(Motor.RunMode.RawPower);
+        //set controller PID
         controller = new PIDController(p,i,d);
 
+//        controller.setTolerance(tolerance);
+
+        //turretMotor default settings
+        turretMotor = new MotorEx(opMode.hardwareMap, "turret", Motor.GoBILDA.RPM_1150);
+        turretMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        turretMotor.setRunMode(Motor.RunMode.RawPower);
+        turretMotor.setInverted(false);
+
+        //tune HardwareLimit
+        hardwareLimit = 0;
     }
 
     // takes in ticks
@@ -38,14 +45,27 @@ public class Turret {
     }
 
 
-
-
     public void periodic(){
+        controller.setPID(p,i,d);
+
+        //check that PID not going over the hardware limit so it doesn't crash out.
+
+        if (Math.abs(turretMotor.getCurrentPosition()) > hardwareLimit) {
+            if (turretMotor.getCurrentPosition() > 0) {
+                controller.setSetPoint(hardwareLimit - 100);
+            } else {
+                controller.setSetPoint(100 - hardwareLimit);
+            }
+
         if (!isManual) {
+            //PID CONTROL:
             controller.setSetPoint(setPoint);
-            controller.calculate(turret.getCurrentPosition());
+            turretMotor.set(basePower * controller.calculate(turretMotor.getCurrentPosition()));
+        } else {
+            //MANUAL MODE:
+            turretMotor.set(manualPower);
+            controller.setSetPoint(turretMotor.getCurrentPosition());
         }
-
-
     }
+}
 }
