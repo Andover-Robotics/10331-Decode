@@ -21,6 +21,8 @@ public class Turret {
     public static double manualPower;
     private final MotorEx turretMotor;
     private double hardwareLimit;
+    private double ticksPerDegree;
+    private final double gearRatio = 141.1/10;
 
 
     public Turret (OpMode opMode){
@@ -43,6 +45,26 @@ public class Turret {
     public void runTo(int t){
         setPoint = t;
     }
+
+    //Convert degrees to ticks to use for autoAim
+    public double degreesToTicks(double degrees) {
+        //formula: (TPR * gear_ratio / 360)
+        return (turretMotor.getCPR() * gearRatio)/360;
+    }
+
+    public double wrapAround(double angle) {
+        angle %= 360;
+        if (angle <= -180) angle += 360;
+        if (angle > 180) angle -= 360;
+        return angle;
+    }
+
+    public void runToAngle(double angle) {
+        double ticks = degreesToTicks(wrapAround(angle));
+        setPoint = ticks;
+    }
+
+
 
 
     public void periodic(){
