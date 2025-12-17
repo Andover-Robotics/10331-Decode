@@ -64,9 +64,6 @@ public class Turret {
         setPoint = ticks;
     }
 
-
-
-
     public void periodic(){
         controller.setPID(p,i,d);
 

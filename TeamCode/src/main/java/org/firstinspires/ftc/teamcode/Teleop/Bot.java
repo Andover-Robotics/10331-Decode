@@ -102,6 +102,13 @@ public class Bot {
         return instance;
     }
 
+
+    //Add useStoredPose
+    public static void useStoredPose() {
+        drive.localizer.setPose(storedPose);
+    }
+
+
     public void switchAlliance(){
         if (aprilTag.targetAllianceId==20){
             aprilTag.targetAllianceId = 24;
