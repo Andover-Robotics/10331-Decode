@@ -5,6 +5,8 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.arcrobotics.ftclib.controller.PIDController;
 
@@ -14,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Teleop.Bot;
 @Config
 
 public class Turret {
-    public static double p=0,i=0,d=0;
+    public static double p=0,i=0,d=0,tX,tY,tA;
     public static double basePower = 0.1, powerMin = 0.05;
     public double setPoint =0;
     private final PIDController controller;
@@ -23,10 +25,20 @@ public class Turret {
 
     public static double manualPower;
     private final MotorEx turretMotor;
+    public final double a1 = 20; //angle of physical limelight
+    public final double HEIGHT_OFFSET = 16.625;
     private double hardwareLimit;
     private double ticksPerDegree;
     private final double gearRatio = 141.1/10;
     public Pose2d pose;
+
+    public double distance,lldistance;
+
+    public LLResult llResult;
+
+
+
+    public Limelight3A ll;
 
     //all values in inches! NEED TO TUNE THIS
     private final double TURRET_BACK_OFFSET = 9;
@@ -36,6 +48,10 @@ public class Turret {
         controller = new PIDController(p,i,d);
 
 //        controller.setTolerance(tolerance);
+
+        ll = opMode.hardwareMap.get(Limelight3A.class,"Limelight");
+        ll.setPollRateHz(100);
+        ll.start();
 
         //turretMotor default settings
         turretMotor = new MotorEx(opMode.hardwareMap, "turret", Motor.GoBILDA.RPM_1150);
@@ -48,7 +64,7 @@ public class Turret {
     }
 
     // takes in ticks
-    public void runTo(int t){
+    public void runTo(int t){ // takes in ticks
         setPoint = t;
     }
 
@@ -88,8 +104,13 @@ public class Turret {
         //Turret Angle
         double theta = Math.toDegrees(Math.atan2(dy, dx));
 
+        distance= Math.sqrt(dx*dx+dy*dy);
+
         return theta;
     }
+
+
+
 
     public void runManual(double manual) {
         if (manual > powerMin || manual < -powerMin) {
@@ -101,31 +122,53 @@ public class Turret {
         }
     }
 
-    public void periodic(){
-        controller.setPID(p,i,d);
+    public void periodic() {
+        controller.setPID(p, i, d);
 
         //check that PID not going over the hardware limit so it doesn't crash out.
         if (Math.abs(turretMotor.getCurrentPosition()) > hardwareLimit) {
             if (turretMotor.getCurrentPosition() > 0) {
-                controller.setSetPoint(hardwareLimit - 100);
+                setPoint = (hardwareLimit - 100);
             } else {
-                controller.setSetPoint(100 - hardwareLimit);
+                setPoint = (100 - hardwareLimit);
             }
 
-        //PID CONTROL
-        if (!isManual) {
-            //PID CONTROL:
-            controller.setSetPoint(setPoint);
-            turretMotor.set(basePower * controller.calculate(turretMotor.getCurrentPosition()));
-        } else {
-            //MANUAL MODE:
-            turretMotor.set(manualPower);
-            controller.setSetPoint(turretMotor.getCurrentPosition());
+            //PID CONTROL
+            if (!isManual) {
+                //PID CONTROL:
+                controller.setSetPoint(setPoint);
+                turretMotor.set(basePower * controller.calculate(turretMotor.getCurrentPosition()));
+            } else {
+                //MANUAL MODE:
+                turretMotor.set(manualPower);
+                controller.setSetPoint(turretMotor.getCurrentPosition());
+            }
+
+            //OBELISK
+
+
         }
-
-        //OBELISK
-
-
     }
-}
-}
+
+        public void periodic2() { // will be failsafe for turret moving based on ll result
+            controller.setPID(p,i,d);
+            llResult = ll.getLatestResult();
+            if (llResult.isValid() && llResult!=null){
+                tX = llResult.getTx();
+                tY= llResult.getTy();
+                tA= llResult.getTa();
+            }
+            lldistance = HEIGHT_OFFSET / Math.tan(Math.toRadians(a1-tY));
+
+            double targetAngle =0;
+            double power = controller.calculate(degreesToTicks(tX),targetAngle);
+            turretMotor.set(power);
+
+
+
+
+
+
+        }
+    }
+
