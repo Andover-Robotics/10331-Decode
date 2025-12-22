@@ -10,12 +10,24 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.arcrobotics.ftclib.controller.PIDController;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Teleop.Bot;
+
+import java.io.DataInput;
 
 
 @Config
 
 public class Turret {
+
+    /*TODO: implement proper wraparound for turret
+        implement testing code
+
+     */
     public static double p=0,i=0,d=0,tX,tY,tA;
     public static double basePower = 0.1, powerMin = 0.05;
     public double setPoint =0;
@@ -32,6 +44,8 @@ public class Turret {
     private final double gearRatio = 141.1/10;
     public Pose2d pose;
 
+    public static Pose3D botPose = new Pose3D(new Position(DistanceUnit.INCH,0,0,0,0),new YawPitchRollAngles(AngleUnit.DEGREES,0,0,0,0));
+
     public double distance,lldistance;
 
     public LLResult llResult;
@@ -44,6 +58,7 @@ public class Turret {
     private final double TURRET_BACK_OFFSET = 9;
 
     public Turret (OpMode opMode){
+
         //set controller PID
         controller = new PIDController(p,i,d);
 
@@ -154,20 +169,27 @@ public class Turret {
             controller.setPID(p,i,d);
             llResult = ll.getLatestResult();
             if (llResult.isValid() && llResult!=null){
-                tX = llResult.getTx();
-                tY= llResult.getTy();
-                tA= llResult.getTa();
+                botPose = llResult.getBotpose_MT2();
+                double dx = Bot.goalPose.x - botPose.getPosition().x;
+                double dy = Bot.goalPose.y - botPose.getPosition().y;
+                tX=llResult.getTx();
+                lldistance = Math.sqrt(dx*dx+dy*dy);
             }
-            lldistance = HEIGHT_OFFSET / Math.tan(Math.toRadians(a1-tY));
+
+            runToAngle(tX);
+            controller.calculate(turretMotor.getCurrentPosition());
+
+
 
             double targetAngle =0;
             double power = controller.calculate(degreesToTicks(tX),targetAngle);
             turretMotor.set(power);
 
 
+        }
 
-
-
+        public void relocalizeRobot(){
+            Bot.drive.localizer.setPose(new Pose2d(botPose.getPosition().toUnit(DistanceUnit.INCH).x,botPose.getPosition().toUnit(DistanceUnit.INCH).y, Math.toRadians(botPose.getOrientation().getYaw())));
 
         }
     }
