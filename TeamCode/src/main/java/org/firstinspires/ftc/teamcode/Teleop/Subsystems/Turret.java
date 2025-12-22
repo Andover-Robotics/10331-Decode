@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Teleop.Subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
@@ -110,7 +111,7 @@ public class Turret {
     }
 
     //AutoAim (Returns angle we need to feed into RunToAngle())
-    public double autoAimField(Pose2d targetPose) {
+    public double autoAimField(Vector2d targetPose) {
         pose = Bot.drive.localizer.getPose();
 
         //Robot Heading
@@ -121,8 +122,8 @@ public class Turret {
         double turretY = pose.position.y - TURRET_BACK_OFFSET * Math.sin(Math.toRadians(botHeading));
 
         //Vector from Turret to Target
-        double dx = targetPose.component1().x - turretX;
-        double dy = targetPose.component1().y - turretY;
+        double dx = targetPose.x - turretX;
+        double dy = targetPose.y - turretY;
 
         //Target Angle
         double theta = Math.toDegrees(Math.atan2(dy, dx));
@@ -167,9 +168,14 @@ public class Turret {
                 controller.setSetPoint(turretMotor.getCurrentPosition());
             }
 
-            //OBELISK
-
-
+            // LIMELIGHT RELOCALIZATION
+            ll.updateRobotOrientation(Math.toDegrees(Bot.drive.localizer.getPose().heading.log()));
+            LLResult result = ll.getLatestResult();
+            if (result != null) {
+                if (result.isValid()) {
+                    relocalizeRobot();
+                }
+            }
         }
     }
 
@@ -195,7 +201,6 @@ public class Turret {
 
         public void relocalizeRobot(){
             Bot.drive.localizer.setPose(new Pose2d(botPose.getPosition().toUnit(DistanceUnit.INCH).x,botPose.getPosition().toUnit(DistanceUnit.INCH).y, Math.toRadians(botPose.getOrientation().getYaw())));
-
         }
     }
 
