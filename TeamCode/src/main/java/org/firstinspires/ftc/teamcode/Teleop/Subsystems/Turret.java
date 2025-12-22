@@ -66,7 +66,11 @@ public class Turret {
 
         ll = opMode.hardwareMap.get(Limelight3A.class,"Limelight");
         ll.setPollRateHz(100);
+//        ll.pipelineSwitch(1); // pipeline index from web UI
+
         ll.start();
+
+
 
         //turretMotor default settings
         turretMotor = new MotorEx(opMode.hardwareMap, "turret", Motor.GoBILDA.RPM_1150);
@@ -81,6 +85,10 @@ public class Turret {
     // takes in ticks
     public void runTo(int t){ // takes in ticks
         setPoint = t;
+    }
+
+    public void switchLLPipeline(int pipe) {
+        ll.pipelineSwitch(pipe);
     }
 
     //Convert degrees to ticks to use for autoAim
