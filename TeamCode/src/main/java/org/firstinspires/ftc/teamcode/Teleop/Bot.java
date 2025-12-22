@@ -150,7 +150,7 @@ public class Bot {
     }
     public Action actionShoot(){
         return new SequentialAction(
-                new InstantAction(()->shooter.setTargetRPM((int)calculateRPM()+75)),//may need to not round here in the future
+                new InstantAction(()->shooter.setTargetRPM(regressionRPM())),//may need to not round here in the future
                 new SleepAction(0.3),
                 new InstantAction(()-> intake.openGate())
                 );
@@ -165,7 +165,7 @@ public class Bot {
 
     public Action actionShootGate(){
         return new SequentialAction(
-                new InstantAction(()->shooter.setTargetRPM((int)calculateRPM()+75)),
+                new InstantAction(()->shooter.setTargetRPM(regressionRPM())),
                 new SleepAction(0.35),
                 new InstantAction(() -> intake.openGate()),
                 new SleepAction(shootSleep),
@@ -207,9 +207,18 @@ public class Bot {
     }
 
 
-    public double calculateRPM(){
+    public int regressionRPM() {
+        // shooterA= -0.000860551,shooterB= 0.278353,shooterC= -11.54167,shooterD=3650.11204;
+
         double dist = aprilTag.calcAccurateDis();
-        return (shooter.shooterA * Math.pow(dist,3)) + (shooter.shooterB*Math.pow(dist,2))+ (shooter.shooterC*dist)+shooter.shooterD;
+        double shooterAComponent = shooter.shooterA * Math.pow(dist,3);
+        double shooterBComponent = shooter.shooterB * Math.pow(dist,2);
+        double shooterCComponent = shooter.shooterC * dist;
+        double shooterDComponent = shooter.shooterD;
+
+        double regression = shooterAComponent + shooterBComponent + shooterCComponent + shooterDComponent ;
+
+        return (int)regression + 75;
     }
 
     public class actionPeriodic implements Action {

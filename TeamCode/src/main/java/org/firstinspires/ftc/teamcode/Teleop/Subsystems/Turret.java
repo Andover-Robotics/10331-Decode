@@ -116,7 +116,7 @@ public class Turret {
         double dx = targetPose.component1().x - turretX;
         double dy = targetPose.component1().y - turretY;
 
-        //Turret Angle
+        //Target Angle
         double theta = Math.toDegrees(Math.atan2(dy, dx));
 
         distance= Math.sqrt(dx*dx+dy*dy);
@@ -180,12 +180,9 @@ public class Turret {
             controller.calculate(turretMotor.getCurrentPosition());
 
 
-
             double targetAngle =0;
             double power = controller.calculate(degreesToTicks(tX),targetAngle);
             turretMotor.set(power);
-
-
         }
 
         public void relocalizeRobot(){
