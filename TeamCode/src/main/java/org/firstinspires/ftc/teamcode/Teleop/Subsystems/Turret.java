@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Teleop.Subsystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -18,7 +17,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Teleop.Bot;
 
-import java.io.DataInput;
 
 
 @Config
@@ -35,24 +33,21 @@ public class Turret {
     private final PIDController controller;
 
     public boolean isManual = false;
+    private final double CPR = 145.1;
+    private final double GEAR_RATIO = 141.1/10;
 
     public static double manualPower;
     private final MotorEx turretMotor;
     public final double a1 = 20; //angle of physical limelight
     public final double HEIGHT_OFFSET = 16.625;
     private double hardwareLimit;
-    private double ticksPerDegree;
-    private final double gearRatio = 141.1/10;
+    private double degPerTick = 360 /(CPR* GEAR_RATIO);
     public Pose2d pose;
-
     public static Pose3D botPose = new Pose3D(new Position(DistanceUnit.INCH,0,0,0,0),new YawPitchRollAngles(AngleUnit.DEGREES,0,0,0,0));
-
-    public double distance,lldistance;
+    public Motor.Encoder turretEncoder;
+    public double distance,lldistance,power;
 
     public LLResult llResult;
-
-
-
     public Limelight3A ll;
 
     //all values in inches! NEED TO TUNE THIS
@@ -80,7 +75,10 @@ public class Turret {
         turretMotor.setInverted(false);
 
         //tune HardwareLimit
-        hardwareLimit = 0;
+//        hardwareLimit = 0;
+    }
+    public void switchPipeline(int pipe) {
+        ll.pipelineSwitch(pipe);
     }
 
     // takes in ticks
@@ -88,18 +86,9 @@ public class Turret {
         setPoint = t;
     }
 
-    public void switchLLPipeline(int pipe) {
-        ll.pipelineSwitch(pipe);
-    }
-
-    //Convert degrees to ticks to use for autoAim
-    public int degreesToTicks(double degrees) {
-        //formula: (TPR * gear_ratio / 360)
-        return ((int)(turretMotor.getCPR() * gearRatio)/360);
-    }
 
     public double wrapAround(double angle) {
-        angle %= 360;
+        angle %= 360; // i feel like there might be issue here
         if (angle <= -180) angle += 360;
         if (angle > 180) angle -= 360;
         return angle;
@@ -110,6 +99,7 @@ public class Turret {
         runTo(ticks);
     }
 
+
     //AutoAim (Returns angle we need to feed into RunToAngle())
     public double autoAimField(Vector2d targetPose) {
         pose = Bot.drive.localizer.getPose();
@@ -118,6 +108,7 @@ public class Turret {
         double botHeading = Math.toDegrees(pose.heading.log());
 
         //Turret Positions
+        //credit to Lighting:
         double turretX = pose.position.x - TURRET_BACK_OFFSET * Math.cos(Math.toRadians(botHeading));
         double turretY = pose.position.y - TURRET_BACK_OFFSET * Math.sin(Math.toRadians(botHeading));
 
@@ -126,57 +117,53 @@ public class Turret {
         double dy = targetPose.y - turretY;
 
         //Target Angle
-        double theta = Math.toDegrees(Math.atan2(dy, dx));
+        double ccwFieldTarget = Math.toDegrees(Math.atan2(dy, dx));
 
         distance= Math.sqrt(dx*dx+dy*dy);
 
-        return theta;
+        //robot heading is ccw+
+        //angle of turret relative to field is ccw+
+        //encoder of turret is cw+
+        //setting the target angle to the output theta will make it tweak out and go cw to the angle instead of ccw
+        //need to convert the output to being cw+ but shortest path
+
+        //partially chatted code may need to rewrite
+        //assume -180 relative to robot is 0 so turret should start facing backwards i think it tweaks out if it faces forwards at 0
+        double ccwTargetRelToRobot = normDelta(ccwFieldTarget - botHeading);
+        double cwTarget = normDelta(-ccwTargetRelToRobot);
+
+        return cwTarget;
     }
 
 
 
 
-    public void runManual(double manual) {
-        if (manual > powerMin || manual < -powerMin) {
-            isManual = true;
-            manualPower = manual;
-        } else {
-            manualPower = 0;
-            isManual = false;
-        }
-    }
+//    public void runManual(double manual) {
+//        if (manual > powerMin || manual < -powerMin) {
+//            isManual = true;
+//            manualPower = manual;
+//        } else {
+//            manualPower = 0;
+//            isManual = false;
+//        }
+//    }
 
     public void periodic() {
         controller.setPID(p, i, d);
 
         //check that PID not going over the hardware limit so it doesn't crash out.
-        if (Math.abs(turretMotor.getCurrentPosition()) > hardwareLimit) {
-            if (turretMotor.getCurrentPosition() > 0) {
-                setPoint = (hardwareLimit - 100);
-            } else {
-                setPoint = (100 - hardwareLimit);
-            }
+//        if (Math.abs(turretMotor.getCurrentPosition()) > hardwareLimit) {
+//            if (turretMotor.getCurrentPosition() > 0) {
+//                setPoint = (hardwareLimit - 100);
+//            } else {
+//                setPoint = (100 - hardwareLimit);
+//            }
+//        }
 
-            //PID CONTROL
-            if (!isManual) {
-                //PID CONTROL:
-                controller.setSetPoint(setPoint);
-                turretMotor.set(basePower * controller.calculate(turretMotor.getCurrentPosition()));
-            } else {
-                //MANUAL MODE:
-                turretMotor.set(manualPower);
-                controller.setSetPoint(turretMotor.getCurrentPosition());
-            }
-
-            // LIMELIGHT RELOCALIZATION
-            ll.updateRobotOrientation(Math.toDegrees(Bot.drive.localizer.getPose().heading.log()));
-            LLResult result = ll.getLatestResult();
-            if (result != null) {
-                if (result.isValid()) {
-                    relocalizeRobot();
-                }
-            }
-        }
+            // add manual back later but i cant look at ts rn
+            controller.setSetPoint(setPoint);
+            power = controller.calculate(turretMotor.getCurrentPosition());
+            turretMotor.set(power);
     }
 
         public void periodic2() { // will be failsafe for turret moving based on ll result
@@ -200,7 +187,44 @@ public class Turret {
         }
 
         public void relocalizeRobot(){
-            Bot.drive.localizer.setPose(new Pose2d(botPose.getPosition().toUnit(DistanceUnit.INCH).x,botPose.getPosition().toUnit(DistanceUnit.INCH).y, Math.toRadians(botPose.getOrientation().getYaw())));
+            Pose2d botPose2d = convertPose(botPose);
+            Bot.drive.localizer.setPose(botPose2d);
+        }
+
+        //getters
+        public double getTargetTicks(){return setPoint;}
+        public double getCurrentTicks(){return turretMotor.getCurrentPosition();}
+
+        public double getTargetDegrees(){return setPoint*degPerTick;}
+        public double getCurrentDegrees(){return turretMotor.getCurrentPosition() * degPerTick;}
+
+        public double getCurrentPower(){return power;}
+
+
+
+        // util
+
+    //Convert degrees to ticks to use for autoAim
+        public int degreesToTicks(double degrees) {
+        //formula: (TPR * gear_ratio / 360)
+        return ((int)(CPR * GEAR_RATIO)/360);
+        }
+
+        //normalize to ts [−180°,180°) so that shortest paths actually work
+        // chatted so might not work; supposedly faster than trig
+        public double normDelta(double angle){
+        return ((angle + 180) % 360 + 360) % 360 - 180;
+    }
+        //stackoverflow
+//        public double normDelta(double angleDelta) {
+//            return Math.toDegrees(Math.atan2(Math.sin(Math.toRadians(angleDelta)), Math.cos(Math.toRadians(angleDelta))));
+//        }
+
+        public Pose2d convertPose(Pose3D pose){
+        double x = pose.getPosition().toUnit(DistanceUnit.INCH).x;
+        double y = pose.getPosition().toUnit(DistanceUnit.INCH).y;
+        double heading = Math.toRadians(pose.getOrientation().getYaw());
+        return new Pose2d(x,y,heading);
         }
     }
 

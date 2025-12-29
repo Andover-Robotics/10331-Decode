@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.Teleop.Subsystems.AprilTag;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Hood;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Turret;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 public class BotTest {
@@ -22,6 +23,7 @@ public class BotTest {
     public Hood hood;
     public AprilTag aprilTag;
     public Shooter shooter;
+    public Turret turret;
     public VisionPortal visionPortal;
     public OpMode opMode;
     public boolean fieldCentricRunMode = false;
@@ -30,11 +32,8 @@ public class BotTest {
 
 
     public BotTest(OpMode opMode) {
-        this.aprilTag = new AprilTag(opMode);
         this.opMode = opMode;
-        this.shooter = new Shooter(opMode);
-        this.hood = new Hood(opMode);
-        this.intake = new Intake(opMode);
+        this.turret = new Turret(opMode);
         try {
             fieldCentricRunMode = false;
         } catch (Exception e) {

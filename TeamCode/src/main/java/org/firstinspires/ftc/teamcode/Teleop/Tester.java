@@ -30,21 +30,17 @@ public class Tester extends LinearOpMode {
 
         while (opModeIsActive()&& !isStopRequested()) {
             TelemetryPacket packet = new TelemetryPacket();
-            bot.aprilTag.findAprilTag();
-            bot.shooter.periodic();
-            bot.hood.goToHood(Hood.outtakePos);
-            bot.intake.gate1.setPosition(pos);
+
+            bot.turret.runToAngle(pos);
 
 
-            telemetry.addData("target RPM",bot.shooter.getTargetRPM());
-            telemetry.addData("Measrued RPM",bot.shooter.getRPM());
-            telemetry.addData("motor speed",bot.shooter.getShooterPower());
-            telemetry.addData("at speed?",bot.shooter.atSpeed());
-            telemetry.addData("Apriltag ID: ", bot.aprilTag.getId());
-            telemetry.addData("Distance from Apriltag",bot.aprilTag.getRange());
-            telemetry.addData("Angle offset from Apriltag",bot.aprilTag.getBearing());
-            telemetry.addData("Bot yaw from Apriltag",bot.aprilTag.getYaw());
-            telemetry.addData("Servo pos",bot.hood.getPos());
+            telemetry.addData("Target Ticks",bot.turret.getTargetTicks());
+            telemetry.addData("Current Ticks",bot.turret.getCurrentTicks());
+            telemetry.addData("Target Degrees",bot.turret.getTargetDegrees());
+            telemetry.addData("Current Degrees",bot.turret.getCurrentDegrees());
+            telemetry.addData("Current Power",bot.turret.getCurrentPower());
+
+
             telemetry.update();
             dash.sendTelemetryPacket(packet);
 
