@@ -27,24 +27,23 @@ public class Turret {
         implement testing code
 
      */
-    public static double p=0,i=0,d=0,tX,tY,tA;
+    public static double p=0.0035,i=0,d=0.00015,tX,tY,tA;
     public static double basePower = 0.1, powerMin = 0.05;
-    public double setPoint =0;
+    public static double setPoint = 0;
     private final PIDController controller;
 
     public boolean isManual = false;
     private final double CPR = 145.1;
-    private final double GEAR_RATIO = 141.1/10;
+    private final double GEAR_RATIO = 102/14;
 
     public static double manualPower;
-    private final MotorEx turretMotor;
+    public final MotorEx turretMotor;
     public final double a1 = 20; //angle of physical limelight
     public final double HEIGHT_OFFSET = 16.625;
     private double hardwareLimit;
     private double degPerTick = 360 /(CPR* GEAR_RATIO);
     public Pose2d pose;
     public static Pose3D botPose = new Pose3D(new Position(DistanceUnit.INCH,0,0,0,0),new YawPitchRollAngles(AngleUnit.DEGREES,0,0,0,0));
-    public Motor.Encoder turretEncoder;
     public double distance,lldistance,power;
 
     public LLResult llResult;
@@ -59,12 +58,12 @@ public class Turret {
         controller = new PIDController(p,i,d);
 
 //        controller.setTolerance(tolerance);
-
-        ll = opMode.hardwareMap.get(Limelight3A.class,"Limelight");
-        ll.setPollRateHz(100);
-//        ll.pipelineSwitch(1); // pipeline index from web UI
-
-        ll.start();
+//
+//        ll = opMode.hardwareMap.get(Limelight3A.class,"Limelight");
+//        ll.setPollRateHz(100);
+//       ll.pipelineSwitch(1); // pipeline index from web UI
+//
+//        ll.start();
 
 
 
@@ -84,20 +83,19 @@ public class Turret {
     // takes in ticks
     public void runTo(int t){ // takes in ticks
         setPoint = t;
-    }
+    }//tested works
 
 
     public double wrapAround(double angle) {
-        angle %= 360; // i feel like there might be issue here
-        if (angle <= -180) angle += 360;
-        if (angle > 180) angle -= 360;
+       // angle %= 360; // i feel like there might be issue here
+        if (angle >= 360) angle -= 360;
+        if (angle < 0) angle += 360;
         return angle;
-    }
+    } //tested works i think may need to change when angles are normalized
 
     public void runToAngle(double angle) {
-        int ticks = degreesToTicks(wrapAround(angle));
-        runTo(ticks);
-    }
+        runTo((degreesToTicks(wrapAround(angle))));
+    } // tested works i think
 
 
     //AutoAim (Returns angle we need to feed into RunToAngle())
@@ -149,6 +147,7 @@ public class Turret {
 //    }
 
     public void periodic() {
+        power =0;
         controller.setPID(p, i, d);
 
         //check that PID not going over the hardware limit so it doesn't crash out.
@@ -161,10 +160,11 @@ public class Turret {
 //        }
 
             // add manual back later but i cant look at ts rn
-            controller.setSetPoint(setPoint);
-            power = controller.calculate(turretMotor.getCurrentPosition());
+            //controller.setSetPoint(setPoint);
+            power = controller.calculate(turretMotor.getCurrentPosition(),setPoint);
+            power = clamp(power,1.0,-1.0);
             turretMotor.set(power);
-    }
+    } //tested works i think
 
         public void periodic2() { // will be failsafe for turret moving based on ll result
             controller.setPID(p,i,d);
@@ -207,7 +207,7 @@ public class Turret {
     //Convert degrees to ticks to use for autoAim
         public int degreesToTicks(double degrees) {
         //formula: (TPR * gear_ratio / 360)
-        return ((int)(CPR * GEAR_RATIO)/360);
+        return ((int)(degrees*((CPR * GEAR_RATIO)/360)));
         }
 
         //normalize to ts [−180°,180°) so that shortest paths actually work
@@ -226,5 +226,9 @@ public class Turret {
         double heading = Math.toRadians(pose.getOrientation().getYaw());
         return new Pose2d(x,y,heading);
         }
-    }
+
+    private double clamp(double power,double maxV, double minV) {
+    return Math.max(minV,Math.min(maxV,power));
+}
+}
 

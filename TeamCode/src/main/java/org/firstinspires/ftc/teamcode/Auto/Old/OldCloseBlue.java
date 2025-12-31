@@ -49,7 +49,7 @@ public class OldCloseBlue extends LinearOpMode {
     public void runOpMode() throws InterruptedException{
         Bot.instance = null;
         bot = Bot.getInstance(this);
-        bot.prepAuto(20);
+        bot.prepAuto(20,false);
         MecanumDrive drive = new MecanumDrive(hardwareMap,init);
 
         while(bot.aprilTag.visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Hood;
+import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Turret;
 
 @Config
 @TeleOp
@@ -24,14 +25,17 @@ public class Tester extends LinearOpMode {
         BotTest.instance = null;
         bot = BotTest.getInstance(this);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        bot.turret.turretMotor.resetEncoder();
 
 
         waitForStart();
 
         while (opModeIsActive()&& !isStopRequested()) {
             TelemetryPacket packet = new TelemetryPacket();
+             bot.turret.periodic();
 
             bot.turret.runToAngle(pos);
+
 
 
             telemetry.addData("Target Ticks",bot.turret.getTargetTicks());
