@@ -142,6 +142,31 @@ public class Bot {
     }
 
 
+    //count current balls shot indexing from 0, using the current spike when shot
+    //increment a counter and lower height of the hood
+    public void recoil(){
+        int ballsShot =0;
+        if (shooter.getCurrent() >9000){ //arbitrary current number need to test
+            ballsShot++;
+        }
+
+        switch (ballsShot){
+            case 0:
+                break;
+            case 1:
+                if(shooter.getCurrent() >9000){hood.goToHood(0.2);}
+                break;
+            case 2:
+                if(shooter.getCurrent() >9000){hood.goToHood(0.1);}
+                break;
+            default:
+                hood.goToHood(0.3);
+        }
+    }
+
+
+
+
 
     public Action shootSetup(){
          return new ParallelAction(
