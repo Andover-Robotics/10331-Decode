@@ -6,10 +6,13 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.Auto.miscRR.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.AprilTag;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Hood;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Intake;
@@ -28,12 +31,18 @@ public class BotTest {
     public OpMode opMode;
     public boolean fieldCentricRunMode = false;
     public MotorEx fl, fr, bl, br;
+    public boolean isRed;
+    public static Pose2d storedPose = new Pose2d(0,0,0);
 
-
+    public static Vector2d goalPose = new Vector2d(65,-60);// init with red
+    public static Pose2d resetPose = new Pose2d(-63,-63,Math.toRadians(-90));
+    public static MecanumDrive drive;
 
     public BotTest(OpMode opMode) {
         this.opMode = opMode;
         this.turret = new Turret(opMode);
+        drive = new MecanumDrive(opMode.hardwareMap, storedPose);
+
         try {
             fieldCentricRunMode = false;
         } catch (Exception e) {
@@ -49,14 +58,16 @@ public class BotTest {
         instance.opMode = opMode;
         return instance;
     }
-
-//    public Action shootOne(){
-//        return new ParallelAction(
-//                new InstantAction(()->hood.hoodServo.setPosition(hoodServoPos())),
-//                new InstantAction(()->shooter.setTargetRPM(5000)),
-//                new InstantAction(()->intake.toilet3.set(1))
-//        );
-//    }
+    public void updatePoses(){
+        if (isRed){
+            goalPose = new Vector2d(goalPose.x,Math.abs(goalPose.y));
+            resetPose = new Pose2d(resetPose.component1().x, Math.abs(resetPose.component1().y), Math.abs(resetPose.heading.log()));
+        }
+        else {
+            goalPose = new Vector2d(goalPose.x,-1*(goalPose.y));
+            resetPose = new Pose2d(resetPose.component1().x, -1*(resetPose.component1().y), -1*(resetPose.heading.log()));
+        }
+    }
 
     public double hoodServoPos() { // assuming function for hood angle: distance is linear for now
         return 1 * (aprilTag.getBearing()) + 50; //PLACEHOLDER returns angle in a servo pos

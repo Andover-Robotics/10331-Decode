@@ -19,6 +19,7 @@ public class Tester extends LinearOpMode {
 
 
 
+
     @Override
 
     public void runOpMode(){
@@ -26,6 +27,8 @@ public class Tester extends LinearOpMode {
         bot = BotTest.getInstance(this);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         bot.turret.turretMotor.resetEncoder();
+        bot.isRed = false;
+
 
 
         waitForStart();
@@ -34,7 +37,6 @@ public class Tester extends LinearOpMode {
             TelemetryPacket packet = new TelemetryPacket();
              bot.turret.periodic();
 
-            bot.turret.runToAngle(pos);
 
 
 
@@ -43,6 +45,7 @@ public class Tester extends LinearOpMode {
             telemetry.addData("Target Degrees",bot.turret.getTargetDegrees());
             telemetry.addData("Current Degrees",bot.turret.getCurrentDegrees());
             telemetry.addData("Current Power",bot.turret.getCurrentPower());
+            telemetry.addData("current pos", BotTest.drive.localizer.getPose());
 
 
             telemetry.update();

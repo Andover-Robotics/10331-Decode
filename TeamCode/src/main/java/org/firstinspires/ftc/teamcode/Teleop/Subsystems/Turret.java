@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Teleop.Bot;
-
+import org.firstinspires.ftc.teamcode.Teleop.BotTest;
 
 
 @Config
@@ -50,7 +50,7 @@ public class Turret {
     public Limelight3A ll;
 
     //all values in inches! NEED TO TUNE THIS
-    private final double TURRET_BACK_OFFSET = 9;
+    private final double TURRET_BACK_OFFSET = 2.3;
 
     public Turret (OpMode opMode){
 
@@ -87,9 +87,11 @@ public class Turret {
 
 
     public double wrapAround(double angle) {
+        angle =AngleUnit.normalizeDegrees(angle);
        // angle %= 360; // i feel like there might be issue here
-        if (angle >= 360) angle -= 360;
-        if (angle < 0) angle += 360;
+//        if (angle > 179) angle += 360; //high limit
+//        if (angle <= -180) angle -= 360; // low limit
+//        angle %=360;
         return angle;
     } //tested works i think may need to change when angles are normalized
 
@@ -100,7 +102,7 @@ public class Turret {
 
     //AutoAim (Returns angle we need to feed into RunToAngle())
     public double autoAimField(Vector2d targetPose) {
-        pose = Bot.drive.localizer.getPose();
+        pose = BotTest.drive.localizer.getPose();
 
         //Robot Heading
         double botHeading = Math.toDegrees(pose.heading.log());
@@ -148,6 +150,8 @@ public class Turret {
 
     public void periodic() {
         power =0;
+        BotTest.drive.updatePoseEstimate();
+
         controller.setPID(p, i, d);
 
         //check that PID not going over the hardware limit so it doesn't crash out.
@@ -161,9 +165,12 @@ public class Turret {
 
             // add manual back later but i cant look at ts rn
             //controller.setSetPoint(setPoint);
+            runToAngle(autoAimField(Bot.goalPose));
+
             power = controller.calculate(turretMotor.getCurrentPosition(),setPoint);
             power = clamp(power,1.0,-1.0);
             turretMotor.set(power);
+
     } //tested works i think
 
         public void periodic2() { // will be failsafe for turret moving based on ll result
