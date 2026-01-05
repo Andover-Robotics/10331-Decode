@@ -87,10 +87,10 @@ public class Turret {
 
 
     public double wrapAround(double angle) {
-        angle =AngleUnit.normalizeDegrees(angle);
+        //angle =AngleUnit.normalizeDegrees(angle);
        // angle %= 360; // i feel like there might be issue here
-//        if (angle > 179) angle += 360; //high limit
-//        if (angle <= -180) angle -= 360; // low limit
+        if (angle < 0) angle += 360; //high limit
+        if (angle >= 360) angle -= 360; // low limit
 //        angle %=360;
         return angle;
     } //tested works i think may need to change when angles are normalized
@@ -119,7 +119,7 @@ public class Turret {
         //Target Angle
         double ccwFieldTarget = Math.toDegrees(Math.atan2(dy, dx));
 
-        distance= Math.sqrt(dx*dx+dy*dy);
+        distance = Math.sqrt(dx*dx+dy*dy);
 
         //robot heading is ccw+
         //angle of turret relative to field is ccw+
@@ -132,7 +132,7 @@ public class Turret {
         double ccwTargetRelToRobot = normDelta(ccwFieldTarget - botHeading);
         double cwTarget = normDelta(-ccwTargetRelToRobot);
 
-        return cwTarget;
+        return cwTarget +270;
     }
 
 
@@ -149,7 +149,7 @@ public class Turret {
 //    }
 
     public void periodic() {
-        power =0;
+        power = 0;
         BotTest.drive.updatePoseEstimate();
 
         controller.setPID(p, i, d);

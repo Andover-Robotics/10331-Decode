@@ -53,7 +53,8 @@ public class CloseBlue extends LinearOpMode {
         Bot.instance = null;
         bot = Bot.getInstance(this);
         bot.prepAuto(20,false);
-        MecanumDrive drive = new MecanumDrive(hardwareMap,init);
+        MecanumDrive drive = Bot.drive;
+        drive.localizer.setPose(init);
 
         while(bot.aprilTag.visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
             sleep(1);
@@ -118,7 +119,7 @@ public class CloseBlue extends LinearOpMode {
                 .waitSeconds(3)
                 .stopAndAdd(bot.actionStopShoot())
                 .waitSeconds(1)
-
+                .stopAndAdd(new InstantAction(()->Bot.storedPose = drive.localizer.getPose()))
                 .build();
 
 
@@ -128,7 +129,7 @@ public class CloseBlue extends LinearOpMode {
                         bot.actionPeriodic(),
                         runAuto
                 ));
-        Bot.storedPose = drive.localizer.getPose();
+
 
 
 
