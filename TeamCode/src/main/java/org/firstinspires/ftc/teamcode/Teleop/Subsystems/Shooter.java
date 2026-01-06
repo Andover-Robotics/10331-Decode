@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.Teleop.Bot;
 
 @Config
 public class Shooter {
@@ -20,12 +21,15 @@ public class Shooter {
 
     public final MotorEx shooter;
     //y=-0.000860551x^{3}+0.278353x^{2}-11.54167x+3650.11204 regression values
-    public double shooterA = -0.000860551, shooterB = 0.278353, shooterC = -11.54167, shooterD = 3650.11204;
+    public static double shooterA = -0.000860551, shooterB = 0.278353, shooterC = -11.54167, shooterD = 3650.11204;
     public final MotorEx shooter2;
     public static double p = 0.00025, i = 0.0, d = 0.0, f = 0.000195;
     private final PIDController controller;
     public static int targetRPM = 0;
     public static int target;
+
+    public boolean enableShooter=false;
+
 
     public double RPM = 0.0;
     public double shooterPower = 0.0;
@@ -64,7 +68,7 @@ public class Shooter {
         double pid = controller.calculate(RPM, targetRPM);//error
         // gets product of p constant and error
 
-        shooterPower = pid + ff; // makes sure that the rpm has the feedforward floor
+        shooterPower = pid + ff;// makes sure that the rpm has the feedforward floor
 
 //        if (Math.abs(targetRPM) < 1e-3) {
 //            shooterPower = 0.0;
@@ -74,6 +78,9 @@ public class Shooter {
 //        }
         shooterPower = checkPower(shooterPower, 1.0, 0);
         setPower(shooterPower);
+
+        if (enableShooter) setTargetRPM(Bot.regressionRPM(Turret.distance));
+        else setTargetRPM(0);
     }
 
     public void reset() {

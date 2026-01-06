@@ -175,7 +175,7 @@ public class Bot {
     }
     public Action actionShoot(){
         return new SequentialAction(
-                new InstantAction(()->shooter.setTargetRPM(regressionRPM())),//may need to not round here in the future
+                new InstantAction(()->shooter.setTargetRPM(regressionRPM(Bot.shootDelay))),//may need to not round here in the future
                 new SleepAction(0.3),
                 new InstantAction(()-> intake.openGate())
                 );
@@ -190,7 +190,7 @@ public class Bot {
 
     public Action actionShootGate(){
         return new SequentialAction(
-                new InstantAction(()->shooter.setTargetRPM(regressionRPM())),
+                new InstantAction(()->shooter.setTargetRPM(regressionRPM(Bot.shootDelay))),
                 new SleepAction(0.35),
                 new InstantAction(() -> intake.openGate()),
                 new SleepAction(shootSleep),
@@ -228,18 +228,17 @@ public class Bot {
                 new InstantAction(()->shooter.setTargetRPM(4000)),//may need to not round here in the future
                 new SleepAction(0.3),
                 shootSetup()
+
         );
     }
 
 
-    public int regressionRPM() {
+    public static int regressionRPM(double dist) {
         // shooterA= -0.000860551,shooterB= 0.278353,shooterC= -11.54167,shooterD=3650.11204;
-
-        double dist = aprilTag.calcAccurateDis();
-        double shooterAComponent = shooter.shooterA * Math.pow(dist,3);
-        double shooterBComponent = shooter.shooterB * Math.pow(dist,2);
-        double shooterCComponent = shooter.shooterC * dist;
-        double shooterDComponent = shooter.shooterD;
+        double shooterAComponent = Shooter.shooterA * Math.pow(dist,3);
+        double shooterBComponent = Shooter.shooterB * Math.pow(dist,2);
+        double shooterCComponent = Shooter.shooterC * dist;
+        double shooterDComponent = Shooter.shooterD;
 
         double regression = shooterAComponent + shooterBComponent + shooterCComponent + shooterDComponent ;
 

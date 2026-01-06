@@ -44,7 +44,8 @@ public class Turret {
     private double degPerTick = 360 /(CPR* GEAR_RATIO);
     public Pose2d pose;
     public static Pose3D botPose = new Pose3D(new Position(DistanceUnit.INCH,0,0,0,0),new YawPitchRollAngles(AngleUnit.DEGREES,0,0,0,0));
-    public double distance,lldistance,power;
+    public double lldistance,power;
+    public static double distance;
 
     public LLResult llResult;
     public Limelight3A ll;
