@@ -93,6 +93,9 @@ public class Shooter {
         targetRPM = t;
 
     }
+    public void enableShooter(boolean on){
+        enableShooter=on;
+    }
 
 
     public double getTargetRPM() {

@@ -152,9 +152,10 @@ public class Bot {
 
         switch (ballsShot){
             case 0:
+
                 break;
             case 1:
-                if(shooter.getCurrent() >9000){hood.goToHood(0.2);}
+                if(shooter.getCurrent() >9000){hood.goToHood(0.2); ballsShot++;}
                 break;
             case 2:
                 if(shooter.getCurrent() >9000){hood.goToHood(0.1);}
@@ -175,7 +176,7 @@ public class Bot {
     }
     public Action actionShoot(){
         return new SequentialAction(
-                new InstantAction(()->shooter.setTargetRPM(regressionRPM(Bot.shootDelay))),//may need to not round here in the future
+                new InstantAction(()->shooter.enableShooter(true)),//may need to not round here in the future
                 new SleepAction(0.3),
                 new InstantAction(()-> intake.openGate())
                 );
@@ -183,14 +184,14 @@ public class Bot {
 
     public Action actionStopShoot(){
         return new SequentialAction(
-                new InstantAction(()->shooter.setTargetRPM(0)),//may need to not round here in the future
+                new InstantAction(()->shooter.enableShooter(false)),
                 new InstantAction(()-> intake.closeGate())
         );
     }
 
     public Action actionShootGate(){
         return new SequentialAction(
-                new InstantAction(()->shooter.setTargetRPM(regressionRPM(Bot.shootDelay))),
+                new InstantAction(()->shooter.enableShooter(true)),
                 new SleepAction(0.35),
                 new InstantAction(() -> intake.openGate()),
                 new SleepAction(shootSleep),
