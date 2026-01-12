@@ -37,6 +37,11 @@ public class Shooter {
 
     public static double toleranceRPM = 60.0;   // speed window
 
+    public boolean isRecoil=false; //recoil boolean
+    public Hood hood;
+
+
+
 
     public Shooter(OpMode opMode) {
         shooter = new MotorEx(opMode.hardwareMap, "shooter", Motor.GoBILDA.BARE);
@@ -47,6 +52,7 @@ public class Shooter {
         shooter2.setRunMode(Motor.RunMode.RawPower);
         shooter2.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
         controller = new PIDController(p, i, d);
+        //this.hood = new Hood(opMode); idk if this is needed
 
 
     }
@@ -81,6 +87,29 @@ public class Shooter {
 
         if (enableShooter) setTargetRPM(Bot.regressionRPM(Turret.distance));
         else setTargetRPM(0);
+//        if (isRecoil && enableShooter){
+//            int ballsShot =0; //tracked by recoil
+//            //will this work because if ballsShot never increases the other cases will never run the switch statement will break after case 0?
+//            switch (ballsShot){
+//                case 0:
+//                    break;
+//                case 1:
+//                    if(getCurrent() >9000){ //9000 is arbitrary
+//                        hood.goToHood(0.2);
+//                        ballsShot++; //hm
+//                    }
+//                    break;
+//                case 2:
+//                    if(getCurrent() >9000||ballsShot == 1){
+//                        hood.goToHood(0.1);
+//                        ballsShot++;
+//                    }
+//                    break;
+//                default:
+//                    hood.goToHood(0.3);
+//            }
+//        }
+
     }
 
     public void reset() {

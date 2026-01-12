@@ -119,6 +119,7 @@ public class CloseRed extends LinearOpMode {
                 .waitSeconds(3)
                 .stopAndAdd(bot.actionStopShoot())
                 .waitSeconds(1)
+                .stopAndAdd(new InstantAction(()-> bot.setStoredPose(drive.localizer.getPose())))
 
                 .build();
 
