@@ -42,6 +42,7 @@ public class Bot {
     public MotorEx fl, fr, bl, br;
     public static double shootSleep=0.2, shootDelay=0.7;
     public boolean isRed;
+    public boolean recoilIsTrue;
 
 
     //Stored poses
@@ -147,15 +148,14 @@ public class Bot {
 
     //count current balls shot indexing from 0, using the current spike when shot
     //increment a counter and lower height of the hood
-    public void recoil(){
+    //public void recoil(){
         int ballsShot =0;
-        if (shooter.getCurrent() >9000){ //arbitrary current number need to test
-            ballsShot++;
-        }
+        //if (shooter.getCurrent() >9000){ //arbitrary current number need to test
+            //ballsShot++;
+        //}
 
-        switch (ballsShot){
+        /*switch (ballsShot){
             case 0:
-
                 break;
             case 1:
                 if(shooter.getCurrent() >9000){hood.goToHood(0.2); ballsShot++;}
@@ -165,12 +165,8 @@ public class Bot {
                 break;
             default:
                 hood.goToHood(0.3);
-        }
-    }
-
-
-
-
+        }*/
+    //}
 
     public Action shootSetup(){
          return new ParallelAction(
@@ -182,6 +178,7 @@ public class Bot {
                 new InstantAction(()->shooter.enableShooter(true)),//may need to not round here in the future
                 new SleepAction(0.3),
                 new InstantAction(()-> intake.openGate())
+
                 );
     }
 
@@ -254,6 +251,7 @@ public class Bot {
         public boolean run(@NonNull TelemetryPacket packet) {
             aprilTag.findAprilTag();
             shooter.periodic();
+
             return true;
         }
     }
@@ -312,6 +310,12 @@ public class Bot {
         updatePoses();
 
     }
+
+    public void setStoredPose(Pose2d sp){
+        storedPose=sp;
+    }
+
+    //current bot pos to stored pos at  end of auto
 
 //
 //    public BNO055IMU returnIMU(){
