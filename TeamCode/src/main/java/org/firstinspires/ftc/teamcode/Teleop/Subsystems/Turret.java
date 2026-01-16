@@ -16,7 +16,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Teleop.Bot;
-import org.firstinspires.ftc.teamcode.Teleop.BotTest;
 
 
 @Config
@@ -52,6 +51,7 @@ public class Turret {
 
     //all values in inches! NEED TO TUNE THIS
     private final double TURRET_BACK_OFFSET = 2.3;
+    public boolean reset=false;
 
     public Turret (OpMode opMode){
 
@@ -103,7 +103,7 @@ public class Turret {
 
     //AutoAim (Returns angle we need to feed into RunToAngle())
     public double autoAimField(Vector2d targetPose) {
-        pose = BotTest.drive.localizer.getPose();
+        pose = Bot.drive.localizer.getPose();
 
         //Robot Heading
         double botHeading = Math.toDegrees(pose.heading.log());
@@ -151,7 +151,7 @@ public class Turret {
 
     public void periodic() {
         power = 0;
-        BotTest.drive.updatePoseEstimate();
+        Bot.drive.updatePoseEstimate();
 
         controller.setPID(p, i, d);
 
@@ -217,6 +217,13 @@ public class Turret {
         //formula: (TPR * gear_ratio / 360)
         return ((int)(degrees*((CPR * GEAR_RATIO)/360)));
         }
+
+        public void resetEncoder(){
+        turretMotor.resetEncoder();
+        reset=true;
+
+        }
+
 
         //normalize to ts [−180°,180°) so that shortest paths actually work
         // chatted so might not work; supposedly faster than trig

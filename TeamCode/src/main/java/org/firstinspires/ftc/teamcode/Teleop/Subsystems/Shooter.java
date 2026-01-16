@@ -26,7 +26,7 @@ public class Shooter {
     public static double p = 0.00025, i = 0.0, d = 0.0, f = 0.000195;
     private final PIDController controller;
     public static int targetRPM = 0;
-    public static int target;
+    public boolean reset =false;
 
     public boolean enableShooter=false;
 
@@ -87,6 +87,9 @@ public class Shooter {
         targetRPM = 0;
         shooterPower = 0;
         controller.reset();
+        shooter.resetEncoder();
+        shooter2.resetEncoder();
+        reset=true;
     }
 
     public void setTargetRPM(int t) {// probably temp but I cant remember how to do ts

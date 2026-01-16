@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.Teleop.Subsystems.AprilTag;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Hood;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Turret;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class Bot {
 
     public AprilTag aprilTag;
     public Shooter shooter;
+    public Turret turret;
     public VisionPortal visionPortal;
     public OpMode opMode;
     public boolean fieldCentricRunMode = false;
@@ -46,7 +48,7 @@ public class Bot {
     //---------------------------------------------------------
     public static Pose2d storedPose = new Pose2d(0,0,0);
     public static Vector2d goalPose = new Vector2d(65,-60);// init with red
-    public static Pose2d resetPose = new Pose2d(-63,-63,Math.toRadians(-90));
+    public static Pose2d resetPose = new Pose2d(-63,-63,Math.toRadians(-90)); // change when we figure out where we want to reset
 
 
 
@@ -65,6 +67,7 @@ public class Bot {
         this.shooter = new Shooter(opMode);
         this.hood = new Hood(opMode);
         this.intake = new Intake(opMode);
+        this.turret = new Turret(opMode);
         try {
             fieldCentricRunMode = false;
         } catch (Exception e) {
