@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Teleop.Subsystems;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
@@ -16,7 +17,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Teleop.Bot;
-import org.firstinspires.ftc.teamcode.Teleop.BotTest;
 
 
 @Config
@@ -31,6 +31,7 @@ public class Turret {
     public static double basePower = 0.1, powerMin = 0.05;
     public static double setPoint = 0;
     private final PIDController controller;
+    Hood hood; //slime me out
 
     public boolean isManual = false;
     private final double CPR = 145.1;
@@ -44,14 +45,20 @@ public class Turret {
     private double degPerTick = 360 /(CPR* GEAR_RATIO);
     public Pose2d pose;
     public static Pose3D botPose = new Pose3D(new Position(DistanceUnit.INCH,0,0,0,0),new YawPitchRollAngles(AngleUnit.DEGREES,0,0,0,0));
+    public PoseVelocity2d botVel;
     public double lldistance,power;
     public static double distance;
+    public static double compDistance;
 
     public LLResult llResult;
     public Limelight3A ll;
 
     //all values in inches! NEED TO TUNE THIS
     private final double TURRET_BACK_OFFSET = 2.3;
+    public double vectorXComp;
+    public double vectorYComp;
+    public boolean enableVelComp;
+
 
     public Turret (OpMode opMode){
 
@@ -103,7 +110,7 @@ public class Turret {
 
     //AutoAim (Returns angle we need to feed into RunToAngle())
     public double autoAimField(Vector2d targetPose) {
-        pose = BotTest.drive.localizer.getPose();
+        pose = Bot.drive.localizer.getPose();
 
         //Robot Heading
         double botHeading = Math.toDegrees(pose.heading.log());
@@ -116,11 +123,18 @@ public class Turret {
         //Vector from Turret to Target
         double dx = targetPose.x - turretX;
         double dy = targetPose.y - turretY;
-
+        double ccwFieldTarget;
+        distance = Math.sqrt(dx * dx + dy * dy);
+        //changeTrackingPose(dx,dy);
+       // compDistance = Math.sqrt(vectorXComp*vectorXComp+vectorYComp*vectorYComp);
+        //TODO: uncomment once the bomboclatt placeholders are gone
         //Target Angle
-        double ccwFieldTarget = Math.toDegrees(Math.atan2(dy, dx));
-
-        distance = Math.sqrt(dx*dx+dy*dy);
+        if(enableVelComp) { //might need to move to tracking pose method
+             ccwFieldTarget = Math.toDegrees(Math.atan2(dy, dx));
+        }
+        else{
+            ccwFieldTarget = Math.atan2(vectorYComp,vectorXComp);
+        }
 
         //robot heading is ccw+
         //angle of turret relative to field is ccw+
@@ -151,7 +165,7 @@ public class Turret {
 
     public void periodic() {
         power = 0;
-        BotTest.drive.updatePoseEstimate();
+        Bot.drive.updatePoseEstimate();
 
         controller.setPID(p, i, d);
 
@@ -173,6 +187,37 @@ public class Turret {
             turretMotor.set(power);
 
     } //tested works i think
+
+
+        public double airtimeCalc(double dx,double dy){
+
+        final double g = 386.22; // g in in/s^2
+        //final double defaultAngle = 30; // placeholder pls lock in selina/aliza
+        final double staticAngle = 40; //placeholder pls lock in (theta)
+        //final double hoodGR = 10.0/1.0;//placeholder
+        //final double hoodAngleAdaptive = ((35.5*(10*hood.getCurrentPos()))*hoodGR)+defaultAngle; //assuming axon is 35.5 degrees/0.1 increment gets hood servo angle in degrees and relates to hood's angle
+        final double goalHeightBotRel = 25; //placeholder -- need to measure (h)
+        double horizontalDist = Math.sqrt(dx*dx+dy*dy); // gets horizontal
+            //follows trajectory formula for time to find the time it takes for a ball to go from the robot to the goal
+            //t^2 = (2/g)*(d*tan(theta)-h)
+        double timeSquared = ((2/g)*(horizontalDist*Math.tan(staticAngle))-goalHeightBotRel);
+        double time = Math.sqrt(timeSquared);
+        if (timeSquared<=0) return 0;//avoids complex solutions
+        else return time;
+
+    }
+    public void changeTrackingPose(double dx,double dy){
+         botVel = Bot.drive.localizer.update();
+         double time = airtimeCalc(dx,dy);
+         double heading = pose.heading.log();
+         double c = Math.cos(heading);
+         double s = Math.sin(heading);
+         double dxt = botVel.linearVel.x * c - botVel.linearVel.x *s; //chatted transformations maybe scuffed
+         double dyt = botVel.linearVel.y * s + botVel.linearVel.y *c;
+         vectorXComp = dx- dxt *time;// disp added to robot's vector to goal moving one way -- subtracted from the goal pos the other
+         vectorYComp = dy - dyt *time; //may want to replace with a target pose but right now im just moving the vector directly
+
+    }
 
         public void periodic2() { // will be failsafe for turret moving based on ll result
             controller.setPID(p,i,d);
@@ -233,6 +278,9 @@ public class Turret {
         double y = pose.getPosition().toUnit(DistanceUnit.INCH).y;
         double heading = Math.toRadians(pose.getOrientation().getYaw());
         return new Pose2d(x,y,heading);
+        }
+        void setEnableVelComp(boolean on){
+            enableVelComp = on;
         }
 
     private double clamp(double power,double maxV, double minV) {

@@ -47,6 +47,7 @@ public class Bot {
     //---------------------------------------------------------
     public static Pose2d storedPose = new Pose2d(0,0,0);
     public static Vector2d goalPose = new Vector2d(65,-60);// init with red
+    public static Vector2d goalTrackingPose = new Vector2d(65,-60);// init with red
     public static Pose2d resetPose = new Pose2d(-63,-63,Math.toRadians(-90));
 
 
@@ -308,9 +309,7 @@ public class Bot {
 
     }
 
-    public void setStoredPose(Pose2d sp){
-        storedPose=sp;
-    }
+
 
     //current bot pos to stored pos at  end of auto
 

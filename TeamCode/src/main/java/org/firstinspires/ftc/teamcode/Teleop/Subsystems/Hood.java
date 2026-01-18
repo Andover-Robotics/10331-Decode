@@ -42,6 +42,8 @@ public class Hood {
         hoodServo.setPosition(pos);
     }
 
+    public double getCurrentPos(){return hoodServo.getPosition();}
+
     public double getPos(){
         return outtakePos;
     }
