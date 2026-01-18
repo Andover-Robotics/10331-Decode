@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@TeleOp
+@TeleOp(name="MainTeleop",group = "AA_Main")
 public class MainTeleOp extends LinearOpMode {
     Bot bot;
     GamepadEx gp1 , gp2;
