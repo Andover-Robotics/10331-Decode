@@ -27,7 +27,7 @@ public class Turret {
         implement testing code
 
      */
-    public static double p=0.0035,i=0,d=0.00015,tX,tY,tA;
+    public static double p=0.0035,i=0,d=0.000162,tX,pShort=0.004,iShort,dShort=0.0001;
     public static double basePower = 0.1, powerMin = 0.05;
     public static double setPoint = 0;
     private final PIDController controller;
@@ -35,7 +35,7 @@ public class Turret {
 
     public boolean isManual = false;
     private final double CPR = 145.1;
-    private final double GEAR_RATIO = 102/14;
+    private final double GEAR_RATIO = 102.0/14;
 
     public static double manualPower;
     public final MotorEx turretMotor;
@@ -97,8 +97,8 @@ public class Turret {
     public double wrapAround(double angle) {
         //angle =AngleUnit.normalizeDegrees(angle);
        // angle %= 360; // i feel like there might be issue here
-        if (angle < 0) angle += 360; //high limit
-        if (angle >= 360) angle -= 360; // low limit
+        if (angle < 0) angle += 360; //low limit
+        if (angle >= 315) angle -= 360; // high limit
 //        angle %=360;
         return angle;
     } //tested works i think may need to change when angles are normalized
@@ -125,15 +125,15 @@ public class Turret {
         double dy = targetPose.y - turretY;
         double ccwFieldTarget;
         distance = Math.sqrt(dx * dx + dy * dy);
-        //changeTrackingPose(dx,dy);
-       // compDistance = Math.sqrt(vectorXComp*vectorXComp+vectorYComp*vectorYComp);
+        changeTrackingPose(dx,dy);
+        compDistance = Math.sqrt(vectorXComp*vectorXComp+vectorYComp*vectorYComp);
         //TODO: uncomment once the bomboclatt placeholders are gone
         //Target Angle
-        if(enableVelComp) { //might need to move to tracking pose method
+        if(!enableVelComp) { //might need to move to tracking pose method
              ccwFieldTarget = Math.toDegrees(Math.atan2(dy, dx));
         }
         else{
-            ccwFieldTarget = Math.atan2(vectorYComp,vectorXComp);
+            ccwFieldTarget = Math.toDegrees(Math.atan2(vectorYComp,vectorXComp));
         }
 
         //robot heading is ccw+
@@ -166,9 +166,10 @@ public class Turret {
     public void periodic() {
         power = 0;
         Bot.drive.updatePoseEstimate();
+        double error = setPoint - turretMotor.getCurrentPosition();
 
-        controller.setPID(p, i, d);
-
+        if(error*degPerTick>10)controller.setPID(p, i, d);
+        else controller.setPID(pShort,iShort,dShort);
         //check that PID not going over the hardware limit so it doesn't crash out.
 //        if (Math.abs(turretMotor.getCurrentPosition()) > hardwareLimit) {
 //            if (turretMotor.getCurrentPosition() > 0) {
@@ -180,7 +181,7 @@ public class Turret {
 
             // add manual back later but i cant look at ts rn
             //controller.setSetPoint(setPoint);
-            runToAngle(autoAimField(Bot.goalPose));
+        runToAngle(autoAimField(Bot.goalPose));
 
             power = controller.calculate(turretMotor.getCurrentPosition(),setPoint);
             power = clamp(power,1.0,-1.0);
@@ -279,10 +280,13 @@ public class Turret {
         double heading = Math.toRadians(pose.getOrientation().getYaw());
         return new Pose2d(x,y,heading);
         }
-        void setEnableVelComp(boolean on){
+        public void setEnableVelComp(boolean on){
             enableVelComp = on;
         }
 
+        public void resetEncoder(){
+        turretMotor.resetEncoder();
+        }
     private double clamp(double power,double maxV, double minV) {
     return Math.max(minV,Math.min(maxV,power));
 }
