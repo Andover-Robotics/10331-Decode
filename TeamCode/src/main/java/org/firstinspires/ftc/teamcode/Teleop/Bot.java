@@ -124,7 +124,7 @@ public class Bot {
             resetPose = new Pose2d(resetPose.component1().x, Math.abs(resetPose.component1().y), Math.abs(resetPose.heading.log()));
         }
         else {
-            goalPose = new Vector2d(goalPose.x,-1*(goalPose.y));
+            if(goalPose.y!=60) goalPose = new Vector2d(goalPose.x,(-1*goalPose.y));
             resetPose = new Pose2d(resetPose.component1().x, -1*(resetPose.component1().y), -1*(resetPose.heading.log()));
         }
     }
