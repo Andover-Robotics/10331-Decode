@@ -192,11 +192,11 @@ public class Turret {
         public double airtimeCalc(double dx,double dy){
 
         final double g = 386.22; // g in in/s^2
-        //final double defaultAngle = 30; // placeholder pls lock in selina/aliza
-        final double staticAngle = 40; //placeholder pls lock in (theta)
-        //final double hoodGR = 10.0/1.0;//placeholder
-        //final double hoodAngleAdaptive = ((35.5*(10*hood.getCurrentPos()))*hoodGR)+defaultAngle; //assuming axon is 35.5 degrees/0.1 increment gets hood servo angle in degrees and relates to hood's angle
-        final double goalHeightBotRel = 25; //placeholder -- need to measure (h)
+        //final double defaultAngle = 33.9;
+        final double staticAngle = 41.6;
+        //final double hoodGR = 28.0/30.0;
+        //final double hoodAngleAdaptive = ((33.9*(hoodAngle/0.7)); 0.7 is cap and shows increase  //assuming axon is 35.5 degrees/0.1 increment gets hood servo angle in degrees and relates to hood's angle
+        final double goalHeightBotRel = 20.5; //placeholder -- need to measure (h)
         double horizontalDist = Math.sqrt(dx*dx+dy*dy); // gets horizontal
             //follows trajectory formula for time to find the time it takes for a ball to go from the robot to the goal
             //t^2 = (2/g)*(d*tan(theta)-h)
