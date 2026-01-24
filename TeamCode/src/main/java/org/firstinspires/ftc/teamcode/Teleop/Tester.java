@@ -29,11 +29,11 @@ public class Tester extends LinearOpMode {
         Bot.instance = null;
         bot = Bot.getInstance(this);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-//        if (bot.isRed) bot.isRed = false;
-//        bot.updatePoses();
-//        bot.turret.setEnableVelComp(true);
-//
-//        bot.turret.resetEncoder();
+        if (bot.isRed) bot.isRed = false;
+        bot.updatePoses();
+        bot.turret.setEnableVelComp(true);
+
+        bot.turret.resetEncoder();
         gp1 = new GamepadEx(gamepad1);
 
 
@@ -45,22 +45,22 @@ public class Tester extends LinearOpMode {
             TelemetryPacket packet = new TelemetryPacket();
             gp1.readButtons();
             bot.intake.gate1.setPosition(pos);
-//             bot.turret.periodic();
-//             bot.shooter.periodic();
-//             if(gp1.wasJustPressed(GamepadKeys.Button.A)){
-//                 bot.shooter.enableShooter(true);
-//             }
-//            if(gp1.wasJustPressed(GamepadKeys.Button.B)){
-//                bot.shooter.enableShooter(false);
-//            }
-//            if(gp1.wasJustPressed(GamepadKeys.Button.X)){
-//                bot.intake.intake_without_sense(-1);
-//
-//            }
-//            if(gp1.wasJustPressed(GamepadKeys.Button.Y)){
-//                bot.intake.intake_without_sense(0);
-//
-//            }
+             bot.turret.periodic();
+             bot.shooter.periodic();
+             if(gp1.wasJustPressed(GamepadKeys.Button.A)){
+                 bot.shooter.enableShooter(true);
+             }
+            if(gp1.wasJustPressed(GamepadKeys.Button.B)){
+                bot.shooter.enableShooter(false);
+            }
+            if(gp1.wasJustPressed(GamepadKeys.Button.X)){
+                bot.intake.intake_without_sense(-1);
+
+            }
+            if(gp1.wasJustPressed(GamepadKeys.Button.Y)){
+                bot.intake.intake_without_sense(0);
+
+            }
 
 
 
@@ -73,7 +73,8 @@ public class Tester extends LinearOpMode {
             telemetry.addData("Current Power",bot.turret.getCurrentPower());
             telemetry.addData("current pos", Bot.drive.localizer.getPose());
             telemetry.addData("current target ", Turret.distance);
-            telemetry.addData("current target ", bot.shooter.getTargetRPM());
+            telemetry.addData("current target RPM ", bot.shooter.getTargetRPM());
+            telemetry.addData("current RPM ", bot.shooter.getRPM());
             telemetry.addData("is alliance red?",bot.isRed);
 
 

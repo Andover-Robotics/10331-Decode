@@ -27,7 +27,7 @@ public class Turret {
         implement testing code
 
      */
-    public static double p=0.0035,i=0,d=0.000162,tX,pShort=0.004,iShort,dShort=0.0001;
+    public static double p=0.0035,i=0,d=0.000162,tX,pShort=0.0055,iShort,dShort=0.0002;
     public static double basePower = 0.1, powerMin = 0.05;
     public static double setPoint = 0;
     private final PIDController controller;

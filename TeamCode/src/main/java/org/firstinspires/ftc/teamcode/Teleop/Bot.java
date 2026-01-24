@@ -63,7 +63,7 @@ public class Bot {
     public IMU imu;
 
     public Bot(OpMode opMode) {
-        this.aprilTag = new AprilTag(opMode);
+       // this.aprilTag = new AprilTag(opMode);
         this.opMode = opMode;
         this.shooter = new Shooter(opMode);
         this.hood = new Hood(opMode);

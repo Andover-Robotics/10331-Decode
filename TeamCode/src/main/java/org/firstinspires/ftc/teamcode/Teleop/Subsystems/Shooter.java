@@ -46,10 +46,11 @@ public class Shooter {
     public Shooter(OpMode opMode) {
         shooter = new MotorEx(opMode.hardwareMap, "shooter", Motor.GoBILDA.BARE);
         shooter.setRunMode(Motor.RunMode.RawPower);
-        shooter.setInverted(true);
+        shooter.setInverted(false);
         shooter.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
         shooter2 = new MotorEx(opMode.hardwareMap, "shooter2", Motor.GoBILDA.BARE);
         shooter2.setRunMode(Motor.RunMode.RawPower);
+        shooter2.setInverted(true);
         shooter2.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
         controller = new PIDController(p, i, d);
         //this.hood = new Hood(opMode); idk if this is needed
