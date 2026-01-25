@@ -50,6 +50,8 @@ public class Turret {
     public static double distance;
     public static double compDistance;
 
+    public static boolean isLocked;
+
     public LLResult llResult;
     public Limelight3A ll;
 
@@ -181,11 +183,13 @@ public class Turret {
 
             // add manual back later but i cant look at ts rn
             //controller.setSetPoint(setPoint);
-        runToAngle(autoAimField(Bot.goalPose));
+        if(isLocked) runToAngle(autoAimField(Bot.goalPose));
+        //locks forward for drifting if i can't fix
+        else {runToAngle(180); autoAimField(Bot.goalPose);}
 
-            power = controller.calculate(turretMotor.getCurrentPosition(),setPoint);
-            power = clamp(power,1.0,-1.0);
-            turretMotor.set(power);
+        power = controller.calculate(turretMotor.getCurrentPosition(),setPoint);
+        power = clamp(power,1.0,-1.0);
+        turretMotor.set(power);
 
     } //tested works i think
 
@@ -194,6 +198,7 @@ public class Turret {
 
         final double g = 386.22; // g in in/s^2
         //final double defaultAngle = 33.9;
+            //0.25 angle
         final double staticAngle = 41.6;
         //final double hoodGR = 28.0/30.0;
         //final double hoodAngleAdaptive = ((33.9*(hoodAngle/0.7)); 0.7 is cap and shows increase  //assuming axon is 35.5 degrees/0.1 increment gets hood servo angle in degrees and relates to hood's angle

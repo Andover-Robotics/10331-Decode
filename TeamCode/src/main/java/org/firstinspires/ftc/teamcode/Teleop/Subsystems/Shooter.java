@@ -21,14 +21,14 @@ public class Shooter {
 
     public final MotorEx shooter;
     //y=-0.000860551x^{3}+0.278353x^{2}-11.54167x+3650.11204 regression values
-    public static double shooterA = -0.000860551, shooterB = 0.278353, shooterC = -11.54167, shooterD = 3650.11204;
+    public static double shooterA = -0.0000309751, shooterB = 0.0093023, shooterC = -0.911617, shooterD = 46.08444, shooterE=2434.93057;
     public final MotorEx shooter2;
-    public static double p = 0.00025, i = 0.0, d = 0.0, f = 0.000195;
+    public static double p = 0.0003, i = 0.0, d = 0.0, f = 0.0002;
     private final PIDController controller;
-    public static int targetRPM = 0;
+    public static int targetRPM = 0,target;
     public boolean reset =false;
 
-    public boolean enableShooter=false;
+    public boolean enableShooter=false,isPeriodic;
 
 
     public double RPM = 0.0;
@@ -46,11 +46,11 @@ public class Shooter {
     public Shooter(OpMode opMode) {
         shooter = new MotorEx(opMode.hardwareMap, "shooter", Motor.GoBILDA.BARE);
         shooter.setRunMode(Motor.RunMode.RawPower);
-        shooter.setInverted(false);
+        shooter.setInverted(true);
         shooter.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
         shooter2 = new MotorEx(opMode.hardwareMap, "shooter2", Motor.GoBILDA.BARE);
         shooter2.setRunMode(Motor.RunMode.RawPower);
-        shooter2.setInverted(true);
+        shooter2.setInverted(false);
         shooter2.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
         controller = new PIDController(p, i, d);
         //this.hood = new Hood(opMode); idk if this is needed
@@ -70,7 +70,7 @@ public class Shooter {
     public void periodic() {
         controller.setPID(p, i, d);
 
-        RPM = shooter.getVelocity() / 28 * 60;// follows formula for rps (tps/tpr) * 60 for mins
+        RPM = shooter2.getVelocity() / 28 * 60;// follows formula for rps (tps/tpr) * 60 for mins
         double ff = f * targetRPM; // feedforward
         double pid = controller.calculate(RPM, targetRPM);//error
         // gets product of p constant and error
@@ -86,7 +86,7 @@ public class Shooter {
         shooterPower = checkPower(shooterPower, 1.0, 0);
         setPower(shooterPower);
 
-        if (enableShooter) setTargetRPM(Bot.regressionRPM(Turret.distance));
+        if (enableShooter) targetRPM = isPeriodic ? Bot.regressionRPM(Turret.distance) : target ;
         else setTargetRPM(0);
 //        if (isRecoil && enableShooter){
 //            int ballsShot =0; //tracked by recoil

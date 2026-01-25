@@ -120,7 +120,7 @@ public class Bot {
 
     public void updatePoses(){
         if (isRed){
-            goalPose = new Vector2d(goalPose.x,Math.abs(goalPose.y));
+            goalPose = new Vector2d(goalPose.x, goalPose.y);
             resetPose = new Pose2d(resetPose.component1().x, Math.abs(resetPose.component1().y), Math.abs(resetPose.heading.log()));
         }
         else {
@@ -235,15 +235,16 @@ public class Bot {
 
 
     public static int regressionRPM(double dist) {
-        // shooterA= -0.000860551,shooterB= 0.278353,shooterC= -11.54167,shooterD=3650.11204;
-        double shooterAComponent = Shooter.shooterA * Math.pow(dist,3);
-        double shooterBComponent = Shooter.shooterB * Math.pow(dist,2);
-        double shooterCComponent = Shooter.shooterC * dist;
-        double shooterDComponent = Shooter.shooterD;
+// y=-0.0000309751x^{4}+0.0093023x^{3}-0.911617x^{2}+46.08444x+2434.93057
+        double shooterAComponent = Shooter.shooterA * Math.pow(dist,4);
+        double shooterBComponent = Shooter.shooterB * Math.pow(dist,3);
+        double shooterCComponent = Shooter.shooterC * Math.pow(dist,2);
+        double shooterDComponent = Shooter.shooterD*dist;
+        double shooterEComponent = Shooter.shooterE;
 
-        double regression = shooterAComponent + shooterBComponent + shooterCComponent + shooterDComponent ;
+        double regression = shooterAComponent + shooterBComponent + shooterCComponent + shooterDComponent +shooterEComponent;
 
-        return (int)regression + 75;
+        return (int)regression;
     }
 
     public class actionPeriodic implements Action {
