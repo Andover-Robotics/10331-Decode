@@ -86,7 +86,7 @@ public class Shooter {
         shooterPower = checkPower(shooterPower, 1.0, 0);
         setPower(shooterPower);
 
-        if (enableShooter) targetRPM = isPeriodic ? Bot.regressionRPM(Turret.distance) : target ;
+        if (enableShooter) targetRPM = isPeriodic ? Bot.regressionRPM(Turret.distance) : target;
         else setTargetRPM(0);
 //        if (isRecoil && enableShooter){
 //            int ballsShot =0; //tracked by recoil

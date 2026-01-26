@@ -147,7 +147,7 @@ public class SoloAuto extends LinearOpMode {
         Action shootPreload = drive.actionBuilder(chosenAuto.startPos)
                 .strafeToLinearHeading(new Vector2d(chosenAuto.shootPos.position.x, chosenAuto.shootPos.position.y),
                        chosenAuto.shootPos.heading)
-                .afterTime(0.1, bot.shootSetup())
+                .afterTime(0.1, bot.actionOpenGate())
                 .build();
 
         Action intakeAndShootFirstClose = drive.actionBuilder(chosenAuto.shootPos)
@@ -157,7 +157,7 @@ public class SoloAuto extends LinearOpMode {
                 .stopAndAdd(new InstantAction(() -> bot.intake.stopIntake()))
                 .setReversed(true)
                 .splineToLinearHeading(chosenAuto.shootPos, Math.toRadians(chosenAuto.shootingTangentEnd), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .stopAndAdd(bot.shootSetup())
+                .stopAndAdd(bot.actionOpenGate())
                 .build();
 
         Action intakeAndShootSecondClose = drive.actionBuilder(chosenAuto.shootPos)
@@ -167,7 +167,7 @@ public class SoloAuto extends LinearOpMode {
                 .stopAndAdd(new InstantAction(() -> bot.intake.stopIntake()))
                 .setReversed(true)
                 .splineToLinearHeading(chosenAuto.shootPos, Math.toRadians(chosenAuto.shootingTangentEnd), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .stopAndAdd(bot.shootSetup())
+                .stopAndAdd(bot.actionOpenGate())
                 .build();
 
         Action intakeAndShootThirdClose = drive.actionBuilder(chosenAuto.shootPos)
@@ -177,7 +177,7 @@ public class SoloAuto extends LinearOpMode {
                 .stopAndAdd(new InstantAction(() -> bot.intake.stopIntake()))
                 .setReversed(true)
                 .splineToLinearHeading(chosenAuto.shootPos, Math.toRadians(chosenAuto.shootingTangentEnd), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .stopAndAdd(bot.shootSetup())
+                .stopAndAdd(bot.actionOpenGate())
                 .build();
 
         Action intakeAndShootFirstFar = drive.actionBuilder(chosenAuto.shootPos)
@@ -187,7 +187,7 @@ public class SoloAuto extends LinearOpMode {
                 .stopAndAdd(new InstantAction(() -> bot.intake.stopIntake()))
                 .setReversed(true)
                 .splineToLinearHeading(chosenAuto.shootPos, Math.toRadians(chosenAuto.shootingTangentEnd), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .stopAndAdd(bot.shootSetup())
+                .stopAndAdd(bot.actionOpenGate())
                 .build();
 
         Action intakeAndShootSecondFar = drive.actionBuilder(chosenAuto.shootPos)
@@ -197,7 +197,7 @@ public class SoloAuto extends LinearOpMode {
                 .stopAndAdd(new InstantAction(() -> bot.intake.stopIntake()))
                 .setReversed(true)
                 .splineToLinearHeading(chosenAuto.shootPos, Math.toRadians(chosenAuto.shootingTangentEnd), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .stopAndAdd(bot.shootSetup())
+                .stopAndAdd(bot.actionOpenGate())
                 .build();
 
         Action intakeAndShootThirdFar = drive.actionBuilder(chosenAuto.shootPos)
@@ -207,7 +207,7 @@ public class SoloAuto extends LinearOpMode {
                 .stopAndAdd(new InstantAction(() -> bot.intake.stopIntake()))
                 .setReversed(true)
                 .splineToLinearHeading(chosenAuto.shootPos, Math.toRadians(chosenAuto.shootingTangentEnd), drive.defaultVelConstraint, drive.defaultAccelConstraint)
-                .stopAndAdd(bot.shootSetup())
+                .stopAndAdd(bot.actionOpenGate())
                 .build();
 
 

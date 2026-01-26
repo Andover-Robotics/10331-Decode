@@ -1,16 +1,12 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
-import static org.firstinspires.ftc.teamcode.Auto.LightningAutoRed.gatePos;
-
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
@@ -24,6 +20,8 @@ import java.util.concurrent.TimeUnit;
 @Autonomous(name="Close Red", group="AA_Autos")
 public class CloseRed extends LinearOpMode {
     Bot bot;
+
+    double shootdt =0.5;
 
 
     // inital
@@ -70,9 +68,10 @@ public class CloseRed extends LinearOpMode {
 
         Action runAuto = drive.actionBuilderRed(initialRedPos)
                 .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(0.01,bot.actionSpinUp()) //TODO: test dt on pathing here
                 .strafeToLinearHeading(shootPreload,Math.toRadians(-55))//preload
-                .stopAndAdd(bot.actionShoot())
-                .waitSeconds(1.9)
+                .stopAndAdd(bot.actionOpenGate())
+                .waitSeconds(shootdt)
                 .afterTime(0.01,bot.actionStopShoot())
                 .stopAndAdd(new InstantAction(()->bot.intake.stopIntake()))
 
@@ -89,9 +88,10 @@ public class CloseRed extends LinearOpMode {
 
                 .setTangent(Math.toRadians(90)) //shoot 2
                 .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(1,bot.actionSpinUp()) //TODO: test dt on pathing here
                 .splineToLinearHeading(new Pose2d(shoot.component1().x,shoot.component1().y,Math.toRadians(-55)),Math.toRadians(60))
-                .stopAndAdd(bot.actionShoot())
-                .waitSeconds(1.9)
+                .stopAndAdd(bot.actionOpenGate())
+                .waitSeconds(shootdt)
                 .afterTime(0.01,bot.actionStopShoot())
 
                 .setTangent(Math.toRadians(180))
@@ -101,9 +101,10 @@ public class CloseRed extends LinearOpMode {
 
                 .setTangent(Math.toRadians(90)) //shoot 3
                 .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(1.5,bot.actionSpinUp()) //TODO: test dt on pathing here
                 .splineToLinearHeading(shoot,Math.toRadians(60))
-                .stopAndAdd(bot.actionShoot())
-                .waitSeconds(1.9)
+                .stopAndAdd(bot.actionOpenGate())
+                .waitSeconds(shootdt)
                 .stopAndAdd(bot.actionStopShoot())
 
 
@@ -114,13 +115,12 @@ public class CloseRed extends LinearOpMode {
 
                 .setTangent(Math.toRadians(90)) //shoot 3
                 .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(1.7,bot.actionSpinUp()) //TODO: test dt on pathing here
                 .splineToLinearHeading(shoot,Math.toRadians(60))
-                .stopAndAdd(bot.actionShoot())
+                .stopAndAdd(bot.actionOpenGate())
                 .waitSeconds(3)
                 .stopAndAdd(bot.actionStopShoot())
                 .waitSeconds(1)
-                .stopAndAdd(new InstantAction(()-> bot.setStoredPose(drive.localizer.getPose())))
-
                 .build();
 
         waitForStart();
@@ -129,8 +129,6 @@ public class CloseRed extends LinearOpMode {
                         bot.actionPeriodic(),
                         runAuto
                 ));
-        Bot.storedPose = drive.localizer.getPose();
-
 
 
     }

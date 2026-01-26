@@ -6,7 +6,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
@@ -21,7 +20,6 @@ import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Hood;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Turret;
-import org.firstinspires.ftc.vision.VisionPortal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,29 +29,28 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 public class Bot {
     public Intake intake;
     public static Bot instance;
+    public OpMode opMode;
+
     public Hood hood;
 
     public AprilTag aprilTag;
     public Shooter shooter;
     public Turret turret;
-    public VisionPortal visionPortal;
-    public OpMode opMode;
+
+    public static MecanumDrive drive;
+
     public boolean fieldCentricRunMode = false;
     public MotorEx fl, fr, bl, br;
     public static double shootSleep=0.2, shootDelay=0.7;
-    public boolean isRed;
-    public boolean recoilIsTrue;
+    public boolean isRed,isIntake,isShooting,hoodComp;
+    //public boolean recoilIsTrue;
 
 
-    //Stored poses
-    //---------------------------------------------------------
+    //----------------------POSES--------------------
     public static Pose2d storedPose = new Pose2d(0,0,0);
     public static Vector2d goalPose = new Vector2d(65,-60);// init with red
     public static Pose2d resetPose = new Pose2d(-63,-63,Math.toRadians(-90)); // change when we figure out where we want to reset
 
-
-
-    public static MecanumDrive drive;
 
     public enum BotState {
         AUTO,
@@ -69,11 +66,14 @@ public class Bot {
         this.hood = new Hood(opMode);
         this.intake = new Intake(opMode);
         this.turret = new Turret(opMode);
+        this.isIntake = false;
+        this.isShooting = false;
         try {
             fieldCentricRunMode = false;
         } catch (Exception e) {
             fieldCentricRunMode = false;
         }
+
         drive = new MecanumDrive(opMode.hardwareMap, storedPose);
         fl = new MotorEx(opMode.hardwareMap, "fl", Motor.GoBILDA.RPM_435);
         fr = new MotorEx(opMode.hardwareMap, "perp", Motor.GoBILDA.RPM_435);
@@ -120,12 +120,16 @@ public class Bot {
 
     public void updatePoses(){
         if (isRed){
-            goalPose = new Vector2d(goalPose.x, goalPose.y);
-            resetPose = new Pose2d(resetPose.component1().x, Math.abs(resetPose.component1().y), Math.abs(resetPose.heading.log()));
+            if(goalPose.y!= -60){
+                goalPose = new Vector2d(goalPose.x, Math.abs(goalPose.y));
+                resetPose = new Pose2d(resetPose.component1().x, Math.abs(resetPose.component1().y), Math.abs(resetPose.heading.log()));
+        }
         }
         else {
-            if(goalPose.y!=60) goalPose = new Vector2d(goalPose.x,(-1*goalPose.y));
-            resetPose = new Pose2d(resetPose.component1().x, -1*(resetPose.component1().y), -1*(resetPose.heading.log()));
+            if (goalPose.y != 60) {
+                goalPose = new Vector2d(goalPose.x, (-1 * goalPose.y));
+                resetPose = new Pose2d(resetPose.component1().x, -1 * (resetPose.component1().y), -1 * (resetPose.heading.log()));
+            }
         }
     }
 
@@ -137,12 +141,7 @@ public class Bot {
 
 
     public void switchAlliance(){
-        if (aprilTag.targetAllianceId==20){
-            aprilTag.targetAllianceId = 24;
-        }
-        else {
-            aprilTag.targetAllianceId = 20;
-        }
+        isRed= !isRed;
     }
 
 
@@ -168,70 +167,40 @@ public class Bot {
         }*/
     //}
 
-    public Action shootSetup(){
-         return new ParallelAction(
-                 new InstantAction(()-> intake.openGate())
-         );
-    }
-    public Action actionShoot(){
-        return new SequentialAction(
-                new InstantAction(()->shooter.enableShooter(true)),//may need to not round here in the future
-                new SleepAction(0.3),
-                new InstantAction(()-> intake.openGate())
-
-                );
+    public void teleopIntake(){
+        if(!isIntake) {
+            intake.intake_without_sense(-1);
+            isIntake = true;
+        }
+        else{
+            intake.intake_without_sense(0);
+            isIntake=false;
+        }
     }
 
-    public Action actionStopShoot(){
-        return new SequentialAction(
-                new InstantAction(()->shooter.enableShooter(false)),
-                new InstantAction(()-> intake.closeGate())
-        );
+    public void teleopShoot(){
+        if(!isShooting) {
+            shooter.enableShooter(true);
+            isShooting=true;
+        }
+        else{
+            shooter.enableShooter(false);
+            intake.closeGate();
+            isShooting=false;
+        }
     }
 
-    public Action actionShootGate(){
-        return new SequentialAction(
-                new InstantAction(()->shooter.enableShooter(true)),
-                new SleepAction(0.35),
-                new InstantAction(() -> intake.openGate()),
-                new SleepAction(shootSleep),
-                new InstantAction(() -> intake.closeGate()),
-                new SleepAction(shootDelay),
-                new InstantAction(() -> intake.openGate()),
-                new SleepAction(shootSleep),
-                new InstantAction(() -> intake.closeGate()),
-                new SleepAction(shootDelay),
-                new InstantAction(() -> intake.openGate()),
-                new SleepAction(shootSleep),
-                new InstantAction(() -> intake.closeGate())
-        );
-    }
-    public Action actionShootGateTest(){
-        return new SequentialAction(
-                new InstantAction(()->shooter.setTargetRPM(4500)),
-                new SleepAction(0.35),
-                new InstantAction(() -> intake.openGate()),
-                new SleepAction(shootSleep),
-                new InstantAction(() -> intake.closeGate()),
-                new SleepAction(shootDelay),
-                new InstantAction(() -> intake.openGate()),
-                new SleepAction(shootSleep),
-                new InstantAction(() -> intake.closeGate()),
-                new SleepAction(shootDelay),
-                new InstantAction(() -> intake.openGate()),
-                new SleepAction(shootSleep),
-                new InstantAction(() -> intake.closeGate())
-        );
+    //TODO: deal with testing this when I get more motivation
+    public void handleRecoil(){
+        if (isShooting&&hood.detectBalls(shooter.getRPM())){
+            hood.onShot();
+        }
+        else hood.reset();
     }
 
-    public Action actionTestShoot(){
-        return new SequentialAction(
-                new InstantAction(()->shooter.setTargetRPM(4000)),//may need to not round here in the future
-                new SleepAction(0.3),
-                shootSetup()
 
-        );
-    }
+
+
 
 
     public static int regressionRPM(double dist) {
@@ -243,6 +212,7 @@ public class Bot {
         double shooterEComponent = Shooter.shooterE;
 
         double regression = shooterAComponent + shooterBComponent + shooterCComponent + shooterDComponent +shooterEComponent;
+
 
         return (int)regression;
     }
@@ -298,26 +268,82 @@ public class Bot {
         bl.setInverted(true);
         fr.setInverted(true);
         intake.closeGate();
-        hood.hoodServo.setPosition(0.3);
-        Hood.outtakePos=0.3;
-        aprilTag.targetAllianceId=24;
+        hood.hoodServo.setPosition(0.25);
+        Hood.outtakePos=0.25;
+        Turret.isLocked=true;
+        shooter.isPeriodic=true;
+        //bot.turret.setEnableVelComp(true);
 
     }public void prepAuto(int alliance, boolean isRed){
         intake.closeGate();
-        hood.hoodServo.setPosition(0.3);
-        Hood.outtakePos=0.3;
+        hood.hoodServo.setPosition(0.25);
+        Hood.outtakePos=0.25;
         aprilTag.targetAllianceId=alliance;
         this.isRed = isRed;
         updatePoses();
 
     }
 
-    public void setStoredPose(Pose2d sp){
-        storedPose=sp;
+    //-------------ACTIONS--------------
+    public Action actionOpenGate(){
+        return new InstantAction(()-> intake.openGate());
+    }
+    public Action actionSpinUp(){
+        return new InstantAction(()->shooter.enableShooter(true));//may need to not round here in the future
+
+
     }
 
-    //current bot pos to stored pos at  end of auto
+    public Action actionStopShoot(){
+        return new SequentialAction(
+                new InstantAction(()->shooter.enableShooter(false)),
+                new InstantAction(()-> intake.closeGate())
+        );
+    }
 
+    public Action actionShootGate(){
+        return new SequentialAction(
+                new InstantAction(()->shooter.enableShooter(true)),
+                new SleepAction(0.35),
+                new InstantAction(() -> intake.openGate()),
+                new SleepAction(shootSleep),
+                new InstantAction(() -> intake.closeGate()),
+                new SleepAction(shootDelay),
+                new InstantAction(() -> intake.openGate()),
+                new SleepAction(shootSleep),
+                new InstantAction(() -> intake.closeGate()),
+                new SleepAction(shootDelay),
+                new InstantAction(() -> intake.openGate()),
+                new SleepAction(shootSleep),
+                new InstantAction(() -> intake.closeGate())
+        );
+    }
+    public Action actionShootGateTest(){
+        return new SequentialAction(
+                new InstantAction(()->shooter.setTargetRPM(4500)),
+                new SleepAction(0.35),
+                new InstantAction(() -> intake.openGate()),
+                new SleepAction(shootSleep),
+                new InstantAction(() -> intake.closeGate()),
+                new SleepAction(shootDelay),
+                new InstantAction(() -> intake.openGate()),
+                new SleepAction(shootSleep),
+                new InstantAction(() -> intake.closeGate()),
+                new SleepAction(shootDelay),
+                new InstantAction(() -> intake.openGate()),
+                new SleepAction(shootSleep),
+                new InstantAction(() -> intake.closeGate())
+        );
+    }
+
+    public Action actionTestShoot(){
+        return new SequentialAction(
+                new InstantAction(()->shooter.setTargetRPM(4000)),//may need to not round here in the future
+                new SleepAction(0.3),
+                actionOpenGate()
+
+        );
+    }
 //
 //    public BNO055IMU returnIMU(){
 //        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();

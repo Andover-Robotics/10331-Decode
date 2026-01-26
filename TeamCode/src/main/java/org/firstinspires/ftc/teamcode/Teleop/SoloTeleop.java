@@ -10,7 +10,6 @@ import com.arcrobotics.ftclib.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Teleop.Subsystems.AprilTag;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Hood;
 
 import java.util.ArrayList;
@@ -99,7 +98,7 @@ public class SoloTeleop extends LinearOpMode {
             }
             if(gp1.wasJustPressed(GamepadKeys.Button.B)){
                 if(!isShooting) {
-                    runningActions.add(bot.actionShoot());
+                    runningActions.add(bot.actionSpinUp());
                     isShooting=true;
                 }
                 else{

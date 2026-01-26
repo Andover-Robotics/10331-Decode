@@ -74,7 +74,7 @@ public class LightningAutoBlue extends LinearOpMode {
         Action runAuto = drive.actionBuilderBlue(initialRedPos)
                 .afterTime(0.01,bot.intake.actionIntake())
                 .strafeToLinearHeading(shootPreload,Math.toRadians(-55))//preload
-                .stopAndAdd(bot.actionShoot())
+                .stopAndAdd(bot.actionSpinUp())
                 .waitSeconds(2)
                 .afterTime(0.01,bot.actionStopShoot())
                 .stopAndAdd(new InstantAction(()->bot.intake.stopIntake()))
@@ -96,7 +96,7 @@ public class LightningAutoBlue extends LinearOpMode {
                 .setTangent(Math.toRadians(90)) //shoot 2
                 .afterTime(0.01,bot.intake.actionIntake())
                 .splineToLinearHeading(shoot,Math.toRadians(60))
-                .stopAndAdd(bot.actionShoot())
+                .stopAndAdd(bot.actionSpinUp())
                 .waitSeconds(2)
                 .afterTime(0.01,bot.actionStopShoot())
 
@@ -110,7 +110,7 @@ public class LightningAutoBlue extends LinearOpMode {
 //                .setTangent(Math.toRadians(90)) //shoot 3
 //                .afterTime(0.01,bot.intake.actionIntake())
 //                .splineToLinearHeading(shoot,Math.toRadians(60))
-//                .stopAndAdd(bot.actionShoot())
+//                .stopAndAdd(bot.actionSpinUp())
 //                .waitSeconds(3)
 //                .stopAndAdd(bot.actionStopShoot())
 //                .waitSeconds(1)
@@ -118,7 +118,7 @@ public class LightningAutoBlue extends LinearOpMode {
 
 
 //                .splineToLinearHeading(shoot,Math.toRadians(90)) //shoot 2
-//                .stopAndAdd(bot.actionShoot())
+//                .stopAndAdd(bot.actionSpinUp())
 //                .waitSeconds(2)
 
 

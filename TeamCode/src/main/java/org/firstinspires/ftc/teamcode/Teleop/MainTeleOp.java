@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Hood;
+import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Turret;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,6 @@ public class MainTeleOp extends LinearOpMode {
     private double driveSpeed = 1, driveMultiplier = 1;
     boolean isIntake=false;
     boolean isShooting=false;
-    boolean isSecondIntaking=false, isReverseSec=false;
     private List<Action> runningActions = new ArrayList<>();
     private FtcDashboard dash = FtcDashboard.getInstance();
     public final int BLUE=20,RED=24, GPP = 21, PPG = 23, PGP = 22;
@@ -45,10 +45,12 @@ public class MainTeleOp extends LinearOpMode {
         while (opModeInInit() && !isStarted() && !isStopRequested()) {
             TelemetryPacket packet = new TelemetryPacket();
             gp1.readButtons();
+
             if (gp1.wasJustPressed(GamepadKeys.Button.A)) {
                 bot.switchAlliance();
+                bot.updatePoses();
             }
-            if (bot.aprilTag.targetAllianceId == 20) {
+            if (!bot.isRed) {
                 telemetry.addData("alliance", "Blue");
             } else {
                 telemetry.addData("alliance", "Red");
@@ -61,54 +63,42 @@ public class MainTeleOp extends LinearOpMode {
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
             TelemetryPacket packet = new TelemetryPacket();
-            bot.aprilTag.findAprilTag();
+           // bot.handleRecoil();
             bot.shooter.periodic();
-
-
+            bot.turret.periodic();
+            bot.hood.updateHood();
             gp1.readButtons();
             gp2.readButtons();
             drive();
 
 
             if(gp1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
-                if(!isIntake) {
-                    bot.intake.intake_without_sense(0.8);
-                    isIntake = true;
-                }
-                else{
-                    bot.intake.intake_without_sense(0);
-                    isIntake=false;
-                }
+                bot.teleopIntake();
             }
             if (gp1.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
                 bot.intake.reverseIntake();
             }
 
             if (gp2.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
-                if (bot.hood.hoodServo.getPosition()<=0.73) {
-                    Hood.outtakePos += 0.05;
-                }
-                bot.hood.goToHood(Hood.outtakePos);
+                bot.hood.incrementHood();
             }
             if (gp2.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)){
-                Hood.outtakePos-=0.05;
-                bot.hood.goToHood(Hood.outtakePos);
-
+                bot.hood.decrementHood();
             }
+
             if(gp2.wasJustPressed(GamepadKeys.Button.B)){
-                if(!isShooting) {
-                    runningActions.add(bot.actionShoot());
-                    isShooting=true;
-                }
-                else{
-                    bot.shooter.setTargetRPM(0);
-                    bot.intake.closeGate();
-                    isShooting=false;
-                }
+                bot.intake.openGate();
+            }
+            if(gp2.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
+                bot.teleopShoot();
             }
             if (gp2.wasJustPressed(GamepadKeys.Button.Y)){
                 runningActions.add((bot.actionShootGate()));
                 isShooting=true;
+            }
+
+            if(gp2.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)){
+                Turret.isLocked = !Turret.isLocked;
             }
 
             if(gp1.wasJustPressed(GamepadKeys.Button.BACK)||gp2.wasJustPressed(GamepadKeys.Button.BACK)){
@@ -124,11 +114,8 @@ public class MainTeleOp extends LinearOpMode {
             telemetry.addData("Hood position",bot.hood.hoodServo.getPosition());
             telemetry.addData("distance:",bot.aprilTag.calcAccurateDis());
             telemetry.addData("At Speed?",bot.shooter.atSpeed());
-            if (bot.aprilTag.targetAllianceId == 20) {
-                telemetry.addData("alliance", "Blue");
-            } else {
-                telemetry.addData("alliance", "Red");
-            }
+            telemetry.addData("is alliance red?",bot.isRed);
+
             telemetry.update();
 
             List<Action> newActions = new ArrayList<>();

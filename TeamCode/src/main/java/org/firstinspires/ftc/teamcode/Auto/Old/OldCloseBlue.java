@@ -3,12 +3,10 @@ package org.firstinspires.ftc.teamcode.Auto.Old;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
@@ -68,7 +66,7 @@ public class OldCloseBlue extends LinearOpMode {
         Action runAuto = drive.actionBuilderBlue(initialRedPos)
                 .afterTime(0.01,bot.intake.actionIntake())
                 .strafeToLinearHeading(shootPreload,Math.toRadians(-55))//preload
-                .stopAndAdd(bot.actionShoot())
+                .stopAndAdd(bot.actionSpinUp())
                 .waitSeconds(2)
                 .afterTime(0.01,bot.actionStopShoot())
                 .stopAndAdd(new InstantAction(()->bot.intake.stopIntake()))
@@ -82,7 +80,7 @@ public class OldCloseBlue extends LinearOpMode {
                 .setTangent(Math.toRadians(90)) //shoot 2
                 .afterTime(0.01,bot.intake.actionIntake())
                 .splineToLinearHeading(shoot,Math.toRadians(60))
-                .stopAndAdd(bot.actionShoot())
+                .stopAndAdd(bot.actionSpinUp())
                 .waitSeconds(2)
                 .afterTime(0.01,bot.actionStopShoot())
 
@@ -94,7 +92,7 @@ public class OldCloseBlue extends LinearOpMode {
                 .setTangent(Math.toRadians(90)) //shoot 3
                 .afterTime(0.01,bot.intake.actionIntake())
                 .splineToLinearHeading(shoot,Math.toRadians(60))
-                .stopAndAdd(bot.actionShoot())
+                .stopAndAdd(bot.actionSpinUp())
                 .waitSeconds(3)
                 .stopAndAdd(bot.actionStopShoot())
                 .waitSeconds(1)

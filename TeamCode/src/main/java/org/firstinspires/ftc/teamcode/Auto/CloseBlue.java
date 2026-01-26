@@ -3,21 +3,18 @@ package org.firstinspires.ftc.teamcode.Auto;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.teamcode.Auto.miscRR.ActionHelper;
 import org.firstinspires.ftc.teamcode.Auto.miscRR.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Teleop.Bot;
-import org.firstinspires.ftc.vision.VisionPortal;
 
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
 
 @Autonomous(name="Close Blue", group="AA_Autos")
 public class CloseBlue extends LinearOpMode {
@@ -48,31 +45,25 @@ public class CloseBlue extends LinearOpMode {
     public GainControl gainControl;
 
 
+
+    public ArrayList<Action> actionsToRun;
+
+
+
+
     @Override
     public void runOpMode() throws InterruptedException{
         Bot.instance = null;
         bot = Bot.getInstance(this);
         bot.prepAuto(20,false);
         MecanumDrive drive = Bot.drive;
+
         drive.localizer.setPose(init);
-
-        while(bot.aprilTag.visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-            sleep(1);
-        }
-
-        exposureControl = bot.aprilTag.visionPortal.getCameraControl(ExposureControl.class);
-        gainControl = bot.aprilTag.visionPortal.getCameraControl(GainControl.class);
-
-        exposureControl.setMode(ExposureControl.Mode.Manual);
-
-        exposureControl.setExposure(3, TimeUnit.MILLISECONDS);
-        gainControl.setGain((int)(gainControl.getMaxGain() * 0.6));
-
 
         Action runAuto = drive.actionBuilderBlue(initialRedPos)
                 .afterTime(0.01,bot.intake.actionIntake())
                 .strafeToLinearHeading(shootPreload,Math.toRadians(-55))//preload
-                .stopAndAdd(bot.actionShoot())
+                .stopAndAdd(bot.actionSpinUp())
                 .waitSeconds(1.9)
                 .afterTime(0.01,bot.actionStopShoot())
                 .stopAndAdd(new InstantAction(()->bot.intake.stopIntake()))
@@ -91,7 +82,7 @@ public class CloseBlue extends LinearOpMode {
                 .setTangent(Math.toRadians(90)) //shoot 2
                 .afterTime(0.01,bot.intake.actionIntake())
                 .splineToLinearHeading(new Pose2d(shoot.component1().x,shoot.component1().y,Math.toRadians(-55)),Math.toRadians(60))
-                .stopAndAdd(bot.actionShoot())
+                .stopAndAdd(bot.actionSpinUp())
                 .waitSeconds(1.9)
                 .afterTime(0.01,bot.actionStopShoot())
 
@@ -103,7 +94,7 @@ public class CloseBlue extends LinearOpMode {
                 .setTangent(Math.toRadians(90)) //shoot 3
                 .afterTime(0.01,bot.intake.actionIntake())
                 .splineToLinearHeading(shoot,Math.toRadians(60))
-                .stopAndAdd(bot.actionShoot())
+                .stopAndAdd(bot.actionSpinUp())
                 .waitSeconds(1.9)
                 .stopAndAdd(bot.actionStopShoot())
 
@@ -115,7 +106,7 @@ public class CloseBlue extends LinearOpMode {
                 .setTangent(Math.toRadians(90)) //shoot 4
                 .afterTime(0.01,bot.intake.actionIntake())
                 .splineToLinearHeading(shoot,Math.toRadians(60))
-                .stopAndAdd(bot.actionShoot())
+                .stopAndAdd(bot.actionSpinUp())
                 .waitSeconds(3)
                 .stopAndAdd(bot.actionStopShoot())
                 .waitSeconds(1)
