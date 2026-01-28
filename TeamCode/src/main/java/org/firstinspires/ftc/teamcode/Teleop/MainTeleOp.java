@@ -79,10 +79,10 @@ public class MainTeleOp extends LinearOpMode {
                 bot.intake.reverseIntake();
             }
 
-            if (gp2.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
+            if (gp2.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)){
                 bot.hood.incrementHood();
             }
-            if (gp2.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)){
+            if (gp2.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)){
                 bot.hood.decrementHood();
             }
 
@@ -96,25 +96,22 @@ public class MainTeleOp extends LinearOpMode {
                 runningActions.add((bot.actionShootGate()));
                 isShooting=true;
             }
-
-            if(gp2.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)){
-                Turret.isLocked = !Turret.isLocked;
-            }
+//
+//            if(gp2.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)){
+//                Turret.isLocked = !Turret.isLocked;
+//            }
 
             if(gp1.wasJustPressed(GamepadKeys.Button.BACK)||gp2.wasJustPressed(GamepadKeys.Button.BACK)){
                 bot.switchAlliance();
             }
-            telemetry.addData("Apriltag ID: ", bot.aprilTag.getId());
-            telemetry.addData("Distance from Apriltag", bot.aprilTag.getRange());
-            telemetry.addData("Angle offset from Apriltag", bot.aprilTag.getBearing());
-            telemetry.addData("Bot yaw from Apriltag", bot.aprilTag.getYaw());
             telemetry.addData("target RPM",bot.shooter.getTargetRPM());
             telemetry.addData("measured RPM",bot.shooter.getRPM());
-
+            telemetry.addData("Target Degrees",bot.turret.getTargetDegrees());
+            telemetry.addData("Current Degrees",bot.turret.getCurrentDegrees());
             telemetry.addData("Hood position",bot.hood.hoodServo.getPosition());
-            telemetry.addData("distance:",bot.aprilTag.calcAccurateDis());
             telemetry.addData("At Speed?",bot.shooter.atSpeed());
             telemetry.addData("is alliance red?",bot.isRed);
+            telemetry.addData("current distance ", Turret.distance);
 
             telemetry.update();
 

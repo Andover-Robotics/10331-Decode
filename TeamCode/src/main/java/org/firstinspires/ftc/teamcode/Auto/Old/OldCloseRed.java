@@ -44,7 +44,7 @@ public class OldCloseRed extends LinearOpMode {
     public void runOpMode() throws InterruptedException{
         Bot.instance = null;
         bot = Bot.getInstance(this);
-        bot.prepAuto(24,true);
+        bot.prepAuto(true);
         MecanumDrive drive = new MecanumDrive(hardwareMap,initialRedPos);
 
         while(bot.aprilTag.visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {

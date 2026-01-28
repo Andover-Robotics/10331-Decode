@@ -34,10 +34,10 @@ public class Intake {
 
 
     public void closeGate(){
-        gate1.setPosition(0.15);
+        gate1.setPosition(0.31);
     }
     public void openGate(){
-        gate1.setPosition(0.31);
+        gate1.setPosition(0.15);
     }
 
     public void intake_without_sense(double power){
@@ -57,9 +57,8 @@ public class Intake {
     }
 
     public Action actionIntake(){
-        return new ParallelAction(
-                new InstantAction(() -> intakeMotor.setPower(1))
-        );
+              return new InstantAction(() -> intakeMotor.setPower(-1));
+
     }
     public Action actionReverseIntake(){
         return new ParallelAction(

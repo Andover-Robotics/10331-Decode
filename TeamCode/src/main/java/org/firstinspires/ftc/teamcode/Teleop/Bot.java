@@ -185,7 +185,7 @@ public class Bot {
         }
         else{
             shooter.enableShooter(false);
-            intake.closeGate();
+             intake.closeGate();
             isShooting=false;
         }
     }
@@ -220,7 +220,6 @@ public class Bot {
     public class actionPeriodic implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            aprilTag.findAprilTag();
             shooter.periodic();
 
             return true;
@@ -270,16 +269,17 @@ public class Bot {
         intake.closeGate();
         hood.hoodServo.setPosition(0.25);
         Hood.outtakePos=0.25;
-        Turret.isLocked=true;
+        Turret.isLocked=false;
         shooter.isPeriodic=true;
         //bot.turret.setEnableVelComp(true);
 
-    }public void prepAuto(int alliance, boolean isRed){
+    }public void prepAuto( boolean isRed){
         intake.closeGate();
         hood.hoodServo.setPosition(0.25);
         Hood.outtakePos=0.25;
-        aprilTag.targetAllianceId=alliance;
         this.isRed = isRed;
+        Turret.isLocked = false;
+        shooter.isPeriodic=true;
         updatePoses();
 
     }

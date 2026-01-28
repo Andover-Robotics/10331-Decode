@@ -50,21 +50,9 @@ public class CloseRed extends LinearOpMode {
     public void runOpMode() throws InterruptedException{
         Bot.instance = null;
         bot = Bot.getInstance(this);
-        bot.prepAuto(24,true);
+        bot.prepAuto(true);
         MecanumDrive drive = Bot.drive;
         drive.localizer.setPose(initialRedPos);
-        while(bot.aprilTag.visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-            sleep(1);
-        }
-
-        exposureControl = bot.aprilTag.visionPortal.getCameraControl(ExposureControl.class);
-        gainControl = bot.aprilTag.visionPortal.getCameraControl(GainControl.class);
-
-        exposureControl.setMode(ExposureControl.Mode.Manual);
-
-        exposureControl.setExposure(3, TimeUnit.MILLISECONDS);
-        gainControl.setGain((int)(gainControl.getMaxGain() * 0.6));
-
 
         Action runAuto = drive.actionBuilderRed(initialRedPos)
                 .afterTime(0.01,bot.intake.actionIntake())

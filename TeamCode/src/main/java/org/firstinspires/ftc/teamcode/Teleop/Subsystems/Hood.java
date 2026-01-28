@@ -96,11 +96,7 @@ public class Hood {
         double dv = v - lastVel;
         lastVel=v;
 
-        if(dv >=velThreshold && dt >=debounceTimeMS){
-            return true;
-        }
-
-        return false;
+        return dv >= velThreshold && dt >= debounceTimeMS;
 
 
     }

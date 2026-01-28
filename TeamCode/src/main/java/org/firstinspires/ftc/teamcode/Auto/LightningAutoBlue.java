@@ -51,7 +51,7 @@ public class LightningAutoBlue extends LinearOpMode {
     public void runOpMode() throws InterruptedException{
         Bot.instance = null;
         bot = Bot.getInstance(this);
-        bot.prepAuto(20,false);
+        bot.prepAuto(false);
         MecanumDrive drive = Bot.drive;
         drive.localizer.setPose(init);
 
