@@ -344,6 +344,19 @@ public class Bot {
 
         );
     }
+
+    public Vector2d pose2Vector(Pose2d pose){
+        double x = pose.position.x;
+        double y = pose.position.y;
+        return new Vector2d(x,y);
+    }
+
+    public Pose2d vector2Pose(Vector2d vector, double headingDeg){
+        double x = vector.x;
+        double y = vector.y;
+        double headingRad = Math.toRadians(headingDeg);
+        return new Pose2d(x,y, headingRad);
+    }
 //
 //    public BNO055IMU returnIMU(){
 //        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -360,3 +373,4 @@ public class Bot {
 
 
 }
+

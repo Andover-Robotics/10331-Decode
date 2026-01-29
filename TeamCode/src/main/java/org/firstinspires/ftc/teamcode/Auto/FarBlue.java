@@ -17,18 +17,21 @@ import org.firstinspires.ftc.vision.VisionPortal;
 
 import java.util.concurrent.TimeUnit;
 
-@Autonomous(name="Close Red", group="AA_Autos")
-public class CloseRed extends LinearOpMode {
+@Autonomous(name="Far Red", group="AA_Autos")
+public class FarBlue extends LinearOpMode {
     Bot bot;
 
     double shootdt =0.5;
 
 
     // inital
-    public static Pose2d initialRedPos = new Pose2d(62,-48,Math.toRadians(0));
+    public static Pose2d init = new Pose2d(-60,3,Math.toRadians(0));
+    public static Pose2d initRed = new Pose2d(-60,-3,Math.toRadians(0));
+
+
     //shooting
-    public static Pose2d shoot = new Pose2d(35,-35,Math.toRadians(-60));//was 20, -30
-    public static Vector2d shootPreload = new Vector2d(42,-42);//was 20,-30
+    public static Pose2d shoot = new Pose2d(-60,-3,Math.toRadians(-20));//was 20, -30
+    public static Vector2d shootPreload = new Vector2d(-58,-3);//was 20,-30
 
 
     //intake
@@ -52,63 +55,55 @@ public class CloseRed extends LinearOpMode {
         bot = Bot.getInstance(this);
         bot.prepAuto(true);
         MecanumDrive drive = Bot.drive;
-        drive.localizer.setPose(initialRedPos);
+        drive.localizer.setPose(init);
 
-        Action runAuto = drive.actionBuilderRed(initialRedPos)
+        Action runAuto = drive.actionBuilderBlue(initRed)
                 .afterTime(0.01,bot.intake.actionIntake())
                 .afterTime(0.01,bot.actionSpinUp()) //TODO: test dt on pathing here
-                .strafeToLinearHeading(shootPreload,Math.toRadians(-55))//preload
+                .strafeToLinearHeading(shootPreload,Math.toRadians(-20))//preload
                 .stopAndAdd(bot.actionOpenGate())
                 .waitSeconds(shootdt)
                 .afterTime(0.01,bot.actionStopShoot())
                 .stopAndAdd(new InstantAction(()->bot.intake.stopIntake()))
 
-                .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(firstIntake1, Math.toRadians(-90))//intake1
+                .strafeToLinearHeading(bot.pose2Vector(thirdIntake1),thirdIntake1.heading.log())//intake1
                 .afterTime(0.01,bot.intake.actionIntake())
-                .strafeToLinearHeading(firstIntake2,Math.toRadians(-85))
+                .strafeToLinearHeading(thirdIntake2,Math.toRadians(-85))
 //                .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))
 
-                .setTangent(Math.toRadians(90))
-                .strafeToLinearHeading(gatePos,Math.toRadians(0))
-//                .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))
-                .waitSeconds(1.5)
 
-                .setTangent(Math.toRadians(90)) //shoot 2
-                .afterTime(0.01,bot.intake.actionIntake())
-                .afterTime(1,bot.actionSpinUp()) //TODO: test dt on pathing here
-                .splineToLinearHeading(new Pose2d(shoot.component1().x,shoot.component1().y,Math.toRadians(-55)),Math.toRadians(60))
+                //  .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(1,bot.actionSpinUp())//TODO: test dt on pathing here
+                .strafeToLinearHeading(bot.pose2Vector(shoot),shoot.heading.log())
                 .stopAndAdd(bot.actionOpenGate())
                 .waitSeconds(shootdt)
                 .afterTime(0.01,bot.actionStopShoot())
 
-                .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(secondIntake1, Math.toRadians(-90))//intake2
+                .strafeToLinearHeading(bot.pose2Vector(secondIntake1),secondIntake1.heading.log())//intake2
 //                .afterTime(0.01,bot.intake.actionIntake())
                 .strafeToLinearHeading(secondIntake2,Math.toRadians(-85))
 
-                .setTangent(Math.toRadians(90)) //shoot 3
                 .afterTime(0.01,bot.intake.actionIntake())
                 .afterTime(1.5,bot.actionSpinUp()) //TODO: test dt on pathing here
-                .splineToLinearHeading(shoot,Math.toRadians(60))
+                .strafeToLinearHeading(bot.pose2Vector(shoot),shoot.heading.log())
                 .stopAndAdd(bot.actionOpenGate())
                 .waitSeconds(shootdt)
                 .stopAndAdd(bot.actionStopShoot())
 
 
-                .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(thirdIntake1, Math.toRadians(-90))//intake2
+//                .setTangent(Math.toRadians(180))
+//                .splineToLinearHeading(thirdIntake1, Math.toRadians(-90))//intake2
+//                 .afterTime(0.01,bot.intake.actionIntake())
+//                .strafeToLinearHeading(thirdIntake2,Math.toRadians(-85))
+//
+//                .setTangent(Math.toRadians(90)) //shoot 3
 //                .afterTime(0.01,bot.intake.actionIntake())
-                .strafeToLinearHeading(thirdIntake2,Math.toRadians(-85))
-
-                .setTangent(Math.toRadians(90)) //shoot 3
-                .afterTime(0.01,bot.intake.actionIntake())
-                .afterTime(1.7,bot.actionSpinUp()) //TODO: test dt on pathing here
-                .splineToLinearHeading(shoot,Math.toRadians(60))
-                .stopAndAdd(bot.actionOpenGate())
-                .waitSeconds(3)
-                .stopAndAdd(bot.actionStopShoot())
-                .waitSeconds(1)
+//                .afterTime(1.7,bot.actionSpinUp()) //TODO: test dt on pathing here
+//                .splineToLinearHeading(shoot,Math.toRadians(60))
+//                .stopAndAdd(bot.actionOpenGate())
+//                .waitSeconds(3)
+//                .stopAndAdd(bot.actionStopShoot())
+//                .waitSeconds(1)
                 .build();
 
         waitForStart();

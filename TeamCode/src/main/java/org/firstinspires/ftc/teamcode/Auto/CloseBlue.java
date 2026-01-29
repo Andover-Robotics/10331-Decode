@@ -23,6 +23,8 @@ public class CloseBlue extends LinearOpMode {
 
     // inital
 
+    double shootdt = 0.5;
+
     private Pose2d init = new Pose2d(60,58,Math.toRadians(45));
     public static Pose2d initialRedPos = new Pose2d(60,-58,Math.toRadians(-45));
     //shooting
@@ -62,9 +64,10 @@ public class CloseBlue extends LinearOpMode {
 
         Action runAuto = drive.actionBuilderBlue(initialRedPos)
                 .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(1,bot.actionSpinUp()) //TODO: tune time
                 .strafeToLinearHeading(shootPreload,Math.toRadians(-55))//preload
-                .stopAndAdd(bot.actionSpinUp())
-                .waitSeconds(1.9)
+                .stopAndAdd(bot.actionOpenGate())
+                .waitSeconds(shootdt)
                 .afterTime(0.01,bot.actionStopShoot())
                 .stopAndAdd(new InstantAction(()->bot.intake.stopIntake()))
 
@@ -81,9 +84,10 @@ public class CloseBlue extends LinearOpMode {
 
                 .setTangent(Math.toRadians(90)) //shoot 2
                 .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(1,bot.actionSpinUp())//TODO: tune time
                 .splineToLinearHeading(new Pose2d(shoot.component1().x,shoot.component1().y,Math.toRadians(-55)),Math.toRadians(60))
-                .stopAndAdd(bot.actionSpinUp())
-                .waitSeconds(1.9)
+                .stopAndAdd(bot.actionOpenGate())
+                .waitSeconds(shootdt)
                 .afterTime(0.01,bot.actionStopShoot())
 
                 .setTangent(Math.toRadians(180))
@@ -93,9 +97,10 @@ public class CloseBlue extends LinearOpMode {
 
                 .setTangent(Math.toRadians(90)) //shoot 3
                 .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(1,bot.actionSpinUp())
                 .splineToLinearHeading(shoot,Math.toRadians(60))
-                .stopAndAdd(bot.actionSpinUp())
-                .waitSeconds(1.9)
+                .stopAndAdd(bot.actionOpenGate())
+                .waitSeconds(shootdt)
                 .stopAndAdd(bot.actionStopShoot())
 
                 .setTangent(Math.toRadians(-160))
@@ -105,8 +110,9 @@ public class CloseBlue extends LinearOpMode {
 
                 .setTangent(Math.toRadians(90)) //shoot 4
                 .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(1,bot.actionSpinUp())
                 .splineToLinearHeading(shoot,Math.toRadians(60))
-                .stopAndAdd(bot.actionSpinUp())
+                .stopAndAdd(bot.actionOpenGate())
                 .waitSeconds(3)
                 .stopAndAdd(bot.actionStopShoot())
                 .waitSeconds(1)
