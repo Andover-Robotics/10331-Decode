@@ -50,7 +50,6 @@ public class Turret {
     public double vectorYComp;
     public boolean enableVelComp;
 
-
     public Turret (OpMode opMode){
 
         //set controller PID
@@ -64,8 +63,6 @@ public class Turret {
 //
 //        ll.start();
 
-
-
         //turretMotor default settings
         turretMotor = new MotorEx(opMode.hardwareMap, "turret", Motor.GoBILDA.RPM_1150);
         turretMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
@@ -77,9 +74,10 @@ public class Turret {
     }
     public void switchPipeline(int pipe) {
         ll.pipelineSwitch(pipe);
+        // determine what the ll is looking for
     }
 
-    // takes in ticks
+    // takes in ticks needed for target
     public void runTo(int t){ // takes in ticks
         setPoint = t;
     }//tested works
