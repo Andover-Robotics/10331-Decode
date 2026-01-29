@@ -31,17 +31,9 @@ public class Turret {
     public static double basePower = 0.1, powerMin = 0.05;
     public static double setPoint = 0;
     private final PIDController controller;
-    Hood hood; //slime me out
-
-    public boolean isManual = false;
     private final double CPR = 145.1;
     private final double GEAR_RATIO = 102.0/14;
-
-    public static double manualPower;
     public final MotorEx turretMotor;
-    public final double a1 = 20; //angle of physical limelight
-    public final double HEIGHT_OFFSET = 16.625;
-    private double hardwareLimit;
     private double degPerTick = 360 /(CPR* GEAR_RATIO);
     public Pose2d pose;
     public static Pose3D botPose = new Pose3D(new Position(DistanceUnit.INCH,0,0,0,0),new YawPitchRollAngles(AngleUnit.DEGREES,0,0,0,0));
@@ -49,12 +41,9 @@ public class Turret {
     public double lldistance,power;
     public static double distance;
     public static double compDistance;
-
     public static boolean isLocked;
-
     public LLResult llResult;
     public Limelight3A ll;
-
     //all values in inches! NEED TO TUNE THIS
     private final double TURRET_BACK_OFFSET = 2.3;
     public double vectorXComp;
