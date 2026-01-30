@@ -42,6 +42,11 @@ public class LightningAutoRed extends LinearOpMode {
     public static Vector2d gatePos=new Vector2d(7,-74);
 
     public static Pose2d thirdIntake = new Pose2d(-40,-60,Math.toRadians(-90));
+
+    public static Pose2d preHumanPlayer = new Pose2d(-63,-50,Math.toRadians(-180)); //tbd
+
+    public static Vector2d hp = new Vector2d(-63,-63);
+
     public ExposureControl exposureControl;
     public GainControl gainControl;
 
@@ -117,7 +122,35 @@ public class LightningAutoRed extends LinearOpMode {
 
                 .build();
 
+        Action test = drive.actionBuilderRed(initialRedPos)
+                // almost everything commented out is turret stuff
+                .afterTime(0.01,bot.intake.actionIntake())
+                .strafeToLinearHeading(shootPreload,Math.toRadians(-55))//preload
+                //.stopAndAdd(bot.actionSpinUp()) ts is turret
+                .waitSeconds(2)
+                //.afterTime(0.01,bot.actionStopShoot())
+                .stopAndAdd(new InstantAction(()->bot.intake.stopIntake()))
 
+                .setTangent(Math.toRadians(90))
+                .splineToLinearHeading(firstIntake1, Math.toRadians(-90))//intake1
+                .afterTime(0.01,bot.intake.actionIntake())
+                .strafeToLinearHeading(firstIntake2,Math.toRadians(-85))
+
+                .setTangent(Math.toRadians(90))
+                .strafeToLinearHeading(gatePos,Math.toRadians(0))
+                .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))
+                .waitSeconds(1.5)
+
+                .splineToLinearHeading(preHumanPlayer, Math.toRadians(90)) //need to determine position parallel to value
+                .afterTime(0.01,bot.intake.actionIntake())
+                .strafeToLinearHeading(hp, Math.toRadians(90))
+
+                .setTangent(Math.toRadians(90))
+                .strafeToLinearHeading(gatePos,Math.toRadians(0))
+                .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))
+                .waitSeconds(1.5)
+
+                .build();
         waitForStart();
         Actions.runBlocking(
                 new ActionHelper.RaceParallelCommand(
