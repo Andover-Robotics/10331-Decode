@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class CloseRed extends LinearOpMode {
     Bot bot;
 
-    double shootdt =0.5;
+    double shootdt =1.5;
 
 
     // inital
@@ -32,14 +32,14 @@ public class CloseRed extends LinearOpMode {
 
 
     //intake
-    public static Pose2d firstIntake1 = new Pose2d(18,-40,Math.toRadians(-85));//,Math.toRadians(-180)
-    public static Vector2d firstIntake2 = new Vector2d(18,-61);//,Math.toRadians(-180)
+    public static Pose2d firstIntake1 = new Pose2d(15,-40,Math.toRadians(-85));//,Math.toRadians(-180)
+    public static Vector2d firstIntake2 = new Vector2d(15,-61);//,Math.toRadians(-180)
 
     public static Vector2d gatePos=new Vector2d(7,-74);
 
 
-    public static Pose2d secondIntake1 = new Pose2d(-10,-40,Math.toRadians(-85));
-    public static Vector2d secondIntake2 = new Vector2d(-10,-61);
+    public static Pose2d secondIntake1 = new Pose2d(-11,-40,Math.toRadians(-90));
+    public static Vector2d secondIntake2 = new Vector2d(-11,-61);
 
     public static Pose2d thirdIntake1 = new Pose2d(-31,-44,Math.toRadians(-90));
     public static Vector2d thirdIntake2 = new Vector2d(-31,-68);
@@ -76,7 +76,7 @@ public class CloseRed extends LinearOpMode {
 
                 .setTangent(Math.toRadians(90)) //shoot 2
                 .afterTime(0.01,bot.intake.actionIntake())
-                .afterTime(1,bot.actionSpinUp()) //TODO: test dt on pathing here
+                .afterTime(0.5,bot.actionSpinUp()) //TODO: test dt on pathing here
                 .splineToLinearHeading(new Pose2d(shoot.component1().x,shoot.component1().y,Math.toRadians(-55)),Math.toRadians(60))
                 .stopAndAdd(bot.actionOpenGate())
                 .waitSeconds(shootdt)
@@ -85,11 +85,11 @@ public class CloseRed extends LinearOpMode {
                 .setTangent(Math.toRadians(180))
                 .splineToLinearHeading(secondIntake1, Math.toRadians(-90))//intake2
 //                .afterTime(0.01,bot.intake.actionIntake())
-                .strafeToLinearHeading(secondIntake2,Math.toRadians(-85))
+                .strafeToLinearHeading(secondIntake2,Math.toRadians(-90))
 
                 .setTangent(Math.toRadians(90)) //shoot 3
                 .afterTime(0.01,bot.intake.actionIntake())
-                .afterTime(1.5,bot.actionSpinUp()) //TODO: test dt on pathing here
+                .afterTime(1,bot.actionSpinUp()) //TODO: test dt on pathing here
                 .splineToLinearHeading(shoot,Math.toRadians(60))
                 .stopAndAdd(bot.actionOpenGate())
                 .waitSeconds(shootdt)
@@ -103,7 +103,7 @@ public class CloseRed extends LinearOpMode {
 
                 .setTangent(Math.toRadians(90)) //shoot 3
                 .afterTime(0.01,bot.intake.actionIntake())
-                .afterTime(1.7,bot.actionSpinUp()) //TODO: test dt on pathing here
+                .afterTime(1,bot.actionSpinUp()) //TODO: test dt on pathing here
                 .splineToLinearHeading(shoot,Math.toRadians(60))
                 .stopAndAdd(bot.actionOpenGate())
                 .waitSeconds(3)

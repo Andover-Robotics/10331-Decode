@@ -112,6 +112,8 @@ public class MainTeleOp extends LinearOpMode {
             telemetry.addData("At Speed?",bot.shooter.atSpeed());
             telemetry.addData("is alliance red?",bot.isRed);
             telemetry.addData("current distance ", Turret.distance);
+            telemetry.addData("goal Pose ", Bot.goalPose);
+            telemetry.addData("stored Pose ", Bot.storedPose);
 
             telemetry.update();
 

@@ -21,14 +21,14 @@ import java.util.concurrent.TimeUnit;
 public class FarRed extends LinearOpMode {
     Bot bot;
 
-    double shootdt =0.5;
+    double shootdt =3;
 
 
     // inital
-    public static Pose2d initialRedPos = new Pose2d(-60,-3,Math.toRadians(0));
+    public static Pose2d initialRedPos = new Pose2d(-60,-24,Math.toRadians(0));
     //shooting
-    public static Pose2d shoot = new Pose2d(-60,-3,Math.toRadians(-20));//was 20, -30
-    public static Vector2d shootPreload = new Vector2d(-58,-3);//was 20,-30
+    public static Pose2d shoot = new Pose2d(-55,-24,Math.toRadians(-30));//was 20, -30
+    public static Vector2d shootPreload = new Vector2d(-58,-24);//was 20,-30
 
 
     //intake
@@ -38,10 +38,10 @@ public class FarRed extends LinearOpMode {
     public static Vector2d gatePos=new Vector2d(7,-74);
 
 
-    public static Pose2d secondIntake1 = new Pose2d(-10,-40,Math.toRadians(-85));
+    public static Pose2d secondIntake1 = new Pose2d(-10,-25,Math.toRadians(-85));
     public static Vector2d secondIntake2 = new Vector2d(-10,-61);
 
-    public static Pose2d thirdIntake1 = new Pose2d(-31,-44,Math.toRadians(-90));
+    public static Pose2d thirdIntake1 = new Pose2d(-31,-20,Math.toRadians(-90));
     public static Vector2d thirdIntake2 = new Vector2d(-31,-68);
     public ExposureControl exposureControl;
     public GainControl gainControl;
@@ -50,15 +50,15 @@ public class FarRed extends LinearOpMode {
     public void runOpMode() throws InterruptedException{
         Bot.instance = null;
         bot = Bot.getInstance(this);
-        bot.prepAuto(true);
+        bot.prepFarAuto(true);
         MecanumDrive drive = Bot.drive;
         drive.localizer.setPose(initialRedPos);
 
         Action runAuto = drive.actionBuilderRed(initialRedPos)
                 .afterTime(0.01,bot.intake.actionIntake())
                 .afterTime(0.01,bot.actionSpinUp()) //TODO: test dt on pathing here
-                .strafeToLinearHeading(shootPreload,Math.toRadians(-20))//preload
-                .stopAndAdd(bot.actionOpenGate())
+                .strafeToLinearHeading(shootPreload,Math.toRadians(-30))//preload
+                .stopAndAdd(bot.actionShootGate())
                 .waitSeconds(shootdt)
                 .afterTime(0.01,bot.actionStopShoot())
                 .stopAndAdd(new InstantAction(()->bot.intake.stopIntake()))
@@ -72,7 +72,7 @@ public class FarRed extends LinearOpMode {
               //  .afterTime(0.01,bot.intake.actionIntake())
                 .afterTime(1,bot.actionSpinUp())//TODO: test dt on pathing here
                 .strafeToLinearHeading(bot.pose2Vector(shoot),shoot.heading.log())
-                .stopAndAdd(bot.actionOpenGate())
+                .stopAndAdd(bot.actionShootGate())
                 .waitSeconds(shootdt)
                 .afterTime(0.01,bot.actionStopShoot())
 
@@ -83,7 +83,7 @@ public class FarRed extends LinearOpMode {
                 .afterTime(0.01,bot.intake.actionIntake())
                 .afterTime(1.5,bot.actionSpinUp()) //TODO: test dt on pathing here
                 .strafeToLinearHeading(bot.pose2Vector(shoot),shoot.heading.log())
-                .stopAndAdd(bot.actionOpenGate())
+                .stopAndAdd(bot.actionShootGate())
                 .waitSeconds(shootdt)
                 .stopAndAdd(bot.actionStopShoot())
 

@@ -23,7 +23,7 @@ public class Shooter {
     //y=-0.000860551x^{3}+0.278353x^{2}-11.54167x+3650.11204 regression values
     public static double shooterA = -0.0000309751, shooterB = 0.0093023, shooterC = -0.911617, shooterD = 46.08444, shooterE=2434.93057;
     public final MotorEx shooter2;
-    public static double p = 0.0003, i = 0.0, d = 0.0, f = 0.0002;
+    public static double p = 0.0003, i = 0.0, d = 0.0, f = 0.00021;
     private final PIDController controller;
     public static int targetRPM = 0,target;
     public boolean reset =false;

@@ -38,7 +38,7 @@ public class Tester extends LinearOpMode {
         //bot.turret.setEnableVelComp(true);
         bot.turret.resetEncoder();
         gp1 = new GamepadEx(gamepad1);
-        Bot.drive.localizer.setPose(new Pose2d(60,-58,Math.toRadians(45)));
+        //Bot.drive.localizer.setPose(new Pose2d(60,-58,Math.toRadians(45)));
 
 
 

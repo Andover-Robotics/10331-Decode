@@ -142,6 +142,7 @@ public class Bot {
 
     public void switchAlliance(){
         isRed= !isRed;
+        updatePoses();
     }
 
 
@@ -221,6 +222,7 @@ public class Bot {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             shooter.periodic();
+            turret.periodic();
 
             return true;
         }
@@ -268,6 +270,7 @@ public class Bot {
         fr.setInverted(true);
         intake.closeGate();
         hood.hoodServo.setPosition(0.25);
+        Bot.drive.localizer.setPose(storedPose);
         Hood.outtakePos=0.25;
         Turret.isLocked=false;
         shooter.isPeriodic=true;
@@ -277,6 +280,16 @@ public class Bot {
         intake.closeGate();
         hood.hoodServo.setPosition(0.25);
         Hood.outtakePos=0.25;
+        this.isRed = isRed;
+        Turret.isLocked = false;
+        shooter.isPeriodic=true;
+        updatePoses();
+
+    }
+    public void prepFarAuto( boolean isRed){
+        intake.closeGate();
+        hood.hoodServo.setPosition(0.3);
+        Hood.outtakePos=0.3;
         this.isRed = isRed;
         Turret.isLocked = false;
         shooter.isPeriodic=true;
@@ -303,8 +316,6 @@ public class Bot {
 
     public Action actionShootGate(){
         return new SequentialAction(
-                new InstantAction(()->shooter.enableShooter(true)),
-                new SleepAction(0.35),
                 new InstantAction(() -> intake.openGate()),
                 new SleepAction(shootSleep),
                 new InstantAction(() -> intake.closeGate()),

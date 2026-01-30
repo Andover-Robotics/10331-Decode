@@ -17,7 +17,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 
 import java.util.concurrent.TimeUnit;
 
-@Autonomous(name="Lighting Auto Red", group="AA_Autos")
+@Autonomous(name="Lighting Auto Red")
 public class LightningAutoRed extends LinearOpMode {
     Bot bot;
 

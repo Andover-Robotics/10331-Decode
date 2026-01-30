@@ -23,26 +23,26 @@ public class CloseBlue extends LinearOpMode {
 
     // inital
 
-    double shootdt = 0.5;
+    double shootdt = 1.5;
 
-    private Pose2d init = new Pose2d(60,58,Math.toRadians(45));
-    public static Pose2d initialRedPos = new Pose2d(60,-58,Math.toRadians(-45));
+    private Pose2d init = new Pose2d(60,48,Math.toRadians(0));
+    public static Pose2d initialRedPos = new Pose2d(60,-48,Math.toRadians(0));
     //shooting
     public static Pose2d shoot = new Pose2d(35,-35,Math.toRadians(-55));//was 20, -30
-    public static Vector2d shootPreload = new Vector2d(42,-42);//was 20,-30
+    public static Vector2d shootPreload = new Vector2d(37,-37);//was 20,-30
 
     public static Vector2d gatePos=new Vector2d(7,-78);
 
 
     //intake
-    public static Pose2d firstIntake1 = new Pose2d(18,-40,Math.toRadians(-85));//,Math.toRadians(-180)
-    public static Vector2d firstIntake2 = new Vector2d(18,-63);//,Math.toRadians(-180)
+    public static Pose2d firstIntake1 = new Pose2d(12,-40,Math.toRadians(-85));//,Math.toRadians(-180)
+    public static Vector2d firstIntake2 = new Vector2d(12,-63);//,Math.toRadians(-180)
 
-    public static Pose2d secondIntake1 = new Pose2d(-14,-40,Math.toRadians(-85));
-    public static Vector2d secondIntake2 = new Vector2d(-14,-61);
+    public static Pose2d secondIntake1 = new Pose2d(-11,-40,Math.toRadians(-90));
+    public static Vector2d secondIntake2 = new Vector2d(-11,-61);
 
-    public static Pose2d thirdIntake1 = new Pose2d(-33,-47,Math.toRadians(-90));
-    public static Vector2d thirdIntake2 = new Vector2d(-33,-68);
+    public static Pose2d thirdIntake1 = new Pose2d(-34,-44,Math.toRadians(-90));
+    public static Vector2d thirdIntake2 = new Vector2d(-34,-68);
     public ExposureControl exposureControl;
     public GainControl gainControl;
 
@@ -64,7 +64,7 @@ public class CloseBlue extends LinearOpMode {
 
         Action runAuto = drive.actionBuilderBlue(initialRedPos)
                 .afterTime(0.01,bot.intake.actionIntake())
-                .afterTime(1,bot.actionSpinUp()) //TODO: tune time
+                .afterTime(0.01,bot.actionSpinUp()) //TODO: tune time
                 .strafeToLinearHeading(shootPreload,Math.toRadians(-55))//preload
                 .stopAndAdd(bot.actionOpenGate())
                 .waitSeconds(shootdt)
@@ -74,7 +74,7 @@ public class CloseBlue extends LinearOpMode {
                 .setTangent(Math.toRadians(180))
                 .splineToLinearHeading(firstIntake1, Math.toRadians(-90))//intake1
                 .afterTime(0.01,bot.intake.actionIntake())
-                .strafeToLinearHeading(firstIntake2,Math.toRadians(-85))
+                .strafeToLinearHeading(firstIntake2,Math.toRadians(-90))
                // .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))
 
                 .setTangent(Math.toRadians(90))
@@ -84,7 +84,7 @@ public class CloseBlue extends LinearOpMode {
 
                 .setTangent(Math.toRadians(90)) //shoot 2
                 .afterTime(0.01,bot.intake.actionIntake())
-                .afterTime(1,bot.actionSpinUp())//TODO: tune time
+                .afterTime(0.5,bot.actionSpinUp())//TODO: tune time
                 .splineToLinearHeading(new Pose2d(shoot.component1().x,shoot.component1().y,Math.toRadians(-55)),Math.toRadians(60))
                 .stopAndAdd(bot.actionOpenGate())
                 .waitSeconds(shootdt)

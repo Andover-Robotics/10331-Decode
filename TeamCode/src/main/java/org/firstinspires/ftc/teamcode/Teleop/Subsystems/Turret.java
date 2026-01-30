@@ -168,6 +168,7 @@ public class Turret {
     public void periodic() {
         power = 0;
         Bot.drive.updatePoseEstimate();
+        Bot.storedPose = Bot.drive.localizer.getPose();
         double error = setPoint - turretMotor.getCurrentPosition();
 
         if(error*degPerTick>10)controller.setPID(p, i, d);
@@ -185,7 +186,7 @@ public class Turret {
             //controller.setSetPoint(setPoint);
         if(isLocked) runToAngle(autoAimField(Bot.goalPose));
         //locks forward for drifting if i can't fix
-        else {runToAngle(0); autoAimField(Bot.goalPose);}
+        else { autoAimField(Bot.goalPose);}
 
         power = controller.calculate(turretMotor.getCurrentPosition(),setPoint);
         power = clamp(power,1.0,-1.0);
