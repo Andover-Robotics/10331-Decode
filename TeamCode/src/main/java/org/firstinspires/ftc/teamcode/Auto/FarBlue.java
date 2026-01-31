@@ -13,9 +13,6 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainCon
 import org.firstinspires.ftc.teamcode.Auto.miscRR.ActionHelper;
 import org.firstinspires.ftc.teamcode.Auto.miscRR.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Teleop.Bot;
-import org.firstinspires.ftc.vision.VisionPortal;
-
-import java.util.concurrent.TimeUnit;
 
 @Autonomous(name="Far Blue", group="AA_Autos")
 public class FarBlue extends LinearOpMode {
@@ -30,8 +27,8 @@ public class FarBlue extends LinearOpMode {
 
 
     //shooting
-    public static Pose2d shoot = new Pose2d(-55,-24,Math.toRadians(-20));//was 20, -30
-    public static Vector2d shootPreload = new Vector2d(-58,-24);//was 20,-30
+    public static Pose2d shoot = new Pose2d(-52,-24,Math.toRadians(-20));//was 20, -30
+    public static Vector2d shootPreload = new Vector2d(-55,-24);//was 20,-30
 
 
     //intake
@@ -41,7 +38,7 @@ public class FarBlue extends LinearOpMode {
     public static Vector2d gatePos=new Vector2d(7,-74);
 
 
-    public static Pose2d secondIntake1 = new Pose2d(-10,-25,Math.toRadians(-85));
+    public static Pose2d secondIntake1 = new Pose2d(-10,-20,Math.toRadians(-85));
     public static Vector2d secondIntake2 = new Vector2d(-10,-53);
 
     public static Pose2d thirdIntake1 = new Pose2d(-34,-20,Math.toRadians(-90));
@@ -58,34 +55,37 @@ public class FarBlue extends LinearOpMode {
         drive.localizer.setPose(init);
 
         Action runAuto = drive.actionBuilderBlue(initRed)
-                .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(0.01,bot.intake.actionIntakeFar())
                 .afterTime(0.01,bot.actionSpinUp()) //TODO: test dt on pathing here
-                .strafeToLinearHeading(shootPreload,Math.toRadians(-15))//preload
+                .strafeToSplineHeading(shootPreload,Math.toRadians(-20))//preload
+                .waitSeconds(2)
                 .stopAndAdd(bot.actionShootGate())
                 .waitSeconds(shootdt)
                 .afterTime(0.01,bot.actionStopShoot())
                 .stopAndAdd(new InstantAction(()->bot.intake.stopIntake()))
 
-                .strafeToLinearHeading(bot.pose2Vector(thirdIntake1),thirdIntake1.heading.log())//intake1
-                .afterTime(0.01,bot.intake.actionIntake())
-                .strafeToLinearHeading(thirdIntake2,Math.toRadians(-85))
+                .strafeToSplineHeading(bot.pose2Vector(thirdIntake1),thirdIntake1.heading.log())//intake1
+                .afterTime(0.01,bot.intake.actionIntakeFar())
+                .strafeToSplineHeading(thirdIntake2,Math.toRadians(-85))
 //                .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))
 
 
-                //  .afterTime(0.01,bot.intake.actionIntake())
+                //  .afterTime(0.01,bot.intake.actionIntakeClose())
                 .afterTime(0.3,bot.actionSpinUp())//TODO: test dt on pathing here
-                .strafeToLinearHeading(bot.pose2Vector(shoot),shoot.heading.log())
+                .strafeToSplineHeading(bot.pose2Vector(shoot),shoot.heading.log())
+                .waitSeconds(1)
                 .stopAndAdd(bot.actionShootGate())
                 .waitSeconds(shootdt)
                 .afterTime(0.01,bot.actionStopShoot())
 
-                .strafeToLinearHeading(bot.pose2Vector(secondIntake1),secondIntake1.heading.log())//intake2
-//                .afterTime(0.01,bot.intake.actionIntake())
-                .strafeToLinearHeading(secondIntake2,Math.toRadians(-85))
+                .strafeToSplineHeading(bot.pose2Vector(secondIntake1),secondIntake1.heading.log())//intake2
+//                .afterTime(0.01,bot.intake.actionIntakeClose())
+                .strafeToSplineHeading(secondIntake2,Math.toRadians(-85))
 
-                .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(0.01,bot.intake.actionIntakeFar())
                 .afterTime(0.4,bot.actionSpinUp()) //TODO: test dt on pathing here
-                .strafeToLinearHeading(bot.pose2Vector(shoot),shoot.heading.log())
+                .strafeToSplineHeading(bot.pose2Vector(shoot),shoot.heading.log())
+                .waitSeconds(1)
                 .stopAndAdd(bot.actionShootGate())
                 .waitSeconds(shootdt)
                 .stopAndAdd(bot.actionStopShoot())
@@ -93,11 +93,11 @@ public class FarBlue extends LinearOpMode {
 
 //                .setTangent(Math.toRadians(180))
 //                .splineToLinearHeading(thirdIntake1, Math.toRadians(-90))//intake2
-//                 .afterTime(0.01,bot.intake.actionIntake())
+//                 .afterTime(0.01,bot.intake.actionIntakeClose())
 //                .strafeToLinearHeading(thirdIntake2,Math.toRadians(-85))
 //
 //                .setTangent(Math.toRadians(90)) //shoot 3
-//                .afterTime(0.01,bot.intake.actionIntake())
+//                .afterTime(0.01,bot.intake.actionIntakeClose())
 //                .afterTime(1.7,bot.actionSpinUp()) //TODO: test dt on pathing here
 //                .splineToLinearHeading(shoot,Math.toRadians(60))
 //                .stopAndAdd(bot.actionOpenGate())

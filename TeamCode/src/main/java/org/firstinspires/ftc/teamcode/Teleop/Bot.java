@@ -41,7 +41,7 @@ public class Bot {
 
     public boolean fieldCentricRunMode = false;
     public MotorEx fl, fr, bl, br;
-    public static double shootSleep=0.2, shootDelay=0.7;
+    public static double shootSleep=0.2, shootDelay=0.8;
     public boolean isRed,isIntake,isShooting,hoodComp;
     //public boolean recoilIsTrue;
 
@@ -133,6 +133,10 @@ public class Bot {
         }
     }
 
+    public void resetPose(){
+        drive.localizer.setPose(resetPose);
+    }
+
 
     //Add useStoredPose
     public static void useStoredPose() {
@@ -183,6 +187,7 @@ public class Bot {
         if(!isShooting) {
             shooter.enableShooter(true);
             isShooting=true;
+            if(isIntake) intake.intake_without_sense(-0.8);
         }
         else{
             shooter.enableShooter(false);
@@ -286,11 +291,13 @@ public class Bot {
         updatePoses();
 
     }
-    public void prepFarAuto( boolean isRed){
+
+
+    public void prepFarAuto( boolean r){
         intake.closeGate();
         hood.hoodServo.setPosition(0.3);
         Hood.outtakePos=0.3;
-        this.isRed = isRed;
+        isRed = r;
         Turret.isLocked = false;
         shooter.isPeriodic=true;
         updatePoses();

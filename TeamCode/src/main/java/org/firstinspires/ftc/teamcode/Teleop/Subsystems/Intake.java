@@ -4,8 +4,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
-import com.acmerobotics.roadrunner.SequentialAction;
-import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -56,10 +54,17 @@ public class Intake {
         }
     }
 
-    public Action actionIntake(){
-              return new InstantAction(() -> intakeMotor.setPower(-1));
+    public Action actionIntakeClose(){
+              return new InstantAction(() -> intakeMotor.setPower(-0.8));
 
     }
+
+    public Action actionIntakeFar(){
+        return new InstantAction(() -> intakeMotor.setPower(-1));
+
+    }
+
+
     public Action actionReverseIntake(){
         return new ParallelAction(
                 new InstantAction(()->intakeMotor.setPower(-power))

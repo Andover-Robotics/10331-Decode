@@ -63,7 +63,7 @@ public class CloseBlue extends LinearOpMode {
         drive.localizer.setPose(init);
 
         Action runAuto = drive.actionBuilderBlue(initialRedPos)
-                .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(0.01,bot.intake.actionIntakeClose())
                 .afterTime(0.01,bot.actionSpinUp()) //TODO: tune time
                 .strafeToLinearHeading(shootPreload,Math.toRadians(-55))//preload
                 .stopAndAdd(bot.actionOpenGate())
@@ -73,7 +73,7 @@ public class CloseBlue extends LinearOpMode {
 
                 .setTangent(Math.toRadians(180))
                 .splineToLinearHeading(firstIntake1, Math.toRadians(-90))//intake1
-                .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(0.01,bot.intake.actionIntakeClose())
                 .strafeToLinearHeading(firstIntake2,Math.toRadians(-90))
                // .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))
 
@@ -83,7 +83,7 @@ public class CloseBlue extends LinearOpMode {
                 .waitSeconds(1.5)
 
                 .setTangent(Math.toRadians(90)) //shoot 2
-                .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(0.01,bot.intake.actionIntakeClose())
                 .afterTime(0.5,bot.actionSpinUp())//TODO: tune time
                 .splineToLinearHeading(new Pose2d(shoot.component1().x,shoot.component1().y,Math.toRadians(-55)),Math.toRadians(60))
                 .stopAndAdd(bot.actionOpenGate())
@@ -92,11 +92,11 @@ public class CloseBlue extends LinearOpMode {
 
                 .setTangent(Math.toRadians(180))
                 .splineToLinearHeading(secondIntake1, Math.toRadians(-90))//intake2
-//                .afterTime(0.01,bot.intake.actionIntake())
+//                .afterTime(0.01,bot.intake.actionIntakeClose())
                 .strafeToLinearHeading(secondIntake2,Math.toRadians(-85))
 
                 .setTangent(Math.toRadians(90)) //shoot 3
-                .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(0.01,bot.intake.actionIntakeClose())
                 .afterTime(1,bot.actionSpinUp())
                 .splineToLinearHeading(shoot,Math.toRadians(60))
                 .stopAndAdd(bot.actionOpenGate())
@@ -105,11 +105,11 @@ public class CloseBlue extends LinearOpMode {
 
                 .setTangent(Math.toRadians(-160))
                 .splineToLinearHeading(thirdIntake1, Math.toRadians(-90))//intake3
-//                .afterTime(0.01,bot.intake.actionIntake())
+//                .afterTime(0.01,bot.intake.actionIntakeClose())
                 .strafeToLinearHeading(thirdIntake2,Math.toRadians(-85))
 
                 .setTangent(Math.toRadians(90)) //shoot 4
-                .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(0.01,bot.intake.actionIntakeClose())
                 .afterTime(1,bot.actionSpinUp())
                 .splineToLinearHeading(shoot,Math.toRadians(60))
                 .stopAndAdd(bot.actionOpenGate())

@@ -72,6 +72,8 @@ public class MainTeleOp extends LinearOpMode {
             drive();
 
 
+
+
             if(gp1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
                 bot.teleopIntake();
             }
@@ -91,6 +93,9 @@ public class MainTeleOp extends LinearOpMode {
             }
             if(gp2.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
                 bot.teleopShoot();
+            }
+            if(gp2.wasJustPressed(GamepadKeys.Button.X)){
+                bot.resetPose();
             }
             if (gp2.wasJustPressed(GamepadKeys.Button.Y)){
                 runningActions.add((bot.actionShootGate()));
