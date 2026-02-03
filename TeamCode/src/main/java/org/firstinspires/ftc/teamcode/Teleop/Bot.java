@@ -120,16 +120,16 @@ public class Bot {
 
     public void updatePoses(){
         if (isRed){
-            if(goalPose.y!= -60){
-                goalPose = new Vector2d(goalPose.x, Math.abs(goalPose.y));
-                resetPose = new Pose2d(resetPose.component1().x, Math.abs(resetPose.component1().y), Math.abs(resetPose.heading.log()));
-        }
+
+                goalPose = new Vector2d(65, -60);
+                resetPose = new Pose2d(-63, -63, Math.toRadians(90));
+
         }
         else {
-            if (goalPose.y != 60) {
-                goalPose = new Vector2d(goalPose.x, (-1 * goalPose.y));
-                resetPose = new Pose2d(resetPose.component1().x, -1 * (resetPose.component1().y), -1 * (resetPose.heading.log()));
-            }
+
+                goalPose = new Vector2d(65,60);
+                resetPose = new Pose2d(-63, 63, Math.toRadians(-90));
+
         }
     }
 
@@ -174,7 +174,7 @@ public class Bot {
 
     public void teleopIntake(){
         if(!isIntake) {
-            intake.intake_without_sense(-1);
+            intake.intake_without_sense(-0.9);
             isIntake = true;
         }
         else{

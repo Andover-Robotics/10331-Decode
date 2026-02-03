@@ -18,28 +18,28 @@ import org.firstinspires.ftc.teamcode.Teleop.Bot;
 public class CloseRed extends LinearOpMode {
     Bot bot;
 
-    double shootdt =1.6;
+    double shootdt =1.7;
 
 
     // inital
     public static Pose2d initialRedPos = new Pose2d(62,-48,Math.toRadians(0));
     //shooting
-    public static Pose2d shoot = new Pose2d(20,-30,Math.toRadians(-50));//was 20, -30
-    public static Vector2d shootPreload = new Vector2d(20,-30);//was 20,-30
+    public static Pose2d shoot = new Pose2d(33,-30,Math.toRadians(-50));//was 20, -30
+    public static Vector2d shootPreload = new Vector2d(33,-30);//was 20,-30
 
 
     //intake
-    public static Pose2d firstIntake1 = new Pose2d(13,-40,Math.toRadians(-85));//,Math.toRadians(-180)
+    public static Pose2d firstIntake1 = new Pose2d(13,-37,Math.toRadians(-85));//,Math.toRadians(-180)
     public static Vector2d firstIntake2 = new Vector2d(13,-59);//,Math.toRadians(-180)
 
     public static Vector2d gatePos=new Vector2d(4,-70);
 
 
-    public static Pose2d secondIntake1 = new Pose2d(-11,-35,Math.toRadians(-90));
-    public static Vector2d secondIntake2 = new Vector2d(-11,-57);
+    public static Pose2d secondIntake1 = new Pose2d(-14,-35,Math.toRadians(-90));
+    public static Vector2d secondIntake2 = new Vector2d(-14,-65);
 
-    public static Pose2d thirdIntake1 = new Pose2d(-31,-39,Math.toRadians(-90));
-    public static Vector2d thirdIntake2 = new Vector2d(-31,-62);
+    public static Pose2d thirdIntake1 = new Pose2d(-32,-40,Math.toRadians(-90));
+    public static Vector2d thirdIntake2 = new Vector2d(-32,-62);
     public ExposureControl exposureControl;
     public GainControl gainControl;
 
@@ -80,17 +80,16 @@ public class CloseRed extends LinearOpMode {
                 .waitSeconds(shootdt)
                 .afterTime(0.01,bot.actionStopShoot())
 
-                .setTangent(Math.toRadians(180))
+                .setReversed(true)
                 .splineToSplineHeading(secondIntake1, Math.toRadians(-90))//intake2
-//                .afterTime(0.01,bot.intake.actionIntakeClose())
-                .strafeToSplineHeading(secondIntake2,Math.toRadians(-90))
+                .strafeToSplineHeading(secondIntake2,Math.toRadians(-95))
 
                 .setTangent(Math.toRadians(90)) //shoot 3
                 .afterTime(0.01,bot.intake.actionIntakeClose())
-                .afterTime(0.7,bot.actionSpinUp()) //TODO: test dt on pathing here
+                .afterTime(0.3,bot.actionSpinUp()) //TODO: test dt on pathing here
                 .splineToSplineHeading(shoot,Math.toRadians(60))
                 .stopAndAdd(bot.actionOpenGate())
-                .waitSeconds(shootdt)
+                .waitSeconds(shootdt+0.2)
                 .stopAndAdd(bot.actionStopShoot())
 
 
@@ -101,12 +100,12 @@ public class CloseRed extends LinearOpMode {
 
                 .setTangent(Math.toRadians(90)) //shoot 3
                 .afterTime(0.01,bot.intake.actionIntakeClose())
-                .afterTime(1,bot.actionSpinUp()) //TODO: test dt on pathing here
+                .afterTime(0.6,bot.actionSpinUp()) //TODO: test dt on pathing here
                 .splineToSplineHeading(shoot,Math.toRadians(60))
                 .stopAndAdd(bot.actionOpenGate())
-                .waitSeconds(3)
+                .waitSeconds(shootdt)
                 .stopAndAdd(bot.actionStopShoot())
-                .waitSeconds(1)
+                .strafeToSplineHeading(new Vector2d(45,-30),Math.toRadians(0))
                 .build();
 
         waitForStart();

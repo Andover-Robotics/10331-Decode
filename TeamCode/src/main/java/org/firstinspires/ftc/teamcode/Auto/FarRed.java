@@ -24,8 +24,8 @@ public class FarRed extends LinearOpMode {
 
 
     //shooting
-    public static Pose2d shoot = new Pose2d(-54,-26,Math.toRadians(-15));//was 20, -30
-    public static Vector2d shootPreload = new Vector2d(-57,-26);//was 20,-30
+    public static Pose2d shoot = new Pose2d(-54,-24,Math.toRadians(-20));//was 20, -30
+    public static Vector2d shootPreload = new Vector2d(-57,-24);//was 20,-30
 
 
     //intake

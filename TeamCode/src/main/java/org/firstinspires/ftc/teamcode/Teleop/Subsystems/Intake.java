@@ -67,12 +67,12 @@ public class Intake {
 
     public Action actionReverseIntake(){
         return new ParallelAction(
-                new InstantAction(()->intakeMotor.setPower(-power))
+                new InstantAction(()->intakeMotor.setPower(power))
         );
     }
 
     public void reverseIntake(){
-        intakeMotor.setPower(-power);
+        intakeMotor.setPower(power);
     }
 
     public void stopIntake(){

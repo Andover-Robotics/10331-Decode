@@ -27,8 +27,8 @@ public class FarBlue extends LinearOpMode {
 
 
     //shooting
-    public static Pose2d shoot = new Pose2d(-52,-24,Math.toRadians(-20));//was 20, -30
-    public static Vector2d shootPreload = new Vector2d(-55,-24);//was 20,-30
+    public static Pose2d shoot = new Pose2d(-52,-19,Math.toRadians(-25));//was 20, -30
+    public static Vector2d shootPreload = new Vector2d(-55,-19);//was 20,-30
 
 
     //intake
