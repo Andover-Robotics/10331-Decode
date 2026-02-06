@@ -41,7 +41,7 @@ public class Bot {
 
     public boolean fieldCentricRunMode = false;
     public MotorEx fl, fr, bl, br;
-    public static double shootSleep=0.2, shootDelay=0.7;
+    public static double shootSleep=0.2, shootDelay=0.8;
     public boolean isRed,isIntake,isShooting,hoodComp;
     //public boolean recoilIsTrue;
 
@@ -120,17 +120,21 @@ public class Bot {
 
     public void updatePoses(){
         if (isRed){
-            if(goalPose.y!= -60){
-                goalPose = new Vector2d(goalPose.x, Math.abs(goalPose.y));
-                resetPose = new Pose2d(resetPose.component1().x, Math.abs(resetPose.component1().y), Math.abs(resetPose.heading.log()));
-        }
+
+                goalPose = new Vector2d(65, -60);
+                resetPose = new Pose2d(-63, -63, Math.toRadians(90));
+
         }
         else {
-            if (goalPose.y != 60) {
-                goalPose = new Vector2d(goalPose.x, (-1 * goalPose.y));
-                resetPose = new Pose2d(resetPose.component1().x, -1 * (resetPose.component1().y), -1 * (resetPose.heading.log()));
-            }
+
+                goalPose = new Vector2d(65,60);
+                resetPose = new Pose2d(-63, 63, Math.toRadians(-90));
+
         }
+    }
+
+    public void resetPose(){
+        drive.localizer.setPose(resetPose);
     }
 
 
@@ -142,6 +146,7 @@ public class Bot {
 
     public void switchAlliance(){
         isRed= !isRed;
+        updatePoses();
     }
 
 
@@ -169,7 +174,7 @@ public class Bot {
 
     public void teleopIntake(){
         if(!isIntake) {
-            intake.intake_without_sense(-1);
+            intake.intake_without_sense(-0.9);
             isIntake = true;
         }
         else{
@@ -182,6 +187,7 @@ public class Bot {
         if(!isShooting) {
             shooter.enableShooter(true);
             isShooting=true;
+            if(isIntake) intake.intake_without_sense(-0.8);
         }
         else{
             shooter.enableShooter(false);
@@ -221,6 +227,7 @@ public class Bot {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             shooter.periodic();
+            turret.periodic();
 
             return true;
         }
@@ -268,6 +275,7 @@ public class Bot {
         fr.setInverted(true);
         intake.closeGate();
         hood.hoodServo.setPosition(0.25);
+        Bot.drive.localizer.setPose(storedPose);
         Hood.outtakePos=0.25;
         Turret.isLocked=false;
         shooter.isPeriodic=true;
@@ -278,6 +286,18 @@ public class Bot {
         hood.hoodServo.setPosition(0.25);
         Hood.outtakePos=0.25;
         this.isRed = isRed;
+        Turret.isLocked = false;
+        shooter.isPeriodic=true;
+        updatePoses();
+
+    }
+
+
+    public void prepFarAuto( boolean r){
+        intake.closeGate();
+        hood.hoodServo.setPosition(0.3);
+        Hood.outtakePos=0.3;
+        isRed = r;
         Turret.isLocked = false;
         shooter.isPeriodic=true;
         updatePoses();
@@ -303,8 +323,6 @@ public class Bot {
 
     public Action actionShootGate(){
         return new SequentialAction(
-                new InstantAction(()->shooter.enableShooter(true)),
-                new SleepAction(0.35),
                 new InstantAction(() -> intake.openGate()),
                 new SleepAction(shootSleep),
                 new InstantAction(() -> intake.closeGate()),

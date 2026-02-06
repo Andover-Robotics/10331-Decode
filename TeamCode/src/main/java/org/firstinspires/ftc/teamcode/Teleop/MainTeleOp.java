@@ -22,10 +22,11 @@ public class MainTeleOp extends LinearOpMode {
     Bot bot;
     GamepadEx gp1 , gp2;
     private double driveSpeed = 1, driveMultiplier = 1;
+    boolean isIntake=false;
     boolean isShooting=false;
     private List<Action> runningActions = new ArrayList<>();
     private FtcDashboard dash = FtcDashboard.getInstance();
-    // public final int BLUE=20,RED=24, GPP = 21, PPG = 23, PGP = 22;
+    public final int BLUE=20,RED=24, GPP = 21, PPG = 23, PGP = 22;
 
 
 
@@ -70,7 +71,9 @@ public class MainTeleOp extends LinearOpMode {
             gp2.readButtons();
             drive();
 
-            // actual gamepad actions
+
+
+
             if(gp1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
                 bot.teleopIntake();
             }
@@ -90,6 +93,9 @@ public class MainTeleOp extends LinearOpMode {
             }
             if(gp2.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
                 bot.teleopShoot();
+            }
+            if(gp2.wasJustPressed(GamepadKeys.Button.X)){
+                bot.resetPose();
             }
             if (gp2.wasJustPressed(GamepadKeys.Button.Y)){
                 runningActions.add((bot.actionShootGate()));
@@ -111,6 +117,8 @@ public class MainTeleOp extends LinearOpMode {
             telemetry.addData("At Speed?",bot.shooter.atSpeed());
             telemetry.addData("is alliance red?",bot.isRed);
             telemetry.addData("current distance ", Turret.distance);
+            telemetry.addData("goal Pose ", Bot.goalPose);
+            telemetry.addData("stored Pose ", Bot.storedPose);
 
             telemetry.update();
 
@@ -122,7 +130,6 @@ public class MainTeleOp extends LinearOpMode {
                 }
             }
             runningActions = newActions;
-            // sorting through the arrays so that it can actually run them
 
         }
     }
