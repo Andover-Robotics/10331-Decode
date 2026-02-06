@@ -46,9 +46,6 @@ public class CloseBlue extends LinearOpMode {
     public static Vector2d thirdIntake2 = new Vector2d(-34,-62);
     public ExposureControl exposureControl;
     public GainControl gainControl;
-
-
-
     public ArrayList<Action> actionsToRun;
 
 
@@ -63,62 +60,16 @@ public class CloseBlue extends LinearOpMode {
 
         drive.localizer.setPose(init);
 
-        Action runAuto = drive.actionBuilderBlue(initialRedPos)
-                .afterTime(0.01,bot.intake.actionIntakeClose())
-                .afterTime(0.01,bot.actionSpinUp()) //TODO: test dt on pathing here
-                .strafeToSplineHeading(shootPreload,Math.toRadians(-40))//preload
-                .waitSeconds(0.3)
-                .stopAndAdd(bot.actionOpenGate())
-                .waitSeconds(shootdt)
-                .afterTime(0.01,bot.actionStopShoot())
-                .stopAndAdd(new InstantAction(()->bot.intake.stopIntake()))
-
-                .setTangent(Math.toRadians(190))
-                .splineToSplineHeading(firstIntake1, Math.toRadians(-90))//intake1
-                .afterTime(0.01,bot.intake.actionIntakeClose())
-                .strafeToSplineHeading(firstIntake2,Math.toRadians(-85))
-//                .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))
-
-                .setTangent(Math.toRadians(90))
-                .strafeToLinearHeading(gatePos,Math.toRadians(0))
-//                .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))
-                .waitSeconds(1.5)
-
-                .setTangent(Math.toRadians(90)) //shoot 2
-                .afterTime(0.01,bot.intake.actionIntakeClose())
-                .afterTime(0.2,bot.actionSpinUp()) //TODO: test dt on pathing here
-                .splineToSplineHeading(new Pose2d(shoot.component1().x,shoot.component1().y,Math.toRadians(-55)),Math.toRadians(60))
-                .stopAndAdd(bot.actionOpenGate())
-                .waitSeconds(shootdt+0.1)
-                .afterTime(0.01,bot.actionStopShoot())
-
-                .setReversed(true)
-                .splineToSplineHeading(secondIntake1, Math.toRadians(-90))//intake2
-//                .afterTime(0.01,bot.intake.actionIntakeClose())
-                .strafeToSplineHeading(secondIntake2,Math.toRadians(-95))
-
-                .setTangent(Math.toRadians(90)) //shoot 3
-                .afterTime(0.01,bot.intake.actionIntakeClose())
-                .afterTime(0.3,bot.actionSpinUp()) //TODO: test dt on pathing here
-                .splineToSplineHeading(shoot,Math.toRadians(60))
-                .stopAndAdd(bot.actionOpenGate())
-                .waitSeconds(shootdt)
-                .stopAndAdd(bot.actionStopShoot())
+        Action runAuto = drive.actionBuilderBlue(initialRedPos) // How we mirror the cords & call all methods
+                // shoot preloaded artis (2-3 secs)
+                // intake & shoot middle row (5 secs)
+                // for loop (3 times (4 if 21)
+                    // pos bot so it stays at gate so its open, (with wedges)
+                    // cycle through (intake shoot, x3/x4)
+                // intake & shoot final row
 
 
-                .setTangent(Math.toRadians(180))
-                .splineToSplineHeading(thirdIntake1, Math.toRadians(-90))//intake2
-//                .afterTime(0.01,bot.intake.actionIntakeClose())
-                .strafeToSplineHeading(thirdIntake2,Math.toRadians(-85))
 
-                .setTangent(Math.toRadians(90)) //shoot 3
-                .afterTime(0.01,bot.intake.actionIntakeClose())
-                .afterTime(0.3,bot.actionSpinUp()) //TODO: test dt on pathing here
-                .splineToSplineHeading(shoot,Math.toRadians(60))
-                .stopAndAdd(bot.actionOpenGate())
-                .waitSeconds(shootdt)
-                .stopAndAdd(bot.actionStopShoot())
-                .strafeToSplineHeading(new Vector2d(45,-30),Math.toRadians(0))
                 .build();
 
 
