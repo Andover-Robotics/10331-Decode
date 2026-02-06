@@ -159,6 +159,9 @@ public class Turret {
         double error = setPoint - turretMotor.getCurrentPosition();
 
         if(error*degPerTick>10)controller.setPID(p, i, d);
+        // P = trying to actually get to the location, higher = more agressive and goes faster for longer
+        // I = uses past error to try and correct it, never rlly use cuz error is never rlly consistent
+        // D = rate of change approaches 0 as it approaches set point, so it actually stops at the correct location
         else controller.setPID(pShort,iShort,dShort);
         //check that PID not going over the hardware limit so it doesn't crash out.
 //        if (Math.abs(turretMotor.getCurrentPosition()) > hardwareLimit) {
