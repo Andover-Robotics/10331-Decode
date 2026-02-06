@@ -60,6 +60,10 @@ public class CloseBlue extends LinearOpMode {
 
         drive.localizer.setPose(init);
 
+        // notes for nicole: vector is just the endgoal, pos is the angle of the bot AND the position
+        // straf = short distances better, ex: going straight lines
+        // spline = creating curve to hit the destination faster
+
         Action runAuto = drive.actionBuilderBlue(initialRedPos) // How we mirror the cords & call all methods
                 // shoot preloaded artis (2-3 secs)
                 // intake & shoot middle row (5 secs)
