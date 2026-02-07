@@ -87,7 +87,7 @@ public class CloseBlue extends LinearOpMode {
 
         Action backRow = drive.actionBuilderBlue(initialRedPos)
                 // back pos
-                .build();
+                .build():
 
         /*Action gateCycle = drive.actionBuilderBlue(initialRedPos)
                 // intake & shoot middle row (5 secs)
