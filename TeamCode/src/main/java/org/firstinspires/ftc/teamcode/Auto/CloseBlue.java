@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.Trajectory;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -22,7 +24,10 @@ public class CloseBlue extends LinearOpMode {
 
     // inital
 
-    double shootdt = 1.7;
+   private static double shootdt = 1.7;
+   private static double gatedt=4;
+   public static double gateCycles=0;
+
     private Pose2d init = new Pose2d(60,48,Math.toRadians(0));
     public static Pose2d initialRedPos = new Pose2d(60,-48,Math.toRadians(0));
     //shooting
@@ -39,11 +44,16 @@ public class CloseBlue extends LinearOpMode {
     public static Pose2d secondIntake1 = new Pose2d(-13,-35,Math.toRadians(-90));
     public static Vector2d secondIntake2 = new Vector2d(-13,-65);
 
+    public static Pose2d gateCyclePos = new Pose2d(7,-75,Math.toRadians(-45));
+
     public static Pose2d thirdIntake1 = new Pose2d(-34,-40,Math.toRadians(-90));
     public static Vector2d thirdIntake2 = new Vector2d(-34,-62);
+    Action eighteenAris;
     public ExposureControl exposureControl;
     public GainControl gainControl;
-    public ArrayList<Action> actionsToRun;
+
+    private TrajectoryActionBuilder builder;
+    public ArrayList<Action> paths = new ArrayList<>();
 
 
 
@@ -61,7 +71,7 @@ public class CloseBlue extends LinearOpMode {
         // straf = short distances better, ex: going straight lines
         // spline = creating curve to hit the destination faster
 
-        Action preLoad = drive.actionBuilderBlue(initialRedPos) // How we mirror the cords & call all methods
+        Action preload = drive.actionBuilderBlue(initialRedPos) // How we mirror the cords & call all methods
                 // make sure intake is constant running
                 // shoot preloaded artis (2-3 secs)
                 .afterTime(0.01,bot.intake.actionIntakeClose())
@@ -69,44 +79,44 @@ public class CloseBlue extends LinearOpMode {
                 .strafeToSplineHeading(shootPreload, Math.toRadians(-50))
                 // bot is now in pos , not waiting .3 secs cuz turret will compensate
                 .stopAndAdd(bot.actionOpenGate())
+                .waitSeconds(shootdt)
+                .build();
 
+        Action frontRow = drive.actionBuilderBlue(shoot)
+                .setReversed(true)
+                .splineToSplineHeading(firstIntake1,Math.toRadians(90))
+                .strafeToSplineHeading(firstIntake2,Math.toRadians(-90))
+                .setReversed(true)
+                .afterTime(0.2, bot.actionSpinUp())
+                .splineTo(bot.pose2Vector(shoot),Math.toRadians(90))
+                .stopAndAdd(bot.actionOpenGate())
+                .waitSeconds(shootdt)
+                .build();
 
-
-
-
+        Action middleRow = drive.actionBuilderBlue(shoot)
+                .setReversed(true)
+                .splineToSplineHeading(secondIntake1,Math.toRadians(90))
+                .strafeToSplineHeading(secondIntake2,Math.toRadians(-90))
+                .setReversed(true)
+                .afterTime(0.2, bot.actionSpinUp())
+                .splineTo(bot.pose2Vector(shoot),Math.toRadians(90))
+                .stopAndAdd(bot.actionOpenGate())
+                .waitSeconds(shootdt)
 
                 .build();
 
-        Action frontRow = drive.actionBuilderBlue(initialRedPos)
-                // go to front pos
-                .build();
-
-        Action middleRow = drive.actionBuilderBlue(initialRedPos)
-                // middle pos
-                .build();
-
-        Action backRow = drive.actionBuilderBlue(initialRedPos)
-                // back pos
-                .build():
-
-        /*Action gateCycle = drive.actionBuilderBlue(initialRedPos)
-                // intake & shoot middle row (5 secs)
-                // pos bot so it stays at gate so its open, (with wedges)
-                // for loop (3 times (4 if 21)
-                int i;
-                for(i = 0 ; i < 3 ; i++) {
-                    // cycle through (intake shoot, x3/x4)
-
-                }
-                .build();*/
 
 
-        Action eighteenAris = drive.actionBuilderBlue(initialRedPos)
-                // intake & shoot middle row (5 secs)
-                // for loop (3 times (4 if 21)
-
-
-
+//       Turn into an array list because for some reason it keeps creating the action over and over again
+        Action eighteenAris = drive.actionBuilderBlue(shoot)
+                .setReversed(true)
+                .splineToSplineHeading(gateCyclePos,Math.toRadians(-150))
+                .stopAndAdd(bot.intake.actionIntakeClose())
+                .waitSeconds(gatedt)
+                .afterTime(0.2,bot.actionSpinUp())
+                .splineTo(bot.pose2Vector(shoot),Math.toRadians(90))
+                .stopAndAdd(bot.actionOpenGate())
+                .waitSeconds(shootdt)
                 .build();
 
 
@@ -114,12 +124,16 @@ public class CloseBlue extends LinearOpMode {
         // running the paths
         Actions.runBlocking(
                 new ActionHelper.RaceParallelCommand(
-                        bot.actionPeriodic()
+                        bot.actionPeriodic(),
+                        new SequentialAction(
+                                preload,
+                                middleRow,
+                                eighteenAris,
+                                eighteenAris,
+                                eighteenAris,
+                                frontRow
                         // change the action/actions running based off of what we want to run
-                ));
-
-
-
+                )));
 
 
     }
