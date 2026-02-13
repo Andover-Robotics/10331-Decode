@@ -31,17 +31,9 @@ public class Turret {
     public static double basePower = 0.1, powerMin = 0.05;
     public static double setPoint = 0;
     private final PIDController controller;
-    Hood hood; //slime me out
-
-    public boolean isManual = false;
     private final double CPR = 145.1;
     private final double GEAR_RATIO = 102.0/14;
-
-    public static double manualPower;
     public final MotorEx turretMotor;
-    public final double a1 = 20; //angle of physical limelight
-    public final double HEIGHT_OFFSET = 16.625;
-    private double hardwareLimit;
     private double degPerTick = 360 /(CPR* GEAR_RATIO);
     public Pose2d pose;
     public static Pose3D botPose = new Pose3D(new Position(DistanceUnit.INCH,0,0,0,0),new YawPitchRollAngles(AngleUnit.DEGREES,0,0,0,0));
@@ -49,18 +41,14 @@ public class Turret {
     public double lldistance,power;
     public static double distance;
     public static double compDistance;
-
     public static boolean isLocked;
-
     public LLResult llResult;
     public Limelight3A ll;
-
     //all values in inches! NEED TO TUNE THIS
     private final double TURRET_BACK_OFFSET = 2.3;
     public double vectorXComp;
     public double vectorYComp;
     public boolean enableVelComp;
-
 
     public Turret (OpMode opMode){
 
@@ -75,8 +63,6 @@ public class Turret {
 //
 //        ll.start();
 
-
-
         //turretMotor default settings
         turretMotor = new MotorEx(opMode.hardwareMap, "turret", Motor.GoBILDA.RPM_1150);
         turretMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
@@ -88,9 +74,10 @@ public class Turret {
     }
     public void switchPipeline(int pipe) {
         ll.pipelineSwitch(pipe);
+        // determine what the ll is looking for
     }
 
-    // takes in ticks
+    // takes in ticks needed for target
     public void runTo(int t){ // takes in ticks
         setPoint = t;
     }//tested works
@@ -168,9 +155,13 @@ public class Turret {
     public void periodic() {
         power = 0;
         Bot.drive.updatePoseEstimate();
+        Bot.storedPose = Bot.drive.localizer.getPose();
         double error = setPoint - turretMotor.getCurrentPosition();
 
         if(error*degPerTick>10)controller.setPID(p, i, d);
+        // P = trying to actually get to the location, higher = more agressive and goes faster for longer
+        // I = uses past error to try and correct it, never rlly use cuz error is never rlly consistent
+        // D = rate of change approaches 0 as it approaches set point, so it actually stops at the correct location
         else controller.setPID(pShort,iShort,dShort);
         //check that PID not going over the hardware limit so it doesn't crash out.
 //        if (Math.abs(turretMotor.getCurrentPosition()) > hardwareLimit) {
@@ -185,7 +176,7 @@ public class Turret {
             //controller.setSetPoint(setPoint);
         if(isLocked) runToAngle(autoAimField(Bot.goalPose));
         //locks forward for drifting if i can't fix
-        else {runToAngle(0); autoAimField(Bot.goalPose);}
+        else { autoAimField(Bot.goalPose);}
 
         power = controller.calculate(turretMotor.getCurrentPosition(),setPoint);
         power = clamp(power,1.0,-1.0);

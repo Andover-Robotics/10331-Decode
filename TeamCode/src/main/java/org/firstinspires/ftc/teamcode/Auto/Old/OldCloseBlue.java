@@ -64,7 +64,7 @@ public class OldCloseBlue extends LinearOpMode {
 
 
         Action runAuto = drive.actionBuilderBlue(initialRedPos)
-                .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(0.01,bot.intake.actionIntakeClose())
                 .strafeToLinearHeading(shootPreload,Math.toRadians(-55))//preload
                 .stopAndAdd(bot.actionSpinUp())
                 .waitSeconds(2)
@@ -73,12 +73,12 @@ public class OldCloseBlue extends LinearOpMode {
 
                 .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(firstIntake1, Math.toRadians(-60))//intake1
-                .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(0.01,bot.intake.actionIntakeClose())
                 .strafeToLinearHeading(firstIntake2,Math.toRadians(-85))
                 .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))
 
                 .setTangent(Math.toRadians(90)) //shoot 2
-                .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(0.01,bot.intake.actionIntakeClose())
                 .splineToLinearHeading(shoot,Math.toRadians(60))
                 .stopAndAdd(bot.actionSpinUp())
                 .waitSeconds(2)
@@ -86,11 +86,11 @@ public class OldCloseBlue extends LinearOpMode {
 
                 .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(secondIntake1, Math.toRadians(-90))//intake2
-//                .afterTime(0.01,bot.intake.actionIntake())
+//                .afterTime(0.01,bot.intake.actionIntakeClose())
                 .strafeToLinearHeading(secondIntake2,Math.toRadians(-85))
 
                 .setTangent(Math.toRadians(90)) //shoot 3
-                .afterTime(0.01,bot.intake.actionIntake())
+                .afterTime(0.01,bot.intake.actionIntakeClose())
                 .splineToLinearHeading(shoot,Math.toRadians(60))
                 .stopAndAdd(bot.actionSpinUp())
                 .waitSeconds(3)

@@ -63,7 +63,7 @@ public class Hood {
             goToHood(0.3);
             hoodComp=false;
         }
-        else {
+        if(Turret.distance<110) {
             goToHood(0.25);
             hoodComp = true;
         }
