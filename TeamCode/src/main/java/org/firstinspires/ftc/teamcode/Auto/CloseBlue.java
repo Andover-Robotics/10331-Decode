@@ -135,7 +135,6 @@ public class CloseBlue extends LinearOpMode {
                         // change the action/actions running based off of what we want to run
                 )));
 
-
     }
 
 
