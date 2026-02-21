@@ -22,4 +22,11 @@ public interface Localizer {
      * @return the Localizer's current velocity estimate
      */
     PoseVelocity2d update();
+
+    void recalibrateIMU();
+
+    default void updateOffsets() {}
+    default PoseVelocity2d getPoseVelocity() {
+        return null;
+    }
 }

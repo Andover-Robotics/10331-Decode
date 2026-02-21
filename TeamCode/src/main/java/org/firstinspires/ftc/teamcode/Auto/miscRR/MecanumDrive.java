@@ -46,6 +46,7 @@ import org.firstinspires.ftc.teamcode.Auto.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.Auto.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.Auto.messages.MecanumLocalizerInputsMessage;
 import org.firstinspires.ftc.teamcode.Auto.messages.PoseMessage;
+import org.firstinspires.ftc.teamcode.Auto.miscRR.PinpointLocalizer;
 
 import java.lang.Math;
 import java.util.Arrays;
@@ -64,13 +65,13 @@ public final class MecanumDrive {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP;
 
         // drive model parameters
-        public double inPerTick = 0.00195973632;
-        public double lateralInPerTick = 0.0014519865163464707;
-        public double trackWidthTicks = 6011.116464932428;
+        public double inPerTick = 0.00198846689;
+        public double lateralInPerTick = 0.001315707591221824;
+        public double trackWidthTicks = 6714.580122949726;
 
         // feedforward parameters (in tick units)
-        public double kS = 2.3;
-        public double kV = 0.00022;
+        public double kS = 1.247;
+        public double kV = 0.00025;
         public double kA = 0.000065;
 
         // path profile parameters (in inches)
@@ -139,8 +140,8 @@ public final class MecanumDrive {
             imu = lazyImu.get();
 
             // TODO: reverse encoders if needed
-            rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-            leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+//            rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+//            leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
             this.pose = pose;
@@ -216,6 +217,11 @@ public final class MecanumDrive {
             ));
 
             return twist.velocity().value();
+        }
+
+        @Override
+        public void recalibrateIMU() {
+
         }
     }
 

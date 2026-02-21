@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.geometry.Vector2d;
@@ -40,7 +41,8 @@ public class MainTeleOp extends LinearOpMode {
         gp1 = new GamepadEx(gamepad1);
         gp2 = new GamepadEx(gamepad2);
         bot.prepTeleop();
-        Bot.useStoredPose();
+        Turret.isLocked=false;
+        Bot.drive.localizer.setPose(new Pose2d(62,-48,0));
 
         while (opModeInInit() && !isStarted() && !isStopRequested()) {
             TelemetryPacket packet = new TelemetryPacket();

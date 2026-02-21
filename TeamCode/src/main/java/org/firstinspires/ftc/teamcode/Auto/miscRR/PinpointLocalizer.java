@@ -1,64 +1,88 @@
 package org.firstinspires.ftc.teamcode.Auto.miscRR;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
-//import org.firstinspires.ftc.teamcode.Auto.miscRR.GoBildaPinpointDriver;
+import org.firstinspires.ftc.teamcode.Auto.miscRR.Localizer;
 
-public class PinpointLocalizer implements Localizer {
+import java.util.Objects;
 
-    private final GoBildaPinpointDriver pinpoint;
-    private Pose2d pose;
+@Config
+public final class PinpointLocalizer implements Localizer {
+    public static class Params {
+    }
 
-    public PinpointLocalizer(HardwareMap hardwareMap, Pose2d startPose) {
-        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
-        pose = startPose;
+    public static Params PARAMS = new Params();
 
-        pinpoint.recalibrateIMU();
+    public final GoBildaPinpointDriver driver;
+    public final GoBildaPinpointDriver.EncoderDirection initialParDirection, initialPerpDirection;
+    public static double xOffset = -3.94, yOffset = -6.10;
+    public static PoseVelocity2d robotPosVel;
+
+    private Pose2d txWorldPinpoint;
+    private Pose2d txPinpointRobot = new Pose2d(0, 0, 0);
+
+    public PinpointLocalizer(HardwareMap hardwareMap, Pose2d initialPose) {
+        // TODO: make sure your config has a Pinpoint device with this name
+        //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
+        driver = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
+
+        driver.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        driver.setOffsets(xOffset, yOffset, DistanceUnit.INCH);
+
+        // TODO: reverse encoder directions if needed
+        initialParDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED;
+        initialPerpDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
+
+        driver.setEncoderDirections(initialParDirection, initialPerpDirection);
+
+        driver.resetPosAndIMU();
+
+        txWorldPinpoint = initialPose;
+        robotPosVel = new PoseVelocity2d(new Vector2d(0, 0), 0);
+    }
+
+    public void updateOffsets() {
+        driver.setOffsets(xOffset, yOffset, DistanceUnit.INCH);
+    }
+
+    public void recalibrateIMU() {
+        driver.recalibrateIMU();
     }
 
     @Override
     public void setPose(Pose2d pose) {
-        this.pose = pose;
-
-        pinpoint.setPosition(new Pose2D(
-                DistanceUnit.MM,
-                pose.position.x * 25.4,   // inches → mm if needed
-                pose.position.y * 25.4,
-                AngleUnit.RADIANS,
-                pose.heading.toDouble()
-        ));
+        txWorldPinpoint = pose.times(txPinpointRobot.inverse());
     }
 
     @Override
     public Pose2d getPose() {
-        return pose;
+        return txWorldPinpoint.times(txPinpointRobot);
+    }
+
+    @Override
+    public PoseVelocity2d getPoseVelocity() {
+        return robotPosVel;
     }
 
     @Override
     public PoseVelocity2d update() {
-        pinpoint.update();   // <-- IMPORTANT
+        driver.update();
+        if (Objects.requireNonNull(driver.getDeviceStatus()) == GoBildaPinpointDriver.DeviceStatus.READY) {
+            txPinpointRobot = new Pose2d(driver.getPosX(DistanceUnit.INCH), driver.getPosY(DistanceUnit.INCH), driver.getHeading(UnnormalizedAngleUnit.RADIANS));
+            Vector2d worldVelocity = new Vector2d(driver.getVelX(DistanceUnit.INCH), driver.getVelY(DistanceUnit.INCH));
+            Vector2d robotVelocity = Rotation2d.fromDouble(-txPinpointRobot.heading.log()).times(worldVelocity);
+            robotPosVel = new PoseVelocity2d(robotVelocity, driver.getHeadingVelocity(UnnormalizedAngleUnit.RADIANS));
 
-        double x = pinpoint.getPosX(DistanceUnit.MM) / 25.4;
-        double y = pinpoint.getPosY(DistanceUnit.MM) / 25.4;
-        double heading = pinpoint.getHeading(AngleUnit.RADIANS);
-
-        pose = new Pose2d(x, y, heading);
-
-        return new PoseVelocity2d(
-                new Vector2d(
-                        pinpoint.getVelX(DistanceUnit.MM) / 25.4,
-                        pinpoint.getVelY(DistanceUnit.MM) / 25.4
-                ),
-                pinpoint.getHeadingVelocity(UnnormalizedAngleUnit.RADIANS)
-        );
+            return new PoseVelocity2d(robotVelocity, driver.getHeadingVelocity(UnnormalizedAngleUnit.RADIANS));
+        }
+        return new PoseVelocity2d(new Vector2d(0, 0), 0);
     }
 }
-

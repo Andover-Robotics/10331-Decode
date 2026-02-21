@@ -16,8 +16,8 @@ import org.firstinspires.ftc.teamcode.Teleop.Bot;
 
 import java.util.ArrayList;
 
-@Autonomous(name="Close Blue", group="AA_Autos")
-public class CloseBlue extends LinearOpMode {
+@Autonomous(name="Close Blue1", group="AA_Autos")
+public class CloseBlueOne extends LinearOpMode {
     Bot bot;
 
 

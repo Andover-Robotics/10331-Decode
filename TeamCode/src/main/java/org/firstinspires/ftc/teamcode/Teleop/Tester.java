@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Turret;
 public class Tester extends LinearOpMode {
     public Bot bot;
     private FtcDashboard dash = FtcDashboard.getInstance();
-    public static int RPM;
+    public static double pos;
     GamepadEx gp1;
 
 
@@ -36,7 +36,7 @@ public class Tester extends LinearOpMode {
         if (!bot.isRed) bot.isRed = true;
         bot.updatePoses();
         //bot.turret.setEnableVelComp(true);
-        bot.turret.resetEncoder();
+        //bot.turret.resetEncoder();
         gp1 = new GamepadEx(gamepad1);
         //Bot.drive.localizer.setPose(new Pose2d(60,-58,Math.toRadians(45)));
 
@@ -47,25 +47,26 @@ public class Tester extends LinearOpMode {
 
         while (opModeIsActive()&& !isStopRequested()) {
             TelemetryPacket packet = new TelemetryPacket();
+            bot.shooter.periodic();
             gp1.readButtons();
-            bot.hood.goToHood(0.3);
-             bot.turret.periodic();
-             bot.shooter.periodic();
-             if(gp1.wasJustPressed(GamepadKeys.Button.A)){
-                 bot.shooter.enableShooter(true);
-                 Shooter.target = RPM;
-             }
-            if(gp1.wasJustPressed(GamepadKeys.Button.B)){
-                bot.shooter.enableShooter(false);
-            }
-            if(gp1.wasJustPressed(GamepadKeys.Button.X)){
-                bot.intake.intake_without_sense(-1);
-
-            }
-            if(gp1.wasJustPressed(GamepadKeys.Button.Y)){
-                bot.intake.intake_without_sense(0);
-
-            }
+            bot.shooter.setTargetRPM((int)pos);
+//             bot.turret.periodic();
+//             bot.shooter.periodic();
+//             if(gp1.wasJustPressed(GamepadKeys.Button.A)){
+//                 bot.shooter.enableShooter(true);
+//                 Shooter.target = RPM;
+//             }
+//            if(gp1.wasJustPressed(GamepadKeys.Button.B)){
+//                bot.shooter.enableShooter(false);
+//            }
+//            if(gp1.wasJustPressed(GamepadKeys.Button.X)){
+//                bot.intake.intake_without_sense(-1);
+//
+//            }
+//            if(gp1.wasJustPressed(GamepadKeys.Button.Y)){
+//                bot.intake.intake_without_sense(0);
+//
+//            }
 
 
 

@@ -23,7 +23,7 @@ public class Shooter {
     //y=-0.000860551x^{3}+0.278353x^{2}-11.54167x+3650.11204 regression values
     public static double shooterA = -0.0000309751, shooterB = 0.0093023, shooterC = -0.911617, shooterD = 46.08444, shooterE=2434.93057;
     public final MotorEx shooter2;
-    public static double p = 0.0003, i = 0.0, d = 0.0, f = 0.0002;
+    public static double p = 0.0004, i = 0.0, d = 0.0, f = 0.0002;
     private final PIDController controller;
     public static int targetRPM = 0,target;
     public boolean reset =false;
@@ -70,7 +70,7 @@ public class Shooter {
     public void periodic() {
         controller.setPID(p, i, d);
 
-        RPM = shooter2.getVelocity() / 28 * 60;// follows formula for rps (tps/tpr) * 60 for mins
+        RPM = shooter.getVelocity() / 28 * 60;// follows formula for rps (tps/tpr) * 60 for mins
         double ff = f * targetRPM; // feedforward
         double pid = controller.calculate(RPM, targetRPM);//error
         // gets product of p constant and error
@@ -86,8 +86,8 @@ public class Shooter {
         shooterPower = checkPower(shooterPower, 1.0, 0);
         setPower(shooterPower);
 
-        if (enableShooter) targetRPM = isPeriodic ? Bot.regressionRPM(Turret.distance) : target;
-        else setTargetRPM(0);
+//        if (enableShooter) targetRPM = isPeriodic ? Bot.regressionRPM(Turret.distance) : target;
+//        else setTargetRPM(0);
     }
 
     public void reset() {

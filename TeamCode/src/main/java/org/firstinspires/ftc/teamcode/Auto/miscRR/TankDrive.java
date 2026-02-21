@@ -224,6 +224,11 @@ public final class TankDrive {
 
             return twist.velocity().value();
         }
+
+        @Override
+        public void recalibrateIMU() {
+
+        }
     }
 
     public TankDrive(HardwareMap hardwareMap, Pose2d pose) {

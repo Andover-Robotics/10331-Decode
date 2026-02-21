@@ -174,7 +174,7 @@ public class Bot {
 
     public void teleopIntake(){
         if(!isIntake) {
-            intake.intake_without_sense(-0.9);
+            intake.intake_without_sense(0.9);
             isIntake = true;
         }
         else{
@@ -187,7 +187,6 @@ public class Bot {
         if(!isShooting) {
             shooter.enableShooter(true);
             isShooting=true;
-            if(isIntake) intake.intake_without_sense(-0.8);
         }
         else{
             shooter.enableShooter(false);
@@ -277,7 +276,7 @@ public class Bot {
         hood.hoodServo.setPosition(0.25);
         Bot.drive.localizer.setPose(storedPose);
         Hood.outtakePos=0.25;
-        Turret.isLocked=false;
+        //Turret.isLocked=false;
         shooter.isPeriodic=true;
         //bot.turret.setEnableVelComp(true);
 

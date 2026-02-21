@@ -32,10 +32,10 @@ public class Intake {
 
 
     public void closeGate(){
-        gate1.setPosition(0.31);
+        gate1.setPosition(0.155);
     }
     public void openGate(){
-        gate1.setPosition(0.15);
+        gate1.setPosition(0.06);
     }
 
     public void intake_without_sense(double power){
@@ -55,12 +55,12 @@ public class Intake {
     }
 
     public Action actionIntakeClose(){
-              return new InstantAction(() -> intakeMotor.setPower(-0.8));
+              return new InstantAction(() -> intakeMotor.setPower(0.8));
 
     }
 
     public Action actionIntakeFar(){
-        return new InstantAction(() -> intakeMotor.setPower(-1));
+        return new InstantAction(() -> intakeMotor.setPower(1));
 
     }
 
