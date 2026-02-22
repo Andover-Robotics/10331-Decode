@@ -149,7 +149,6 @@ public class Bot {
         updatePoses();
     }
 
-
     //count current balls shot indexing from 0, using the current spike when shot
     //increment a counter and lower height of the hood
     //public void recoil(){
@@ -205,11 +204,9 @@ public class Bot {
 
 
 
-
-
-
     public static int regressionRPM(double dist) {
-// y=-0.0000309751x^{4}+0.0093023x^{3}-0.911617x^{2}+46.08444x+2434.93057
+// y=-0.0000309751x^{4}+0.0093023x^{3}-0.911617x^{2}+46.08444x+2434.93057 OLD VALUES
+        // SPLIT INTO 4 COMPONENTS FOR THE POLYNOMIAL CURVE
         double shooterAComponent = Shooter.shooterA * Math.pow(dist,4);
         double shooterBComponent = Shooter.shooterB * Math.pow(dist,3);
         double shooterCComponent = Shooter.shooterC * Math.pow(dist,2);

@@ -19,8 +19,6 @@ public class Intake {
     public Servo gate1;
 
     DigitalChannel breakBeam;
-
-
     public Intake (OpMode opMode){
         intakeMotor = opMode.hardwareMap.get(DcMotorEx.class, "intake");
         gate1 = opMode.hardwareMap.servo.get("gate1");
@@ -29,8 +27,6 @@ public class Intake {
 
         intakeMotor.setDirection(DcMotorEx.Direction.REVERSE);
     }
-
-
     public void closeGate(){
         gate1.setPosition(0.155);
     }
@@ -53,17 +49,14 @@ public class Intake {
             intakeMotor.setPower(power);
         }
     }
-
     public Action actionIntakeClose(){
               return new InstantAction(() -> intakeMotor.setPower(0.8));
 
     }
-
     public Action actionIntakeFar(){
         return new InstantAction(() -> intakeMotor.setPower(1));
 
     }
-
 
     public Action actionReverseIntake(){
         return new ParallelAction(

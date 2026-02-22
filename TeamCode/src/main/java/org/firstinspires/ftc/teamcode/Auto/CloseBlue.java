@@ -55,9 +55,6 @@ public class CloseBlue extends LinearOpMode {
     private TrajectoryActionBuilder builder;
     public ArrayList<Action> paths = new ArrayList<>();
 
-
-
-
     @Override
     public void runOpMode() throws InterruptedException{
         Bot.instance = null;
@@ -136,6 +133,4 @@ public class CloseBlue extends LinearOpMode {
                 )));
 
     }
-
-
 }

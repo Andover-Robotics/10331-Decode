@@ -22,9 +22,6 @@ public class Tester extends LinearOpMode {
     public static double pos;
     GamepadEx gp1;
 
-
-
-
     @Override
 
     public void runOpMode(){
@@ -39,8 +36,6 @@ public class Tester extends LinearOpMode {
         //bot.turret.resetEncoder();
         gp1 = new GamepadEx(gamepad1);
         //Bot.drive.localizer.setPose(new Pose2d(60,-58,Math.toRadians(45)));
-
-
 
         waitForStart();
 

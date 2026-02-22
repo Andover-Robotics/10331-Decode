@@ -118,7 +118,6 @@ public final class TuningOpModes {
             }
         };
     }
-
     @OpModeRegistrar
     public static void register(OpModeManager manager) {
         if (DISABLED) return;
