@@ -7,9 +7,11 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Auto.Old.CloseBlueOne;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Hood;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.Teleop.Subsystems.Turret;
@@ -20,31 +22,51 @@ public class Tester extends LinearOpMode {
     public Bot bot;
     private FtcDashboard dash = FtcDashboard.getInstance();
     public static double pos;
+    public static int rot;
     GamepadEx gp1;
+    public long lastTime=0;
+    double driveSpeed = 1;
+    double driveMultiplier = 1;
+
+
+
 
     @Override
 
     public void runOpMode(){
+
         Bot.instance = null;
         bot = Bot.getInstance(this);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         Turret.isLocked=false;
         bot.shooter.isPeriodic=false;
-        if (!bot.isRed) bot.isRed = true;
+        if (!bot.isRed) bot.isRed = false;
         bot.updatePoses();
         //bot.turret.setEnableVelComp(true);
         //bot.turret.resetEncoder();
         gp1 = new GamepadEx(gamepad1);
-        //Bot.drive.localizer.setPose(new Pose2d(60,-58,Math.toRadians(45)));
+        Bot.drive.localizer.setPose(new Pose2d(60,48,0));
+
+
 
         waitForStart();
 
 
         while (opModeIsActive()&& !isStopRequested()) {
+
+            long newTime = System.currentTimeMillis();
+            double loopTime = newTime-lastTime;
+
             TelemetryPacket packet = new TelemetryPacket();
-            bot.shooter.periodic();
-            gp1.readButtons();
-            bot.shooter.setTargetRPM((int)pos);
+            bot.turret.periodic();
+            //bot.shooter.periodic();
+            bot.turret.runToAngle(pos);
+//            gp1.readButtons();
+//            if(gp1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
+//                bot.teleopIntake();
+//            }
+
+
 //             bot.turret.periodic();
 //             bot.shooter.periodic();
 //             if(gp1.wasJustPressed(GamepadKeys.Button.A)){
@@ -67,22 +89,38 @@ public class Tester extends LinearOpMode {
 
 
 
+
             telemetry.addData("Target Ticks",bot.turret.getTargetTicks());
             telemetry.addData("Current Ticks",bot.turret.getCurrentTicks());
             telemetry.addData("Target Degrees",bot.turret.getTargetDegrees());
             telemetry.addData("Current Degrees",bot.turret.getCurrentDegrees());
             telemetry.addData("Current Power",bot.turret.getCurrentPower());
-            telemetry.addData("current pos", Bot.drive.localizer.getPose());
+            //telemetry.addData("current pos", Bot.drive.localizer.getPose());
             telemetry.addData("current distance ", Turret.distance);
             telemetry.addData("current target RPM ", bot.shooter.getTargetRPM());
             telemetry.addData("current RPM ", bot.shooter.getRPM());
             telemetry.addData("is alliance red?",bot.isRed);
+            telemetry.addData("Hood Height",bot.hood.getPos());
+            telemetry.addData("Loop Time",loopTime);
 
 
             telemetry.update();
             dash.sendTelemetryPacket(packet);
+            lastTime=newTime;
 
         }
 
     }
+    private void drive() {
+        driveSpeed = driveMultiplier - 0.7 * gp1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER);
+        driveSpeed = Math.max(0, driveSpeed);
+
+        Vector2d driveVector = new Vector2d(gp1.getLeftX(), -gp1.getLeftY()),
+                turnVector = new Vector2d(gp1.getRightX(), 0);
+        bot.driveRobotCentric(driveVector.getX() * driveSpeed,
+                driveVector.getY() * driveSpeed,
+                turnVector.getX() * driveSpeed
+        );
+    }
 }
+

@@ -23,11 +23,7 @@ import org.firstinspires.ftc.teamcode.Teleop.Bot;
 
 public class Turret {
 
-    /*TODO: implement proper wraparound for turret
-        implement testing code
-
-     */
-    public static double p=0.0035,i=0,d=0.000162,tX,pShort=0.0055,iShort,dShort=0.0002;
+    public static double p=0.0085,i=0,d=0.0005,tX,pShort=0.03,iShort,dShort=0.0007;
     public static double basePower = 0.1, powerMin = 0.05;
     public static double setPoint = 0;
     private final PIDController controller;
@@ -86,14 +82,14 @@ public class Turret {
     public double wrapAround(double angle) {
         //angle =AngleUnit.normalizeDegrees(angle);
        // angle %= 360; // i feel like there might be issue here
-        if (angle < 0) angle += 360; //low limit
-        if (angle >= 315) angle -= 360; // high limit
+        if (angle < -220) angle += 360; //low limit
+        if (angle >= 135) angle -= 360; // high limit
 //        angle %=360;
         return angle;
     } //tested works i think may need to change when angles are normalized
 
     public void runToAngle(double angle) {
-        runTo((degreesToTicks(wrapAround(angle))));
+        runTo((degreesToTicks(angle))); // add wrap around
     } // tested works i think
 
 
@@ -136,7 +132,7 @@ public class Turret {
         double ccwTargetRelToRobot = normDelta(ccwFieldTarget - botHeading);
         double cwTarget = normDelta(-ccwTargetRelToRobot);
 
-        return cwTarget +270;
+        return cwTarget;
     }
 
 
@@ -154,7 +150,6 @@ public class Turret {
 
     public void periodic() {
         power = 0;
-        Bot.drive.updatePoseEstimate();
         Bot.storedPose = Bot.drive.localizer.getPose();
         double error = setPoint - turretMotor.getCurrentPosition();
 
@@ -175,7 +170,7 @@ public class Turret {
             // add manual back later but i cant look at ts rn
             //controller.setSetPoint(setPoint);
         if(isLocked) runToAngle(autoAimField(Bot.goalPose));
-        //locks forward for drifting if i can't fix
+//        locks forward for drifting if i can't fix
         else { autoAimField(Bot.goalPose);}
 
         power = controller.calculate(turretMotor.getCurrentPosition(),setPoint);

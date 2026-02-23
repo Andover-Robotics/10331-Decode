@@ -38,7 +38,7 @@ public class Shooter {
     public static double toleranceRPM = 60.0;   // speed window
 
     public boolean isRecoil=false; //recoil boolean
-    public Hood hood;
+    private Hood hood;
 
 
 
@@ -86,8 +86,9 @@ public class Shooter {
         shooterPower = checkPower(shooterPower, 1.0, 0);
         setPower(shooterPower);
 
-//        if (enableShooter) targetRPM = isPeriodic ? Bot.regressionRPM(Turret.distance) : target;
-//        else setTargetRPM(0);
+        if (enableShooter) targetRPM = isPeriodic ? Bot.regressionRPM(Turret.compDistance) : target;
+        else setTargetRPM(0);
+        hood.goToHood(Bot.regressionHood(Turret.compDistance));
     }
 
     public void reset() {

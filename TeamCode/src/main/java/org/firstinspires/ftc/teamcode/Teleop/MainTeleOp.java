@@ -41,7 +41,7 @@ public class MainTeleOp extends LinearOpMode {
         gp1 = new GamepadEx(gamepad1);
         gp2 = new GamepadEx(gamepad2);
         bot.prepTeleop();
-        Turret.isLocked=false;
+        Turret.isLocked=true;
         Bot.drive.localizer.setPose(new Pose2d(62,-48,0));
 
         while (opModeInInit() && !isStarted() && !isStopRequested()) {

@@ -49,8 +49,22 @@ public class Bot {
     //----------------------POSES--------------------
     public static Pose2d storedPose = new Pose2d(0,0,0);
     public static Vector2d goalPose = new Vector2d(65,-60);// init with red
-    public static Pose2d resetPose = new Pose2d(-63,-63,Math.toRadians(-90)); // change when we figure out where we want to reset
+    public static Pose2d resetPose = new Pose2d(-63,-63,Math.toRadians(-90));// change when we figure out where we want to reset
+    public static double[] shooterComponents = { //a b c d
+            //y=0.000939398x^{3}-0.177876x^{2}+20.68083x+2592.85474
+            0.000939398,
+            -0.177876,
+            20.68083,
+            2592.85474
 
+
+    };
+    public static double[] hoodComponents = { //a b h k
+            // y = 0.156294*sqrt(x--274.89646)+-2.62482
+            0.156294,
+            -274.89646,
+            -2.62482
+    };
 
     public enum BotState {
         AUTO,
@@ -207,16 +221,17 @@ public class Bot {
     public static int regressionRPM(double dist) {
 // y=-0.0000309751x^{4}+0.0093023x^{3}-0.911617x^{2}+46.08444x+2434.93057 OLD VALUES
         // SPLIT INTO 4 COMPONENTS FOR THE POLYNOMIAL CURVE
-        double shooterAComponent = Shooter.shooterA * Math.pow(dist,4);
-        double shooterBComponent = Shooter.shooterB * Math.pow(dist,3);
-        double shooterCComponent = Shooter.shooterC * Math.pow(dist,2);
-        double shooterDComponent = Shooter.shooterD*dist;
-        double shooterEComponent = Shooter.shooterE;
+        double shooterAComponent = shooterComponents[0] * Math.pow(dist,3);
+        double shooterBComponent = shooterComponents[1] * Math.pow(dist,2);
+        double shooterCComponent = shooterComponents[2] * dist;
+        double shooterDComponent = shooterComponents[3];
 
-        double regression = shooterAComponent + shooterBComponent + shooterCComponent + shooterDComponent +shooterEComponent;
-
+        double regression = shooterAComponent + shooterBComponent + shooterCComponent + shooterDComponent;
 
         return (int)regression;
+    }
+    public static double regressionHood(double dist) {
+        return (hoodComponents[0]*Math.sqrt(hoodComponents[1]-hoodComponents[2]))+hoodComponents[3];
     }
 
     public class actionPeriodic implements Action {
@@ -236,8 +251,8 @@ public class Bot {
 //        drive code
     public void driveRobotCentric(double strafeSpeed, double forwardBackSpeed, double turnSpeed) {
         double[] speeds = {
-                (-forwardBackSpeed +strafeSpeed +    turnSpeed),
-                (forwardBackSpeed + strafeSpeed + turnSpeed),
+                (-forwardBackSpeed + strafeSpeed +turnSpeed),
+                (-forwardBackSpeed - strafeSpeed - turnSpeed),
                 (forwardBackSpeed + strafeSpeed - turnSpeed),
                 (forwardBackSpeed - strafeSpeed + turnSpeed)
         };
