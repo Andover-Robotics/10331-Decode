@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import android.view.animation.LinearInterpolator;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -42,13 +44,16 @@ public class Bot {
     public boolean fieldCentricRunMode = false;
     public MotorEx fl, fr, bl, br;
     public static double shootSleep=0.2, shootDelay=0.8;
-    public boolean isRed,isIntake,isShooting,hoodComp;
+    public boolean isIntake,isShooting,hoodComp;
+
+    public LinearInterpolator interpolator;
+    public static boolean isRed;
     //public boolean recoilIsTrue;
 
 
     //----------------------POSES--------------------
     public static Pose2d storedPose = new Pose2d(0,0,0);
-    public static Vector2d goalPose = new Vector2d(65,-60);// init with red
+    public static Vector2d goalPose = new Vector2d(62,-60);// init with red
     public static Pose2d resetPose = new Pose2d(-63,-63,Math.toRadians(-90));// change when we figure out where we want to reset
     public static double[] shooterComponents = { //a b c d
             //y=0.000939398x^{3}-0.177876x^{2}+20.68083x+2592.85474
@@ -70,6 +75,8 @@ public class Bot {
         AUTO,
         MANUAL
     }
+
+
 
     public IMU imu;
 
@@ -135,14 +142,14 @@ public class Bot {
     public void updatePoses(){
         if (isRed){
 
-                goalPose = new Vector2d(65, -60);
-                resetPose = new Pose2d(-63, -63, Math.toRadians(90));
+                goalPose = new Vector2d(62, -60);
+                resetPose = new Pose2d(-63, -63, Math.toRadians(0));
 
         }
         else {
 
-                goalPose = new Vector2d(65,60);
-                resetPose = new Pose2d(-63, 63, Math.toRadians(-90));
+                goalPose = new Vector2d(62,60);
+                resetPose = new Pose2d(-63, 63, Math.toRadians(0));
 
         }
     }
@@ -231,7 +238,7 @@ public class Bot {
         return (int)regression;
     }
     public static double regressionHood(double dist) {
-        return (hoodComponents[0]*Math.sqrt(hoodComponents[1]-hoodComponents[2]))+hoodComponents[3];
+        return (hoodComponents[0]*Math.sqrt(dist-hoodComponents[1]))+hoodComponents[2];
     }
 
     public class actionPeriodic implements Action {
@@ -251,7 +258,7 @@ public class Bot {
 //        drive code
     public void driveRobotCentric(double strafeSpeed, double forwardBackSpeed, double turnSpeed) {
         double[] speeds = {
-                (-forwardBackSpeed + strafeSpeed +turnSpeed),
+                (-forwardBackSpeed +strafeSpeed +turnSpeed),
                 (-forwardBackSpeed - strafeSpeed - turnSpeed),
                 (forwardBackSpeed + strafeSpeed - turnSpeed),
                 (forwardBackSpeed - strafeSpeed + turnSpeed)
@@ -282,21 +289,21 @@ public class Bot {
     }
 
     public void prepTeleop(){
-        bl.setInverted(true);
-        fr.setInverted(true);
+//        bl.setInverted(true);
+//        fr.setInverted(true);
         intake.closeGate();
         hood.hoodServo.setPosition(0.25);
-        Bot.drive.localizer.setPose(storedPose);
+//        Bot.drive.localizer.setPose(storedPose);
         Hood.outtakePos=0.25;
-        //Turret.isLocked=false;
         shooter.isPeriodic=true;
-        //bot.turret.setEnableVelComp(true);
+        Turret.isLocked=true;
+        turret.setEnableVelComp(true);
 
     }public void prepAuto( boolean isRed){
         intake.closeGate();
         hood.hoodServo.setPosition(0.25);
         Hood.outtakePos=0.25;
-        this.isRed = isRed;
+        Bot.isRed = isRed;
         Turret.isLocked = false;
         shooter.isPeriodic=true;
         updatePoses();

@@ -40,32 +40,36 @@ public class MainTeleOp extends LinearOpMode {
         bot = Bot.getInstance(this);
         gp1 = new GamepadEx(gamepad1);
         gp2 = new GamepadEx(gamepad2);
+//        bot.prepTeleop();
+//        Bot.storedPose = new Pose2d(-63,-63,0);
         bot.prepTeleop();
-        Turret.isLocked=true;
-        Bot.drive.localizer.setPose(new Pose2d(62,-48,0));
+        if (!Bot.isRed) Bot.isRed = false;
+        bot.updatePoses();
 
-        while (opModeInInit() && !isStarted() && !isStopRequested()) {
-            TelemetryPacket packet = new TelemetryPacket();
-            gp1.readButtons();
+        Bot.drive.localizer.setPose(new Pose2d(-63,-63,0));
 
-            if (gp1.wasJustPressed(GamepadKeys.Button.A)) {
-                bot.switchAlliance();
-                bot.updatePoses();
-            }
-            if (!bot.isRed) {
-                telemetry.addData("alliance", "Blue");
-            } else {
-                telemetry.addData("alliance", "Red");
-            }
-            telemetry.update();
-        }
+
+
+//        while (opModeInInit() && !isStarted() && !isStopRequested()) {
+//            TelemetryPacket packet = new TelemetryPacket();
+//            gp1.readButtons();
+//
+//            if (gp1.wasJustPressed(GamepadKeys.Button.A)) {
+//                bot.switchAlliance();
+//            }
+//            if (!Bot.isRed) {
+//                telemetry.addData("alliance", "Blue");
+//            } else {
+//                telemetry.addData("alliance", "Red");
+//            }
+//            telemetry.update();
+//        }
 
 
 
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
             TelemetryPacket packet = new TelemetryPacket();
-           // bot.handleRecoil();
             bot.shooter.periodic();
             bot.turret.periodic();
             bot.hood.updateHood();
@@ -92,11 +96,12 @@ public class MainTeleOp extends LinearOpMode {
 
             if(gp2.wasJustPressed(GamepadKeys.Button.B)){
                 bot.intake.openGate();
+                bot.hood.goToHood(Bot.regressionHood(Turret.compDistance));
             }
             if(gp2.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
                 bot.teleopShoot();
             }
-            if(gp2.wasJustPressed(GamepadKeys.Button.X)){
+            if(gp2.wasJustPressed(GamepadKeys.Button.BACK)){
                 bot.resetPose();
             }
             if (gp2.wasJustPressed(GamepadKeys.Button.Y)){
@@ -120,7 +125,9 @@ public class MainTeleOp extends LinearOpMode {
             telemetry.addData("is alliance red?",bot.isRed);
             telemetry.addData("current distance ", Turret.distance);
             telemetry.addData("goal Pose ", Bot.goalPose);
-            telemetry.addData("stored Pose ", Bot.storedPose);
+            telemetry.addData("stored Pose ", Math.round(Bot.storedPose.position.x));
+            telemetry.addData("stored Pose ", Math.round(Bot.storedPose.position.y));
+            telemetry.addData("stored Pose ", Math.round(Bot.storedPose.heading.toDouble()));
 
             telemetry.update();
 

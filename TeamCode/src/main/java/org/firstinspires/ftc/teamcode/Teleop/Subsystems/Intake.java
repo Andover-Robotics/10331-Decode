@@ -31,7 +31,7 @@ public class Intake {
         gate1.setPosition(0.155);
     }
     public void openGate(){
-        gate1.setPosition(0.06);
+        gate1.setPosition(0.055);
     }
 
     public void intake_without_sense(double power){

@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Teleop.Bot;
@@ -20,6 +21,7 @@ public class Shooter {
     // ff + err(pid) = shooterPower
 
     public final MotorEx shooter;
+    private VoltageSensor sensor;
     //y=-0.000860551x^{3}+0.278353x^{2}-11.54167x+3650.11204 regression values
     public static double shooterA = -0.0000309751, shooterB = 0.0093023, shooterC = -0.911617, shooterD = 46.08444, shooterE=2434.93057;
     public final MotorEx shooter2;
@@ -68,10 +70,11 @@ public class Shooter {
     }
 
     public void periodic() {
+
         controller.setPID(p, i, d);
 
         RPM = shooter.getVelocity() / 28 * 60;// follows formula for rps (tps/tpr) * 60 for mins
-        double ff = f * targetRPM; // feedforward
+        double ff = (f * targetRPM); // feedforward
         double pid = controller.calculate(RPM, targetRPM);//error
         // gets product of p constant and error
 
@@ -88,7 +91,6 @@ public class Shooter {
 
         if (enableShooter) targetRPM = isPeriodic ? Bot.regressionRPM(Turret.compDistance) : target;
         else setTargetRPM(0);
-        hood.goToHood(Bot.regressionHood(Turret.compDistance));
     }
 
     public void reset() {

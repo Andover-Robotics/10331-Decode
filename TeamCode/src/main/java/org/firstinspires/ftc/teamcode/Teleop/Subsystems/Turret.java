@@ -23,7 +23,8 @@ import org.firstinspires.ftc.teamcode.Teleop.Bot;
 
 public class Turret {
 
-    public static double p=0.0085,i=0,d=0.0005,tX,pShort=0.03,iShort,dShort=0.0007;
+    public static double p=0.0085,i=0,d=0.0005,tX,pShort=0.02,iShort,dShort=0.0006;
+    //pShort might be too high perhaps
     public static double basePower = 0.1, powerMin = 0.05;
     public static double setPoint = 0;
     private final PIDController controller;
@@ -83,13 +84,13 @@ public class Turret {
         //angle =AngleUnit.normalizeDegrees(angle);
        // angle %= 360; // i feel like there might be issue here
         if (angle < -220) angle += 360; //low limit
-        if (angle >= 135) angle -= 360; // high limit
+        if (angle >= 140) angle -= 360; // high limit
 //        angle %=360;
         return angle;
     } //tested works i think may need to change when angles are normalized
 
     public void runToAngle(double angle) {
-        runTo((degreesToTicks(angle))); // add wrap around
+        runTo((degreesToTicks(wrapAround(angle)))); // add wrap around
     } // tested works i think
 
 

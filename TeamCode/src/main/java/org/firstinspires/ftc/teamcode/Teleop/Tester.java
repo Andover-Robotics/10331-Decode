@@ -22,7 +22,7 @@ public class Tester extends LinearOpMode {
     public Bot bot;
     private FtcDashboard dash = FtcDashboard.getInstance();
     public static double pos;
-    public static int rot;
+    public static double rot;
     GamepadEx gp1;
     public long lastTime=0;
     double driveSpeed = 1;
@@ -38,16 +38,13 @@ public class Tester extends LinearOpMode {
         Bot.instance = null;
         bot = Bot.getInstance(this);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        Turret.isLocked=false;
+        Turret.isLocked=true;
         bot.shooter.isPeriodic=false;
-        if (!bot.isRed) bot.isRed = false;
+        if (!Bot.isRed) Bot.isRed = false;
         bot.updatePoses();
-        //bot.turret.setEnableVelComp(true);
-        //bot.turret.resetEncoder();
+        bot.turret.setEnableVelComp(true);
         gp1 = new GamepadEx(gamepad1);
-        Bot.drive.localizer.setPose(new Pose2d(60,48,0));
-
-
+        Bot.drive.localizer.setPose(new Pose2d(-63,-63,0));
 
         waitForStart();
 
@@ -58,13 +55,21 @@ public class Tester extends LinearOpMode {
             double loopTime = newTime-lastTime;
 
             TelemetryPacket packet = new TelemetryPacket();
+
+            bot.hood.goToHood(rot);
             bot.turret.periodic();
             //bot.shooter.periodic();
-            bot.turret.runToAngle(pos);
-//            gp1.readButtons();
-//            if(gp1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
-//                bot.teleopIntake();
-//            }
+            gp1.readButtons();
+            drive();
+
+
+            if(gp1.wasJustPressed(GamepadKeys.Button.A)){
+                Bot.isRed = !Bot.isRed;
+                bot.updatePoses();
+            }
+            if(gp1.wasJustPressed(GamepadKeys.Button.BACK)){
+                Bot.drive.localizer.setPose(Bot.resetPose);
+            }
 
 
 //             bot.turret.periodic();
@@ -102,6 +107,9 @@ public class Tester extends LinearOpMode {
             telemetry.addData("is alliance red?",bot.isRed);
             telemetry.addData("Hood Height",bot.hood.getPos());
             telemetry.addData("Loop Time",loopTime);
+            telemetry.addData("Pose",Bot.drive.localizer.getPose());
+            telemetry.addData("Goal Pose",Bot.goalPose);
+
 
 
             telemetry.update();
