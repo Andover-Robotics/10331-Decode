@@ -12,14 +12,6 @@ import org.firstinspires.ftc.teamcode.Teleop.Bot;
 
 @Config
 public class Shooter {
-
-    // need to write velocity PIDF here
-    // need to figure out how to do that
-    // take target velocity - actual velocity for error
-    // err*kP for proportionality
-    // ff = kF * targetV
-    // ff + err(pid) = shooterPower
-
     public final MotorEx shooter;
     private VoltageSensor sensor;
     //y=-0.000860551x^{3}+0.278353x^{2}-11.54167x+3650.11204 regression values
@@ -42,9 +34,6 @@ public class Shooter {
     public boolean isRecoil=false; //recoil boolean
     private Hood hood;
 
-
-
-
     public Shooter(OpMode opMode) {
         shooter = new MotorEx(opMode.hardwareMap, "shooter", Motor.GoBILDA.BARE);
         shooter.setRunMode(Motor.RunMode.RawPower);
@@ -56,7 +45,6 @@ public class Shooter {
         shooter2.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
         controller = new PIDController(p, i, d);
         //this.hood = new Hood(opMode); idk if this is needed
-
 
     }
 
@@ -79,13 +67,6 @@ public class Shooter {
         // gets product of p constant and error
 
         shooterPower = pid + ff;// makes sure that the rpm has the feedforward floor
-
-//        if (Math.abs(targetRPM) < 1e-3) {
-//            shooterPower = 0.0;
-//        } else {
-//            double s = Math.signum(targetRPM);
-//            shooterPower = s * Math.max(Math.abs(shooterPower), 0);
-//        }
         shooterPower = checkPower(shooterPower, 1.0, 0);
         setPower(shooterPower);
 
@@ -110,7 +91,6 @@ public class Shooter {
         enableShooter=on;
     }
 
-
     public double getTargetRPM() {
         return targetRPM;
     }
@@ -127,11 +107,9 @@ public class Shooter {
         return Math.max(minV, Math.min(maxV, power));
     }
 
-
     public boolean atSpeed() {
         return Math.abs(targetRPM - getRPM()) <= toleranceRPM;
     }
-
 
     public double getCurrent() {
         return shooter.motorEx.getCurrent(CurrentUnit.MILLIAMPS);
