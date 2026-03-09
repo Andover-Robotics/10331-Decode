@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Teleop.Subsystems;
 
+import static org.firstinspires.ftc.teamcode.Teleop.Subsystems.Turret.compDistance;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -89,7 +91,11 @@ public class Shooter {
         shooterPower = checkPower(shooterPower, 1.0, 0);
         setPower(shooterPower);
 
-        if (enableShooter) targetRPM = isPeriodic ? Bot.regressionRPM(Turret.compDistance) : target;
+        if (enableShooter) {
+            targetRPM = isPeriodic ? Bot.regressionRPM(compDistance) : target;
+            Bot.hood.goToHood(Bot.regressionHood(compDistance));
+
+        }
         else setTargetRPM(0);
     }
 

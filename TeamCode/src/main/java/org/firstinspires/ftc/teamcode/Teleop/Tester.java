@@ -38,13 +38,14 @@ public class Tester extends LinearOpMode {
         Bot.instance = null;
         bot = Bot.getInstance(this);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        Turret.isLocked=true;
+        Turret.isLocked=false;
         bot.shooter.isPeriodic=false;
-        if (!Bot.isRed) Bot.isRed = false;
-        bot.updatePoses();
-        bot.turret.setEnableVelComp(true);
+        if (!bot.isRed) bot.isRed = false;
+        //bot.updatePoses();
+        //bot.turret.setEnableVelComp(true);
         gp1 = new GamepadEx(gamepad1);
         Bot.drive.localizer.setPose(new Pose2d(-63,-63,0));
+        bot.hood.goToHood(0.35);
 
         waitForStart();
 
@@ -53,23 +54,38 @@ public class Tester extends LinearOpMode {
 
             long newTime = System.currentTimeMillis();
             double loopTime = newTime-lastTime;
+            bot.intake.gate1.setPosition(0);
 
             TelemetryPacket packet = new TelemetryPacket();
-
-            bot.hood.goToHood(rot);
-            bot.turret.periodic();
+            //bot.turret.periodic();
             //bot.shooter.periodic();
             gp1.readButtons();
-            drive();
+            //drive();
 
 
-            if(gp1.wasJustPressed(GamepadKeys.Button.A)){
-                Bot.isRed = !Bot.isRed;
-                bot.updatePoses();
-            }
-            if(gp1.wasJustPressed(GamepadKeys.Button.BACK)){
-                Bot.drive.localizer.setPose(Bot.resetPose);
-            }
+//            if(gp1.wasJustPressed(GamepadKeys.Button.A)){
+//                bot.isRed = !bot.isRed;
+//                bot.updatePoses();
+//            }
+//            if(gp1.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
+//                bot.teleopIntake();
+//            }
+//            if(gp1.wasJustPressed(GamepadKeys.Button.BACK)){
+//                Bot.drive.localizer.setPose(Bot.resetPose);
+//            }
+
+//            if(gp1.wasJustPressed(GamepadKeys.Button.B)){
+//                bot.intake.openGate();
+//            }
+//            if(gp1.wasJustPressed(GamepadKeys.Button.Y)){
+//                bot.intake.closeGate();
+//            }
+//            if(gp1.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
+//                bot.shooter.setTargetRPM(3500);
+//            }
+//            if(gp1.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)){
+//                bot.shooter.setTargetRPM(0);
+//            }
 
 
 //             bot.turret.periodic();

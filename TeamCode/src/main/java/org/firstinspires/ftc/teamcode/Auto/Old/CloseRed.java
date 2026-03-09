@@ -49,7 +49,7 @@ public class CloseRed extends LinearOpMode {
         bot = Bot.getInstance(this);
         bot.prepAuto(true);
         MecanumDrive drive = Bot.drive;
-        Bot.isRed=true;
+        bot.isRed=true;
         drive.localizer.setPose(initialRedPos);
 
         Action runAuto = drive.actionBuilderRed(initialRedPos)

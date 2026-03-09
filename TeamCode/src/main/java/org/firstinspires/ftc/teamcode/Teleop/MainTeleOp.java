@@ -40,13 +40,12 @@ public class MainTeleOp extends LinearOpMode {
         bot = Bot.getInstance(this);
         gp1 = new GamepadEx(gamepad1);
         gp2 = new GamepadEx(gamepad2);
-//        bot.prepTeleop();
 //        Bot.storedPose = new Pose2d(-63,-63,0);
         bot.prepTeleop();
-        if (!Bot.isRed) Bot.isRed = false;
+       // if (!Bot.isRed) Bot.isRed = false;
         bot.updatePoses();
 
-        Bot.drive.localizer.setPose(new Pose2d(-63,-63,0));
+        Bot.drive.localizer.setPose(Bot.storedPose);
 
 
 
@@ -72,7 +71,6 @@ public class MainTeleOp extends LinearOpMode {
             TelemetryPacket packet = new TelemetryPacket();
             bot.shooter.periodic();
             bot.turret.periodic();
-            bot.hood.updateHood();
             gp1.readButtons();
             gp2.readButtons();
             drive();
@@ -96,7 +94,6 @@ public class MainTeleOp extends LinearOpMode {
 
             if(gp2.wasJustPressed(GamepadKeys.Button.B)){
                 bot.intake.openGate();
-                bot.hood.goToHood(Bot.regressionHood(Turret.compDistance));
             }
             if(gp2.wasJustPressed(GamepadKeys.Button.DPAD_UP)){
                 bot.teleopShoot();
@@ -118,6 +115,7 @@ public class MainTeleOp extends LinearOpMode {
             }
             telemetry.addData("target RPM",bot.shooter.getTargetRPM());
             telemetry.addData("measured RPM",bot.shooter.getRPM());
+            telemetry.addData("Target Degrees",bot.turret.getCurrentTicks());
             telemetry.addData("Target Degrees",bot.turret.getTargetDegrees());
             telemetry.addData("Current Degrees",bot.turret.getCurrentDegrees());
             telemetry.addData("Hood position",bot.hood.hoodServo.getPosition());

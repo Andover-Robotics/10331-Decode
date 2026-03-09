@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.Teleop.Bot;
 
 public class Turret {
 
-    public static double p=0.0085,i=0,d=0.0005,tX,pShort=0.02,iShort,dShort=0.0006;
+    public static double p=0.009,i=0,d=0.0005,tX,pShort=0.025,iShort,dShort=0.0006;
     //pShort might be too high perhaps
     public static double basePower = 0.1, powerMin = 0.05;
     public static double setPoint = 0;
@@ -46,6 +46,11 @@ public class Turret {
     public double vectorXComp;
     public double vectorYComp;
     public boolean enableVelComp;
+
+
+
+    //-------------Temp trouble shooting fields------------
+    public double turretX,turretY,dy,dx,ccwFieldTarget,ccwTargetRelToRobot,cwTarget;
 
     public Turret (OpMode opMode){
 
@@ -83,8 +88,8 @@ public class Turret {
     public double wrapAround(double angle) {
         //angle =AngleUnit.normalizeDegrees(angle);
        // angle %= 360; // i feel like there might be issue here
-        if (angle < -220) angle += 360; //low limit
-        if (angle >= 140) angle -= 360; // high limit
+        if (angle < -210) angle += 360; //low limit
+        if (angle >= 150) angle -= 360; // high limit
 //        angle %=360;
         return angle;
     } //tested works i think may need to change when angles are normalized
@@ -103,13 +108,12 @@ public class Turret {
 
         //Turret Positions
         //credit to Lighting:
-        double turretX = pose.position.x - TURRET_BACK_OFFSET * Math.cos(Math.toRadians(botHeading));
-        double turretY = pose.position.y - TURRET_BACK_OFFSET * Math.sin(Math.toRadians(botHeading));
+         turretX = pose.position.x;
+         turretY = pose.position.y;
 
         //Vector from Turret to Target
-        double dx = targetPose.x - turretX;
-        double dy = targetPose.y - turretY;
-        double ccwFieldTarget;
+         dx = targetPose.x - turretX;
+         dy = targetPose.y - turretY;
         distance = Math.sqrt(dx * dx + dy * dy);
         changeTrackingPose(dx,dy);
         compDistance = Math.sqrt(vectorXComp*vectorXComp+vectorYComp*vectorYComp);
@@ -130,8 +134,8 @@ public class Turret {
 
         //partially chatted code may need to rewrite
         //assume -180 relative to robot is 0 so turret should start facing backwards i think it tweaks out if it faces forwards at 0
-        double ccwTargetRelToRobot = normDelta(ccwFieldTarget - botHeading);
-        double cwTarget = normDelta(-ccwTargetRelToRobot);
+         ccwTargetRelToRobot = normDelta(ccwFieldTarget - botHeading);
+         cwTarget = normDelta(-ccwTargetRelToRobot);
 
         return cwTarget;
     }
@@ -177,6 +181,7 @@ public class Turret {
         power = controller.calculate(turretMotor.getCurrentPosition(),setPoint);
         power = clamp(power,1.0,-1.0);
         turretMotor.set(power);
+
 
     } //tested works i think
 

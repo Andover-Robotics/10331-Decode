@@ -20,17 +20,13 @@ public class Reset extends LinearOpMode {
                 Bot.instance = null;
 
         bot = Bot.getInstance(this);
+        bot.shooter.reset();
+        bot.turret.resetEncoder();
+        Bot.drive.localizer.recalibrateIMU();
 
 
         waitForStart();
-        for (Entry<String, DcMotor> e : hardwareMap.dcMotor.entrySet()) {
-            e.getValue().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            while (!isStopRequested()&& opModeIsActive()){
-                idle();
-            }
 
-            telemetry.addData("reset:",e.getKey());
-            telemetry.update();
         }
 
 
@@ -38,4 +34,4 @@ public class Reset extends LinearOpMode {
 
 
     }
-}
+

@@ -33,7 +33,7 @@ public class Bot {
     public static Bot instance;
     public OpMode opMode;
 
-    public Hood hood;
+    public static Hood hood;
 
     public AprilTag aprilTag;
     public Shooter shooter;
@@ -47,7 +47,7 @@ public class Bot {
     public boolean isIntake,isShooting,hoodComp;
 
     public LinearInterpolator interpolator;
-    public static boolean isRed;
+    public boolean isRed;
     //public boolean recoilIsTrue;
 
 
@@ -296,17 +296,18 @@ public class Bot {
 //        Bot.drive.localizer.setPose(storedPose);
         Hood.outtakePos=0.25;
         shooter.isPeriodic=true;
-        Turret.isLocked=true;
+       Turret.isLocked=true;
         turret.setEnableVelComp(true);
 
-    }public void prepAuto( boolean isRed){
+    }public void prepAuto( boolean r){
         intake.closeGate();
         hood.hoodServo.setPosition(0.25);
         Hood.outtakePos=0.25;
-        Bot.isRed = isRed;
-        Turret.isLocked = false;
+        isRed = r;
+        Turret.isLocked = true;
+        turret.setEnableVelComp(true);
         shooter.isPeriodic=true;
-        updatePoses();
+      //  updatePoses();
 
     }
 
