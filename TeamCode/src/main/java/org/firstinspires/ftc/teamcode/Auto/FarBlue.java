@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Auto.Old;
+package org.firstinspires.ftc.teamcode.Auto;
 
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.InstantAction;
@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.Teleop.Bot;
 public class FarBlue extends LinearOpMode {
     Bot bot;
 
-    double shootdt =3;
+    double shootdt =0.5;
 
 
     // inital
@@ -27,22 +27,22 @@ public class FarBlue extends LinearOpMode {
 
 
     //shooting
-    public static Pose2d shoot = new Pose2d(-52,-19,Math.toRadians(-25));//was 20, -30
+    public static Pose2d shoot = new Pose2d(-55,-19,Math.toRadians(-25));//was 20, -30
     public static Vector2d shootPreload = new Vector2d(-55,-19);//was 20,-30
 
 
     //intake
-    public static Pose2d firstIntake1 = new Pose2d(18,-40,Math.toRadians(-85));//,Math.toRadians(-180)
+    public static Pose2d secretTunnel1 = new Pose2d(18,-40,Math.toRadians(-85));//,Math.toRadians(-180)
     public static Vector2d firstIntake2 = new Vector2d(18,-61);//,Math.toRadians(-180)
 
     public static Vector2d gatePos=new Vector2d(7,-74);
 
 
-    public static Pose2d secondIntake1 = new Pose2d(-10,-20,Math.toRadians(-85));
-    public static Vector2d secondIntake2 = new Vector2d(-10,-53);
+    public static Pose2d hpIntake1 = new Pose2d(-55,-35,Math.toRadians(-110));
+    public static Vector2d hpintake2 = new Vector2d(-72,-63);
 
-    public static Pose2d thirdIntake1 = new Pose2d(-34,-20,Math.toRadians(-90));
-    public static Vector2d thirdIntake2 = new Vector2d(-34,-62);
+    public static Pose2d thirdIntake1 = new Pose2d(-42,-35,Math.toRadians(-90));
+    public static Vector2d thirdIntake2 = new Vector2d(-42,-58);
     public ExposureControl exposureControl;
     public GainControl gainControl;
 
@@ -50,45 +50,53 @@ public class FarBlue extends LinearOpMode {
     public void runOpMode() throws InterruptedException{
         Bot.instance = null;
         bot = Bot.getInstance(this);
-        bot.prepFarAuto(true);
+        bot.prepFarAuto(false);
         MecanumDrive drive = Bot.drive;
+        drive.localizer.recalibrateIMU();
         drive.localizer.setPose(init);
+        bot.updatePoses();
 
         Action runAuto = drive.actionBuilderBlue(initRed)
                 .afterTime(0.01,bot.intake.actionIntakeFar())
                 .afterTime(0.01,bot.actionSpinUp()) //TODO: test dt on pathing here
-                .strafeToSplineHeading(shootPreload,Math.toRadians(-20))//preload
-                .waitSeconds(2)
+                .waitSeconds(1)
                 .stopAndAdd(bot.actionShootGate())
-                .waitSeconds(shootdt)
                 .afterTime(0.01,bot.actionStopShoot())
                 .stopAndAdd(new InstantAction(()->bot.intake.stopIntake()))
 
-                .strafeToSplineHeading(bot.pose2Vector(thirdIntake1),thirdIntake1.heading.log())//intake1
+
+                .splineToSplineHeading(thirdIntake1,Math.toRadians(-90))//intake1
+                .afterTime(0.01,bot.intake.actionIntakeFar())
                 .afterTime(0.01,bot.intake.actionIntakeFar())
                 .strafeToSplineHeading(thirdIntake2,Math.toRadians(-85))
 //                .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))
 
 
                 //  .afterTime(0.01,bot.intake.actionIntakeClose())
+                .setReversed(true)
                 .afterTime(0.3,bot.actionSpinUp())//TODO: test dt on pathing here
-                .strafeToSplineHeading(bot.pose2Vector(shoot),shoot.heading.log())
+                .splineToSplineHeading(shoot,Math.toRadians(100))
                 .waitSeconds(1)
                 .stopAndAdd(bot.actionShootGate())
-                .waitSeconds(shootdt)
                 .afterTime(0.01,bot.actionStopShoot())
 
-                .strafeToSplineHeading(bot.pose2Vector(secondIntake1),secondIntake1.heading.log())//intake2
+                .splineToSplineHeading(hpIntake1,Math.toRadians(-90))//intake2
 //                .afterTime(0.01,bot.intake.actionIntakeClose())
-                .strafeToSplineHeading(secondIntake2,Math.toRadians(-85))
+                .strafeToSplineHeading(hpintake2,Math.toRadians(-85))
 
+                .setReversed(true)
                 .afterTime(0.01,bot.intake.actionIntakeFar())
                 .afterTime(0.4,bot.actionSpinUp()) //TODO: test dt on pathing here
-                .strafeToSplineHeading(bot.pose2Vector(shoot),shoot.heading.log())
+                .splineToSplineHeading(shoot,Math.toRadians(100))
                 .waitSeconds(1)
                 .stopAndAdd(bot.actionShootGate())
-                .waitSeconds(shootdt)
                 .stopAndAdd(bot.actionStopShoot())
+
+                .afterTime(0.01, bot.intake.actionIntakeFar())
+                //.splineToSplineHeading()
+
+
+
 
 
 //                .setTangent(Math.toRadians(180))
@@ -105,6 +113,35 @@ public class FarBlue extends LinearOpMode {
 //                .stopAndAdd(bot.actionStopShoot())
 //                .waitSeconds(1)
                 .build();
+
+        while (opModeInInit() && !isStopRequested() && !isStarted()) {
+            bot.shooter.periodic();
+            bot.turret.periodic();
+            telemetry.addData("measured RPM",bot.shooter.getRPM());
+            telemetry.addData("Target Degrees",bot.turret.getCurrentTicks());
+            telemetry.addData("Target Degrees",bot.turret.getTargetDegrees());
+            telemetry.addData("Current Degrees",bot.turret.getCurrentDegrees());
+            telemetry.addData("x ", Math.round(drive.localizer.getPose().position.x));
+            telemetry.addData("y ", Math.round(drive.localizer.getPose().position.y));
+            telemetry.addData("heading ", Math.round(drive.localizer.getPose().heading.toDouble()));
+            telemetry.addData("x comp ",bot.turret.vectorXComp);
+            telemetry.addData("y comp ",bot.turret.vectorYComp);
+            telemetry.addData("turret x ",bot.turret.turretX);
+            telemetry.addData("turret y ",bot.turret.turretY);
+            telemetry.addData("dx ",bot.turret.dx);
+            telemetry.addData("dy ",bot.turret.dy);
+            telemetry.addData("ccw rel field ",bot.turret.ccwFieldTarget);
+            telemetry.addData("ccw rel field ",Math.toDegrees(Math.atan2(bot.turret.dy,bot.turret.dx)));
+            telemetry.addData("goal pose ",Bot.goalPose);
+
+
+
+            telemetry.addData("ccw robot target" ,bot.turret.ccwTargetRelToRobot);
+            telemetry.addData("cw target ",bot.turret.cwTarget);
+
+            telemetry.update();
+
+        }
 
         waitForStart();
         Actions.runBlocking(

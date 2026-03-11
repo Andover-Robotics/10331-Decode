@@ -24,14 +24,14 @@ public class CloseBlue extends LinearOpMode {
 
     // inital
 
-   private static double shootdt = 1.7;
-   private static double gatedt=2;
+   private static double shootdt = 1;
+   private static double gatedt=1;
    public static double gateCycles=0;
 
     private Pose2d init = new Pose2d(60,48,Math.toRadians(0));
     public static Pose2d initialRedPos = new Pose2d(60,-48,Math.toRadians(0));
     //shooting
-    public static Pose2d shoot = new Pose2d(33,-30,Math.toRadians(0));//was 20, -30
+    public static Pose2d shoot = new Pose2d(28,-28,Math.toRadians(0));//was 20, -30
     public static Vector2d shootPreload = new Vector2d(33,-30);//was 20,-30
 
     //intake
@@ -44,8 +44,8 @@ public class CloseBlue extends LinearOpMode {
     public static Pose2d secondIntake1 = new Pose2d(-17,-35,Math.toRadians(-90));
     public static Vector2d secondIntake2 = new Vector2d(-17,-62);
 
-    public static Pose2d gateCyclePos0 = new Pose2d(-17,-40,Math.toRadians(-85));
-    public static Pose2d gateCyclePos1 = new Pose2d(-17,-68,Math.toRadians(-85));
+    public static Pose2d gateCyclePos0 = new Pose2d(-18,-40,Math.toRadians(-85));
+    public static Pose2d gateCyclePos1 = new Pose2d(-18,-70,Math.toRadians(-85));
 
 
     public static Pose2d thirdIntake1 = new Pose2d(-34,-40,Math.toRadians(-90));
@@ -110,12 +110,26 @@ public class CloseBlue extends LinearOpMode {
 
                 .setReversed(true)
                 .splineToSplineHeading(gateCyclePos0,Math.toRadians(-90))
-                .strafeToSplineHeading(bot.pose2Vector(gateCyclePos1),Math.toRadians(-55))
+                .strafeToSplineHeading(bot.pose2Vector(gateCyclePos1),Math.toRadians(-60))
                 .stopAndAdd(bot.intake.actionIntakeClose())
                 .waitSeconds(gatedt)
                 .afterTime(0.2,bot.actionSpinUp())
                 .setReversed(true)
-                .splineTo(bot.pose2Vector(shoot),Math.toRadians(-40))
+                .splineTo(bot.pose2Vector(shoot),Math.toRadians(60))
+                .stopAndAdd(bot.actionOpenGate())
+                .waitSeconds(shootdt)
+                .stopAndAdd(bot.actionStopShoot())
+
+
+
+                .setReversed(true)
+                .splineToSplineHeading(gateCyclePos0,Math.toRadians(-90))
+                .strafeToSplineHeading(bot.pose2Vector(gateCyclePos1),Math.toRadians(-60))
+                .stopAndAdd(bot.intake.actionIntakeClose())
+                .waitSeconds(gatedt)
+                .afterTime(0.2,bot.actionSpinUp())
+                .setReversed(true)
+                .splineTo(bot.pose2Vector(shoot),Math.toRadians(60))
                 .stopAndAdd(bot.actionOpenGate())
                 .waitSeconds(shootdt)
                 .build();

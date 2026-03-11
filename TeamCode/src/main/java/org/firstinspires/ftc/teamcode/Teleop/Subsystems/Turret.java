@@ -88,8 +88,8 @@ public class Turret {
     public double wrapAround(double angle) {
         //angle =AngleUnit.normalizeDegrees(angle);
        // angle %= 360; // i feel like there might be issue here
-        if (angle < -210) angle += 360; //low limit
-        if (angle >= 150) angle -= 360; // high limit
+        if (angle < -225) angle += 360; //low limit
+        if (angle >= 135) angle -= 360; // high limit
 //        angle %=360;
         return angle;
     } //tested works i think may need to change when angles are normalized

@@ -53,7 +53,7 @@ public class Bot {
 
     //----------------------POSES--------------------
     public static Pose2d storedPose = new Pose2d(0,0,0);
-    public static Vector2d goalPose = new Vector2d(62,-60);// init with red
+    public static Vector2d goalPose = new Vector2d(60,-60);// init with red
     public static Pose2d resetPose = new Pose2d(-63,-63,Math.toRadians(-90));// change when we figure out where we want to reset
     public static double[] shooterComponents = { //a b c d
             //y=0.000939398x^{3}-0.177876x^{2}+20.68083x+2592.85474
@@ -142,13 +142,13 @@ public class Bot {
     public void updatePoses(){
         if (isRed){
 
-                goalPose = new Vector2d(62, -60);
+                goalPose = new Vector2d(60, -60);
                 resetPose = new Pose2d(-63, -63, Math.toRadians(0));
 
         }
         else {
 
-                goalPose = new Vector2d(62,60);
+                goalPose = new Vector2d(60,60);
                 resetPose = new Pose2d(-63, 63, Math.toRadians(0));
 
         }
@@ -235,7 +235,7 @@ public class Bot {
 
         double regression = shooterAComponent + shooterBComponent + shooterCComponent + shooterDComponent;
 
-        return (int)regression;
+        return (int)regression+50;
     }
     public static double regressionHood(double dist) {
         return (hoodComponents[0]*Math.sqrt(dist-hoodComponents[1]))+hoodComponents[2];
@@ -317,7 +317,8 @@ public class Bot {
         hood.hoodServo.setPosition(0.3);
         Hood.outtakePos=0.3;
         isRed = r;
-        Turret.isLocked = false;
+        Turret.isLocked = true;
+        turret.setEnableVelComp(true);
         shooter.isPeriodic=true;
         updatePoses();
 

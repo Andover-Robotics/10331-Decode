@@ -50,7 +50,7 @@ public class Intake {
         }
     }
     public Action actionIntakeClose(){
-              return new InstantAction(() -> intakeMotor.setPower(0.8));
+              return new InstantAction(() -> intakeMotor.setPower(0.7));
 
     }
     public Action actionIntakeFar(){

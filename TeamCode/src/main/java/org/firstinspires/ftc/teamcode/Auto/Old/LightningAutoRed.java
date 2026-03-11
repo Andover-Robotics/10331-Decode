@@ -99,9 +99,9 @@ public class LightningAutoRed extends LinearOpMode {
                 .afterTime(0.01,bot.actionStopShoot())
 
 //                .setTangent(Math.toRadians(90))
-//                .splineToLinearHeading(secondIntake1, Math.toRadians(-10))//intake2
+//                .splineToLinearHeading(HpIntake1, Math.toRadians(-10))//intake2
 //               .afterTime(0.01,bot.intake.actionIntakeClose())
-//                .strafeToLinearHeading(secondIntake2,Math.toRadians(-85))
+//                .strafeToLinearHeading(hpintake2,Math.toRadians(-85))
 //                .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))
 //
 //
