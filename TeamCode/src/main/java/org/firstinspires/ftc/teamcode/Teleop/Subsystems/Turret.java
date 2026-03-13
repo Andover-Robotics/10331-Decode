@@ -282,7 +282,7 @@ public class Turret {
         }
 
         public void resetEncoder(){
-        turretMotor.resetEncoder();
+        turretMotor.stopAndResetEncoder();
         }
     private double clamp(double power,double maxV, double minV) {
     return Math.max(minV,Math.min(maxV,power));

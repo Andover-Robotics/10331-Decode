@@ -103,8 +103,8 @@ public class Shooter {
         targetRPM = 0;
         shooterPower = 0;
         controller.reset();
-        shooter.resetEncoder();
-        shooter2.resetEncoder();
+        shooter.stopAndResetEncoder();
+        shooter2.stopAndResetEncoder();
         reset=true;
     }
 

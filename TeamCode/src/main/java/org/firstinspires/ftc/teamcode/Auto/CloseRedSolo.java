@@ -41,7 +41,7 @@ public class CloseRedSolo extends LinearOpMode {
 
 
     public static Pose2d secondIntake1 = new Pose2d(-17,-25,Math.toRadians(-90));
-    public static Vector2d secondIntake2 = new Vector2d(-17,-52);
+    public static Vector2d secondIntake2 = new Vector2d(-17,-48);
 
 
 
@@ -100,6 +100,9 @@ public class CloseRedSolo extends LinearOpMode {
                 .splineToSplineHeading(secondIntake1, Math.toRadians(-90))//intake2
 //               .afterTime(0.01,bot.intake.actionIntakeClose())
                 .strafeToSplineHeading(secondIntake2,Math.toRadians(-95))
+
+                .strafeToSplineHeading(gatePos,-180)
+                .waitSeconds(2)
 
                 .setTangent(Math.toRadians(90)) //shoot 3
                 .afterTime(0.01,bot.intake.actionIntakeClose())

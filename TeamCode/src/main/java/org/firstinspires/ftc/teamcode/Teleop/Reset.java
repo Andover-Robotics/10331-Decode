@@ -20,13 +20,13 @@ public class Reset extends LinearOpMode {
                 Bot.instance = null;
 
         bot = Bot.getInstance(this);
-        bot.shooter.reset();
-        bot.turret.resetEncoder();
+
         Bot.drive.localizer.recalibrateIMU();
 
 
         waitForStart();
-
+        bot.shooter.reset();
+        bot.turret.resetEncoder();
         }
 
 
