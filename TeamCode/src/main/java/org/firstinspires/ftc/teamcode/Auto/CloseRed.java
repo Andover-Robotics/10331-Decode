@@ -18,34 +18,33 @@ import org.firstinspires.ftc.teamcode.Auto.miscRR.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Teleop.Bot;
 
 import java.util.ArrayList;
-@Autonomous(name="Close Blue", group="AA_Autos")
-public class CloseBlue extends LinearOpMode {
+@Autonomous(name="Close Red", group="AA_Autos")
+public class CloseRed extends LinearOpMode {
     Bot bot;
 
     // inital
 
-   private static double shootdt = 1;
-   private static double gatedt=1;
-   public static double gateCycles=0;
+    private static double shootdt = 1;
+    private static double gatedt=1;
+    public static double gateCycles=0;
 
-    private Pose2d init = new Pose2d(60,38,Math.toRadians(0));
     public static Pose2d initialRedPos = new Pose2d(60,-38,Math.toRadians(0));
     //shooting
-    public static Pose2d shoot = new Pose2d(28,-10,Math.toRadians(0));//was 20, -30
+    public static Pose2d shoot = new Pose2d(28,-26,Math.toRadians(0));//was 20, -30
     public static Vector2d shootPreload = new Vector2d(33,-20);//was 20,-30
 
     //intake
-    public static Pose2d firstIntake1 = new Pose2d(9,-26,Math.toRadians(-85));//,Math.toRadians(-180)
-    public static Vector2d firstIntake2 = new Vector2d(9,-42);//,Math.toRadians(-180)
+    public static Pose2d firstIntake1 = new Pose2d(14,-30,Math.toRadians(-85));//,Math.toRadians(-180)
+    public static Vector2d firstIntake2 = new Vector2d(14,-55);//,Math.toRadians(-180)
 
     public static Vector2d gatePos=new Vector2d(3,-68);
 
 
-    public static Pose2d secondIntake1 = new Pose2d(-17,-25,Math.toRadians(-90));
-    public static Vector2d secondIntake2 = new Vector2d(-17,-52);
+    public static Pose2d secondIntake1 = new Pose2d(-6,-34,Math.toRadians(-90));
+    public static Vector2d secondIntake2 = new Vector2d(-6,-64);
 
-    public static Pose2d gateCyclePos0 = new Pose2d(-21,-30,Math.toRadians(-85));
-    public static Pose2d gateCyclePos1 = new Pose2d(-21,-60,Math.toRadians(-85));
+    public static Pose2d gateCyclePos0 = new Pose2d(-7,-40,Math.toRadians(-85));
+    public static Pose2d gateCyclePos1 = new Pose2d(-7,-65,Math.toRadians(-85));
 
 
     public static Pose2d thirdIntake1 = new Pose2d(-34,-40,Math.toRadians(-90));
@@ -56,10 +55,10 @@ public class CloseBlue extends LinearOpMode {
     public void runOpMode() throws InterruptedException{
         Bot.instance = null;
         bot = Bot.getInstance(this);
-        bot.prepAuto(false);
+        bot.prepAuto(true);
         MecanumDrive drive = Bot.drive;
         drive.localizer.recalibrateIMU();
-        drive.localizer.setPose(init);
+        drive.localizer.setPose(initialRedPos);
         bot.updatePoses();
 
         // notes for nicole: vector is just the endgoal, pos is the angle of the bot AND the position
@@ -67,7 +66,7 @@ public class CloseBlue extends LinearOpMode {
         // spline = creating curve to hit the destination faster
 
 
-        Action runAuto = drive.actionBuilderBlue(initialRedPos)
+        Action runAuto = drive.actionBuilderRed(initialRedPos)
                 .afterTime(0.01,bot.intake.actionIntakeClose())
                 .afterTime(0.01,bot.actionSpinUp()) //TODO: test dt on pathing here
                 .strafeTo(bot.pose2Vector(shoot))//preload
@@ -78,7 +77,7 @@ public class CloseBlue extends LinearOpMode {
                 .stopAndAdd(new InstantAction(()->bot.intake.stopIntake()))
 
                 .setTangent(Math.toRadians(190))
-                .splineToSplineHeading(firstIntake1, Math.toRadians(-90))//intake1
+                .splineToSplineHeading(firstIntake1, Math.toRadians(90))//intake1
                 .afterTime(0.01,bot.intake.actionIntakeClose())
                 .strafeToSplineHeading(firstIntake2,Math.toRadians(-85))
 //                .afterTime(0.01,new InstantAction(()->bot.intake.stopIntake()))
@@ -95,8 +94,8 @@ public class CloseBlue extends LinearOpMode {
                 .waitSeconds(shootdt)
                 .afterTime(0.01,bot.actionStopShoot())
 
-                .setTangent(-150)
-                .splineToSplineHeading(secondIntake1, Math.toRadians(-90))//intake2
+                .setTangent(Math.toRadians(-170))
+                .splineToSplineHeading(secondIntake1, Math.toRadians(90))//intake2
 //               .afterTime(0.01,bot.intake.actionIntakeClose())
                 .strafeToSplineHeading(secondIntake2,Math.toRadians(-95))
 
@@ -108,8 +107,8 @@ public class CloseBlue extends LinearOpMode {
                 .waitSeconds(shootdt)
                 .stopAndAdd(bot.actionStopShoot())
 
-                .setReversed(true)
-                .splineToSplineHeading(gateCyclePos0,Math.toRadians(-90))
+                .setTangent(Math.toRadians(-150))
+                .splineToSplineHeading(gateCyclePos0,Math.toRadians(60))
                 .strafeToSplineHeading(bot.pose2Vector(gateCyclePos1),Math.toRadians(-60))
                 .stopAndAdd(bot.intake.actionIntakeClose())
                 .waitSeconds(gatedt)
@@ -122,14 +121,14 @@ public class CloseBlue extends LinearOpMode {
 
 
 
-                .setReversed(true)
-                .splineToSplineHeading(gateCyclePos0,Math.toRadians(-90))
+                .setTangent(Math.toRadians(-150))
+                .splineToSplineHeading(gateCyclePos0,Math.toRadians(60))
                 .strafeToSplineHeading(bot.pose2Vector(gateCyclePos1),Math.toRadians(-60))
                 .stopAndAdd(bot.intake.actionIntakeClose())
                 .waitSeconds(gatedt)
                 .afterTime(0.2,bot.actionSpinUp())
                 .setReversed(true)
-                .splineTo(bot.pose2Vector(shoot),Math.toRadians(60))
+                .splineTo(new Vector2d(shoot.position.x-3,shoot.position.y),Math.toRadians(60))
                 .stopAndAdd(bot.actionOpenGate())
                 .waitSeconds(shootdt)
                 .build();

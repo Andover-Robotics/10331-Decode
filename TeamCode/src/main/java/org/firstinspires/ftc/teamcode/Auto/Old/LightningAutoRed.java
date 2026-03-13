@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
@@ -16,7 +17,7 @@ import org.firstinspires.ftc.teamcode.Teleop.Bot;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 import java.util.concurrent.TimeUnit;
-
+@Disabled
 @Autonomous(name="Lighting Auto Red")
 public class LightningAutoRed extends LinearOpMode {
     Bot bot;

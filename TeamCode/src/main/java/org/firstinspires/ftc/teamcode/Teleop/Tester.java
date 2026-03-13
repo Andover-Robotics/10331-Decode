@@ -54,7 +54,7 @@ public class Tester extends LinearOpMode {
 
             long newTime = System.currentTimeMillis();
             double loopTime = newTime-lastTime;
-            bot.intake.gate1.setPosition(0);
+            Bot.hood.goToHood(pos);
 
             TelemetryPacket packet = new TelemetryPacket();
             //bot.turret.periodic();

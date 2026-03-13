@@ -43,6 +43,8 @@ public class MainTeleOp extends LinearOpMode {
 //        Bot.storedPose = new Pose2d(-63,-63,0);
         bot.prepTeleop();
        // if (!Bot.isRed) Bot.isRed = false;
+        if(Bot.alliance==0) bot.isRed = true;
+        else bot.isRed = false;
         bot.updatePoses();
 
         Bot.drive.localizer.setPose(Bot.storedPose);

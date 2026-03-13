@@ -14,15 +14,14 @@ import org.firstinspires.ftc.teamcode.Auto.miscRR.ActionHelper;
 import org.firstinspires.ftc.teamcode.Auto.miscRR.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Teleop.Bot;
 
-@Autonomous(name="Far Blue", group="AA_Autos")
-public class FarBlue extends LinearOpMode {
+@Autonomous(name="Far Red", group="AA_Autos")
+public class FarRed extends LinearOpMode {
     Bot bot;
 
     double shootdt =0.5;
 
 
     // inital
-    public static Pose2d init = new Pose2d(-60,24,Math.toRadians(0));
     public static Pose2d initRed = new Pose2d(-60,-24,Math.toRadians(0));
 
 
@@ -38,11 +37,11 @@ public class FarBlue extends LinearOpMode {
     public static Vector2d gatePos=new Vector2d(7,-74);
 
 
-    public static Pose2d hpIntake1 = new Pose2d(-55,-35,Math.toRadians(-110));
-    public static Vector2d hpintake2 = new Vector2d(-72,-63);
+    public static Pose2d hpIntake1 = new Pose2d(-42,-35,Math.toRadians(-110));
+    public static Vector2d hpintake2 = new Vector2d(-58,-76);
 
-    public static Pose2d thirdIntake1 = new Pose2d(-42,-35,Math.toRadians(-90));
-    public static Vector2d thirdIntake2 = new Vector2d(-42,-58);
+    public static Pose2d thirdIntake1 = new Pose2d(-28,-35,Math.toRadians(-90));
+    public static Vector2d thirdIntake2 = new Vector2d(-28,-64);
     public ExposureControl exposureControl;
     public GainControl gainControl;
 
@@ -50,16 +49,16 @@ public class FarBlue extends LinearOpMode {
     public void runOpMode() throws InterruptedException{
         Bot.instance = null;
         bot = Bot.getInstance(this);
-        bot.prepFarAuto(false);
+        bot.prepFarAuto(true);
         MecanumDrive drive = Bot.drive;
         drive.localizer.recalibrateIMU();
-        drive.localizer.setPose(init);
+        drive.localizer.setPose(initRed);
         bot.updatePoses();
 
-        Action runAuto = drive.actionBuilderBlue(initRed)
+        Action runAuto = drive.actionBuilderRed(initRed)
                 .afterTime(0.01,bot.intake.actionIntakeFar())
                 .afterTime(0.01,bot.actionSpinUp()) //TODO: test dt on pathing here
-                .waitSeconds(1)
+                .waitSeconds(1.5)
                 .stopAndAdd(bot.actionShootGate())
                 .afterTime(0.01,bot.actionStopShoot())
                 .stopAndAdd(new InstantAction(()->bot.intake.stopIntake()))
@@ -93,7 +92,7 @@ public class FarBlue extends LinearOpMode {
                 .stopAndAdd(bot.actionStopShoot())
 
                 .afterTime(0.01, bot.intake.actionIntakeFar())
-               // .splineToSplineHeading()
+                //.splineToSplineHeading()
 
                 .build();
 

@@ -48,13 +48,15 @@ public class Bot {
 
     public LinearInterpolator interpolator;
     public boolean isRed;
+
+    public static int alliance; // 0 for red 1 for blue
     //public boolean recoilIsTrue;
 
 
     //----------------------POSES--------------------
     public static Pose2d storedPose = new Pose2d(0,0,0);
     public static Vector2d goalPose = new Vector2d(60,-60);// init with red
-    public static Pose2d resetPose = new Pose2d(-63,-63,Math.toRadians(-90));// change when we figure out where we want to reset
+    public static Pose2d resetPose = new Pose2d(-63,63,Math.toRadians(-90));// change when we figure out where we want to reset
     public static double[] shooterComponents = { //a b c d
             //y=0.000939398x^{3}-0.177876x^{2}+20.68083x+2592.85474
             0.000939398,
@@ -142,14 +144,13 @@ public class Bot {
     public void updatePoses(){
         if (isRed){
 
-                goalPose = new Vector2d(60, -60);
-                resetPose = new Pose2d(-63, -63, Math.toRadians(0));
+                goalPose = new Vector2d(64, -60);
+                resetPose = new Pose2d(-63, 63, Math.toRadians(0));
 
         }
         else {
-
-                goalPose = new Vector2d(60,60);
-                resetPose = new Pose2d(-63, 63, Math.toRadians(0));
+                goalPose = new Vector2d(64,60);
+                resetPose = new Pose2d(-63, -63, Math.toRadians(0));
 
         }
     }
@@ -304,6 +305,8 @@ public class Bot {
         hood.hoodServo.setPosition(0.25);
         Hood.outtakePos=0.25;
         isRed = r;
+        if(r) alliance =0;
+        else alliance=1;
         Turret.isLocked = true;
         turret.setEnableVelComp(true);
         shooter.isPeriodic=true;
