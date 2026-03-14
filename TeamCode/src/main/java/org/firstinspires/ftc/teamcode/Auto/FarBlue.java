@@ -38,11 +38,11 @@ public class FarBlue extends LinearOpMode {
     public static Vector2d gatePos=new Vector2d(7,-74);
 
 
-    public static Pose2d hpIntake1 = new Pose2d(-55,-35,Math.toRadians(-110));
-    public static Vector2d hpintake2 = new Vector2d(-72,-63);
+    public static Pose2d hpIntake1 = new Pose2d(-45,-35,Math.toRadians(-110));
+    public static Vector2d hpintake2 = new Vector2d(-63,-67);
 
-    public static Pose2d thirdIntake1 = new Pose2d(-42,-35,Math.toRadians(-90));
-    public static Vector2d thirdIntake2 = new Vector2d(-42,-58);
+    public static Pose2d thirdIntake1 = new Pose2d(-32,-35,Math.toRadians(-90));
+    public static Vector2d thirdIntake2 = new Vector2d(-32 ,-58);
     public ExposureControl exposureControl;
     public GainControl gainControl;
 

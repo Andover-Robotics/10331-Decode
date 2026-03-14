@@ -51,8 +51,9 @@ public class MainTeleOp extends LinearOpMode {
 
 
 
-//        while (opModeInInit() && !isStarted() && !isStopRequested()) {
-//            TelemetryPacket packet = new TelemetryPacket();
+       while (opModeInInit() && !isStarted() && !isStopRequested()) {
+            TelemetryPacket packet = new TelemetryPacket();
+                telemetry.addData("Is Red?", bot.isRed);
 //            gp1.readButtons();
 //
 //            if (gp1.wasJustPressed(GamepadKeys.Button.A)) {
@@ -63,8 +64,8 @@ public class MainTeleOp extends LinearOpMode {
 //            } else {
 //                telemetry.addData("alliance", "Red");
 //            }
-//            telemetry.update();
-//        }
+            telemetry.update();
+        }
 
 
 
@@ -90,8 +91,9 @@ public class MainTeleOp extends LinearOpMode {
             if (gp2.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)){
                 bot.hood.incrementHood();
             }
-            if (gp2.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)){
-                bot.hood.decrementHood();
+            if (gp2.wasJustPressed(GamepadKeys.Button.START)){
+                bot.isRed = !bot.isRed;
+                bot.updatePoses();
             }
 
             if(gp2.wasJustPressed(GamepadKeys.Button.B)){

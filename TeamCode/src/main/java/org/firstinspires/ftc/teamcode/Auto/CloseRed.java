@@ -24,7 +24,7 @@ public class CloseRed extends LinearOpMode {
 
     // inital
 
-    private static double shootdt = 1;
+    private static double shootdt = 0.8;
     private static double gatedt=1;
     public static double gateCycles=0;
 
@@ -34,17 +34,17 @@ public class CloseRed extends LinearOpMode {
     public static Vector2d shootPreload = new Vector2d(33,-20);//was 20,-30
 
     //intake
-    public static Pose2d firstIntake1 = new Pose2d(14,-30,Math.toRadians(-85));//,Math.toRadians(-180)
-    public static Vector2d firstIntake2 = new Vector2d(14,-55);//,Math.toRadians(-180)
+    public static Pose2d firstIntake1 = new Pose2d(12,-20,Math.toRadians(-85));//,Math.toRadians(-180)
+    public static Vector2d firstIntake2 = new Vector2d(12,-50);//,Math.toRadians(-180)
 
     public static Vector2d gatePos=new Vector2d(3,-68);
 
 
-    public static Pose2d secondIntake1 = new Pose2d(-6,-34,Math.toRadians(-90));
-    public static Vector2d secondIntake2 = new Vector2d(-6,-64);
+    public static Pose2d secondIntake1 = new Pose2d(-14,-31,Math.toRadians(-90));
+    public static Vector2d secondIntake2 = new Vector2d(-14,-54);
 
-    public static Pose2d gateCyclePos0 = new Pose2d(-7,-40,Math.toRadians(-85));
-    public static Pose2d gateCyclePos1 = new Pose2d(-7,-65,Math.toRadians(-85));
+    public static Pose2d gateCyclePos0 = new Pose2d(-8,-35,Math.toRadians(-85));
+    public static Pose2d gateCyclePos1 = new Pose2d(-12,-60,Math.toRadians(-85));
 
 
     public static Pose2d thirdIntake1 = new Pose2d(-34,-40,Math.toRadians(-90));
@@ -76,7 +76,7 @@ public class CloseRed extends LinearOpMode {
                 .afterTime(0.01,bot.actionStopShoot())
                 .stopAndAdd(new InstantAction(()->bot.intake.stopIntake()))
 
-                .setTangent(Math.toRadians(190))
+                .setTangent(Math.toRadians(160))
                 .splineToSplineHeading(firstIntake1, Math.toRadians(90))//intake1
                 .afterTime(0.01,bot.intake.actionIntakeClose())
                 .strafeToSplineHeading(firstIntake2,Math.toRadians(-85))
@@ -94,7 +94,7 @@ public class CloseRed extends LinearOpMode {
                 .waitSeconds(shootdt)
                 .afterTime(0.01,bot.actionStopShoot())
 
-                .setTangent(Math.toRadians(-170))
+                .setTangent(Math.toRadians(-160))
                 .splineToSplineHeading(secondIntake1, Math.toRadians(90))//intake2
 //               .afterTime(0.01,bot.intake.actionIntakeClose())
                 .strafeToSplineHeading(secondIntake2,Math.toRadians(-95))
@@ -107,7 +107,7 @@ public class CloseRed extends LinearOpMode {
                 .waitSeconds(shootdt)
                 .stopAndAdd(bot.actionStopShoot())
 
-                .setTangent(Math.toRadians(-150))
+                .setTangent(Math.toRadians(-170))
                 .splineToSplineHeading(gateCyclePos0,Math.toRadians(60))
                 .strafeToSplineHeading(bot.pose2Vector(gateCyclePos1),Math.toRadians(-60))
                 .stopAndAdd(bot.intake.actionIntakeClose())
@@ -121,7 +121,7 @@ public class CloseRed extends LinearOpMode {
 
 
 
-                .setTangent(Math.toRadians(-150))
+                .setTangent(Math.toRadians(-170))
                 .splineToSplineHeading(gateCyclePos0,Math.toRadians(60))
                 .strafeToSplineHeading(bot.pose2Vector(gateCyclePos1),Math.toRadians(-60))
                 .stopAndAdd(bot.intake.actionIntakeClose())

@@ -37,7 +37,7 @@ public class CloseRedSolo extends LinearOpMode {
     public static Pose2d firstIntake1 = new Pose2d(9,-26,Math.toRadians(-85));//,Math.toRadians(-180)
     public static Vector2d firstIntake2 = new Vector2d(9,-42);//,Math.toRadians(-180)
 
-    public static Vector2d gatePos=new Vector2d(3,-68);
+    public static Vector2d gatePos=new Vector2d(3,-42);
 
 
     public static Pose2d secondIntake1 = new Pose2d(-17,-25,Math.toRadians(-90));

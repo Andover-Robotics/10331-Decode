@@ -37,11 +37,11 @@ public class FarRed extends LinearOpMode {
     public static Vector2d gatePos=new Vector2d(7,-74);
 
 
-    public static Pose2d hpIntake1 = new Pose2d(-42,-35,Math.toRadians(-110));
-    public static Vector2d hpintake2 = new Vector2d(-58,-76);
+    public static Pose2d hpIntake1 = new Pose2d(-44,-35,Math.toRadians(-110));
+    public static Vector2d hpintake2 = new Vector2d(-67,-76);
 
-    public static Pose2d thirdIntake1 = new Pose2d(-28,-35,Math.toRadians(-90));
-    public static Vector2d thirdIntake2 = new Vector2d(-28,-64);
+    public static Pose2d thirdIntake1 = new Pose2d(-30,-35,Math.toRadians(-90));
+    public static Vector2d thirdIntake2 = new Vector2d(-30,-64);
     public ExposureControl exposureControl;
     public GainControl gainControl;
 
@@ -49,7 +49,7 @@ public class FarRed extends LinearOpMode {
     public void runOpMode() throws InterruptedException{
         Bot.instance = null;
         bot = Bot.getInstance(this);
-        bot.prepFarAuto(true);
+        bot.prepAuto(true);
         MecanumDrive drive = Bot.drive;
         drive.localizer.recalibrateIMU();
         drive.localizer.setPose(initRed);
@@ -81,7 +81,7 @@ public class FarRed extends LinearOpMode {
 
                 .splineToSplineHeading(hpIntake1,Math.toRadians(-90))//intake2
 //                .afterTime(0.01,bot.intake.actionIntakeClose())
-                .strafeToSplineHeading(hpintake2,Math.toRadians(-85))
+                .strafeToSplineHeading(hpintake2,Math.toRadians(-95))
 
                 .setReversed(true)
                 .afterTime(0.01,bot.intake.actionIntakeFar())

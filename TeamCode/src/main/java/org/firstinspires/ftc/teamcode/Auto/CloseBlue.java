@@ -31,21 +31,21 @@ public class CloseBlue extends LinearOpMode {
     private Pose2d init = new Pose2d(60,38,Math.toRadians(0));
     public static Pose2d initialRedPos = new Pose2d(60,-38,Math.toRadians(0));
     //shooting
-    public static Pose2d shoot = new Pose2d(28,-10,Math.toRadians(0));//was 20, -30
+    public static Pose2d shoot = new Pose2d(28,-25,Math.toRadians(0));//was 20, -30
     public static Vector2d shootPreload = new Vector2d(33,-20);//was 20,-30
 
     //intake
-    public static Pose2d firstIntake1 = new Pose2d(9,-26,Math.toRadians(-85));//,Math.toRadians(-180)
-    public static Vector2d firstIntake2 = new Vector2d(9,-42);//,Math.toRadians(-180)
+    public static Pose2d firstIntake1 = new Pose2d(9,-36,Math.toRadians(-85));//,Math.toRadians(-180)
+    public static Vector2d firstIntake2 = new Vector2d(9,-53);//,Math.toRadians(-180)
 
     public static Vector2d gatePos=new Vector2d(3,-68);
 
 
-    public static Pose2d secondIntake1 = new Pose2d(-17,-25,Math.toRadians(-90));
-    public static Vector2d secondIntake2 = new Vector2d(-17,-52);
+    public static Pose2d secondIntake1 = new Pose2d(-11,-40,Math.toRadians(-90));
+    public static Vector2d secondIntake2 = new Vector2d(-11,-59);
 
-    public static Pose2d gateCyclePos0 = new Pose2d(-21,-30,Math.toRadians(-85));
-    public static Pose2d gateCyclePos1 = new Pose2d(-21,-60,Math.toRadians(-85));
+    public static Pose2d gateCyclePos0 = new Pose2d(-10,-40,Math.toRadians(-85));
+    public static Pose2d gateCyclePos1 = new Pose2d(-10,-61,Math.toRadians(-85));
 
 
     public static Pose2d thirdIntake1 = new Pose2d(-34,-40,Math.toRadians(-90));

@@ -305,8 +305,7 @@ public class Bot {
         hood.hoodServo.setPosition(0.25);
         Hood.outtakePos=0.25;
         isRed = r;
-        if(r) alliance =0;
-        else alliance=1;
+        alliance = r ? 0 : 1;
         Turret.isLocked = true;
         turret.setEnableVelComp(true);
         shooter.isPeriodic=true;
@@ -319,11 +318,10 @@ public class Bot {
         intake.closeGate();
         hood.hoodServo.setPosition(0.3);
         Hood.outtakePos=0.3;
-        isRed = r;
+        alliance = r ? 0 : 1;
         Turret.isLocked = true;
         turret.setEnableVelComp(true);
         shooter.isPeriodic=true;
-        updatePoses();
 
     }
 
