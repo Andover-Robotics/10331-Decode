@@ -176,7 +176,7 @@ public class Turret {
             //controller.setSetPoint(setPoint);
         if(isLocked) runToAngle(autoAimField(Bot.goalPose));
 //        locks forward for drifting if i can't fix
-        else { autoAimField(Bot.goalPose);}
+        else {runToAngle(0); autoAimField(Bot.goalPose);}
 
         power = controller.calculate(turretMotor.getCurrentPosition(),setPoint);
         power = clamp(power,1.0,-1.0);

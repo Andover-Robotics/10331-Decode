@@ -128,7 +128,7 @@ public class CloseRed extends LinearOpMode {
                 .waitSeconds(gatedt)
                 .afterTime(0.2,bot.actionSpinUp())
                 .setReversed(true)
-                .splineTo(new Vector2d(shoot.position.x-3,shoot.position.y),Math.toRadians(60))
+                .splineTo(new Vector2d(shoot.position.x+6,shoot.position.y),Math.toRadians(60))
                 .stopAndAdd(bot.actionOpenGate())
                 .waitSeconds(shootdt)
                 .build();

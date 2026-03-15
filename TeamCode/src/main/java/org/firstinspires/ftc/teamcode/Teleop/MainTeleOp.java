@@ -110,11 +110,11 @@ public class MainTeleOp extends LinearOpMode {
                 isShooting=true;
             }
 //
-//            if(gp2.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)){
-//                Turret.isLocked = !Turret.isLocked;
-//            }
+            if(gp1.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)){
+                Turret.isLocked = !Turret.isLocked;
+            }
 
-            if(gp1.wasJustPressed(GamepadKeys.Button.BACK)||gp2.wasJustPressed(GamepadKeys.Button.BACK)){
+            if(gp1.wasJustPressed(GamepadKeys.Button.BACK)){
                 bot.switchAlliance();
             }
             telemetry.addData("target RPM",bot.shooter.getTargetRPM());
