@@ -39,7 +39,7 @@ public class FarBlue extends LinearOpMode {
 
 
     public static Pose2d hpIntake1 = new Pose2d(-45,-35,Math.toRadians(-110));
-    public static Vector2d hpintake2 = new Vector2d(-63,-67);
+    public static Vector2d hpintake2 = new Vector2d(-67,-67);
 
     public static Pose2d thirdIntake1 = new Pose2d(-32,-35,Math.toRadians(-90));
     public static Vector2d thirdIntake2 = new Vector2d(-32 ,-58);
@@ -59,7 +59,7 @@ public class FarBlue extends LinearOpMode {
         Action runAuto = drive.actionBuilderBlue(initRed)
                 .afterTime(0.01,bot.intake.actionIntakeFar())
                 .afterTime(0.01,bot.actionSpinUp()) //TODO: test dt on pathing here
-                .waitSeconds(1)
+                .waitSeconds(1.5)
                 .stopAndAdd(bot.actionShootGate())
                 .afterTime(0.01,bot.actionStopShoot())
                 .stopAndAdd(new InstantAction(()->bot.intake.stopIntake()))
@@ -74,7 +74,7 @@ public class FarBlue extends LinearOpMode {
 
                 //  .afterTime(0.01,bot.intake.actionIntakeClose())
                 .setReversed(true)
-                .afterTime(0.3,bot.actionSpinUp())//TODO: test dt on pathing here
+                .afterTime(0.1,bot.actionSpinUp())//TODO: test dt on pathing here
                 .splineToSplineHeading(shoot,Math.toRadians(100))
                 .waitSeconds(1)
                 .stopAndAdd(bot.actionShootGate())
@@ -86,15 +86,14 @@ public class FarBlue extends LinearOpMode {
 
                 .setReversed(true)
                 .afterTime(0.01,bot.intake.actionIntakeFar())
-                .afterTime(0.4,bot.actionSpinUp()) //TODO: test dt on pathing here
+                .afterTime(0.1,bot.actionSpinUp()) //TODO: test dt on pathing here
                 .splineToSplineHeading(shoot,Math.toRadians(100))
-                .waitSeconds(1)
+                .waitSeconds(1.5)
                 .stopAndAdd(bot.actionShootGate())
                 .stopAndAdd(bot.actionStopShoot())
 
-                .afterTime(0.01, bot.intake.actionIntakeFar())
-               // .splineToSplineHeading()
-
+                //.afterTime(0.01, bot.intake.actionIntakeFar())
+                .strafeTo(new Vector2d(-55,-30))
                 .build();
 
         while (opModeInInit() && !isStopRequested() && !isStarted()) {

@@ -43,7 +43,7 @@ public class Bot {
 
     public boolean fieldCentricRunMode = false;
     public MotorEx fl, fr, bl, br;
-    public static double shootSleep=0.2, shootDelay=0.8;
+    public static double shootSleep=0.2, shootDelay=1;
     public boolean isIntake,isShooting,hoodComp;
 
     public LinearInterpolator interpolator;
@@ -149,7 +149,7 @@ public class Bot {
 
         }
         else {
-                goalPose = new Vector2d(64,60);
+                goalPose = new Vector2d(62,60);
                 resetPose = new Pose2d(-63, -63, Math.toRadians(0));
 
         }
