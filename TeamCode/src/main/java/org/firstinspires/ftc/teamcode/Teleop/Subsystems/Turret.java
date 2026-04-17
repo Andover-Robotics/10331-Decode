@@ -84,15 +84,20 @@ public class Turret {
         setPoint = t;
     }//tested works
 
-
     public double wrapAround(double angle) {
+        if (angle < -210) angle += 330; //low limit
+        if (angle >= 120) angle -= 330; // high limit
+
+        return angle;
+    }
+    /*public double wrapAround(double angle) {
         //angle =AngleUnit.normalizeDegrees(angle);
        // angle %= 360; // i feel like there might be issue here
         if (angle < -225) angle += 360; //low limit
         if (angle >= 135) angle -= 360; // high limit
 //        angle %=360;
         return angle;
-    } //tested works i think may need to change when angles are normalized
+    }*/ //tested works i think may need to change when angles are normalized
 
     public void runToAngle(double angle) {
         runTo((degreesToTicks(wrapAround(angle)))); // add wrap around
